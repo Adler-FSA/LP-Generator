@@ -1,1 +1,109 @@
-<!doctype html><html><head><meta charset='utf-8'><title>LP Admin</title></head><body><h1>LP Admin Panel</h1><p>Emails verwalten.</p></body></html>
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FSA • LP Admin (Emails)</title>
+<style>
+  body{margin:0;background:#0b0f19;color:#e8eefc;font-family:Inter,system-ui,sans-serif}
+  main{max-width:900px;margin:40px auto;padding:0 20px}
+  .card{background:#121829;border:1px solid rgba(255,255,255,.08);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.35);padding:18px;margin-bottom:18px}
+  input,button{font:inherit}
+  input{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0f1425;color:#e8eefc}
+  .row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
+  .btn{padding:10px 14px;border-radius:10px;border:0;background:#d4af37;color:#000;font-weight:800;cursor:pointer}
+  .muted{color:#9fb0c7}
+</style>
+</head>
+<body>
+<main>
+  <h1>📬 LP Admin – Emails</h1>
+  <div class="card">
+    <p class="muted">GitHub Repo / Token</p>
+    <div class="row">
+      <input id="owner" placeholder="Owner, z.B. Adler-FSA">
+      <input id="repo" placeholder="Repo, z.B. LP-Generator">
+      <input id="branch" value="main">
+    </div>
+    <div class="row" style="margin-top:10px">
+      <input id="path" value="emails.json">
+      <input id="token" type="password" placeholder="GitHub Token (wird NICHT gespeichert)">
+      <button class="btn" id="load">Laden</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="muted">Eintrag hinzufügen / ändern</p>
+    <div class="row">
+      <input id="key" placeholder="Unikat-ID, z.B. FSA-2025-10-03-0001">
+      <input id="email" placeholder="email@domain.de">
+      <input id="status" placeholder="pending | confirmed">
+    </div>
+    <div style="margin-top:10px">
+      <button class="btn" id="save">Speichern (Commit)</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="muted">aktuelles JSON</p>
+    <textarea id="json" style="width:100%;height:300px;background:#0b1020;color:#e8eefc;border:0;border-radius:10px;padding:12px"></textarea>
+  </div>
+</main>
+
+<script>
+  const $ = s=>document.querySelector(s);
+  let cacheSha = null;
+  let cache = {};
+
+  async function gh(url, method="GET", body){
+    const token = $("#token").value.trim();
+    if(!token) throw new Error("Kein Token");
+    const res = await fetch(url, {
+      method,
+      headers:{
+        "Accept":"application/vnd.github+json",
+        "Authorization":"Bearer " + token
+      },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if(!res.ok){ throw new Error(await res.text()); }
+    return res.json();
+  }
+
+  $("#load").onclick = async ()=>{
+    const o=$("#owner").value.trim(), r=$("#repo").value.trim(), b=$("#branch").value.trim();
+    const p=$("#path").value.trim();
+    const url = `https://api.github.com/repos/${encodeURIComponent(o)}/${encodeURIComponent(r)}/contents/${encodeURIComponent(p)}?ref=${encodeURIComponent(b)}`;
+    try{
+      const j = await gh(url);
+      cacheSha = j.sha;
+      cache = JSON.parse(decodeURIComponent(escape(atob(j.content))));
+      $("#json").value = JSON.stringify(cache, null, 2);
+      alert("Geladen ✓");
+    }catch(e){ alert("Fehler: "+e.message); }
+  };
+
+  $("#save").onclick = async ()=>{
+    const o=$("#owner").value.trim(), r=$("#repo").value.trim(), b=$("#branch").value.trim();
+    const p=$("#path").value.trim();
+    const k=$("#key").value.trim(), e=$("#email").value.trim(), s=$("#status").value.trim() || "pending";
+    if(!k || !e){ return alert("ID und Email angeben"); }
+    cache[k] = { email: e, status: s };
+    const raw = JSON.stringify(cache, null, 2);
+    const body = {
+      message: `chore(lp-admin): update ${p} (${k})`,
+      content: btoa(unescape(encodeURIComponent(raw))),
+      branch: b,
+      sha: cacheSha || undefined
+    };
+    const url = `https://api.github.com/repos/${encodeURIComponent(o)}/${encodeURIComponent(r)}/contents/${encodeURIComponent(p)}`;
+    try{
+      const j = await gh(url, "PUT", body);
+      cacheSha = j.content.sha;
+      $("#json").value = raw;
+      alert("Gespeichert ✓");
+    }catch(e){ alert("Fehler: "+e.message); }
+  };
+</script>
+</body>
+</html>
