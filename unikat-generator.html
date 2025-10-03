@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Unikat-ID Generator (v2.0.0)</title>
+<style>
+  body{font-family:Inter,system-ui,Arial,sans-serif;background:#0b0b10;color:#eee;margin:0}
+  main{max-width:900px;margin:40px auto;padding:0 20px}
+  .card{background:#141420;border:1px solid #292941;border-radius:12px;padding:16px;margin-bottom:16px}
+  input,button{padding:10px 12px;border-radius:8px;border:1px solid #3a3a55;background:#0e0e18;color:#fff}
+  button{background:#1cc2a0;color:#000;border:none;font-weight:700;cursor:pointer}
+  code{background:#0e0e18;padding:2px 6px;border-radius:6px}
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h2>Unikat‑ID erzeugen</h2>
+    <p>Klick auf „ID erzeugen“ → dann optional direkt in <code>emails.json</code> schreiben (approved=false).</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button onclick="makeId()">ID erzeugen</button>
+      <input id="out" style="flex:1" placeholder="FSA-YYYY-MM-DD-0000" />
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>In emails.json schreiben (GitHub)</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <input id="owner" placeholder="OWNER" />
+      <input id="repo" placeholder="REPO" />
+      <input id="token" placeholder="GitHub Token" type="password" />
+      <input id="email" type="email" placeholder="Partner E‑Mail (optional jetzt, sonst später im Admin)" />
+      <button onclick="write()">Schreiben (approved=false)</button>
+    </div>
+  </div>
+</main>
+
+<script>
+function makeId(){
+  const d=new Date(); const pad=n=>String(n).padStart(2,'0');
+  const id=`FSA-${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}-${Math.floor(Math.random()*9000+1000)}`;
+  document.getElementById('out').value=id;
+}
+async function ghGet(owner,repo,path,token){
+  const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/emails.json`,{
+    headers:{Authorization:`token ${token}`}
+  });
+  if(!r.ok) throw new Error('Fetch error'); return r.json();
+}
+async function ghPut(owner,repo,path,token,content,sha,message){
+  const body={message, content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2)))), sha};
+  const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/emails.json`,{
+    method:'PUT', headers:{Authorization:`token ${token}`,'Content-Type':'application/json'}, body:JSON.stringify(body)
+  });
+  if(!r.ok) throw new Error('Write error'); return r.json();
+}
+async function write(){
+  const owner=document.getElementById('owner').value;
+  const repo=document.getElementById('repo').value;
+  const token=document.getElementById('token').value;
+  const id=document.getElementById('out').value;
+  const email=(document.getElementById('email').value||'').trim();
+  if(!id){alert('Bitte erst ID erzeugen');return;}
+  const cur=await ghGet(owner,repo,'emails.json',token);
+  const sha=cur.sha; const json=JSON.parse(atob(cur.content));
+  json.emails=json.emails||[]; json.emails.push({id, email, approved:false});
+  await ghPut(owner,repo,'emails.json',token,json,sha,`Add ${id}`);
+  alert('ID in emails.json geschrieben (approved=false).');
+}
+</script>
+</body>
+</html>

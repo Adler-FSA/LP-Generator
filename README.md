@@ -1,17 +1,17 @@
-# 🚀 LP-Generator Core
+# LP-Generator Core v2.0.0
 
-Dies ist der Akquise-Motor (Memo 01 / 02 Ziel).
+Finaler Akquise-Motor (Memo 01/02): Eine LP = eine ID = eine Partner‑E‑Mail.
 
-## Funktionen
-- lp-template.html → Basis-Template für Partner-Pages
-- lp-admin.html → Qualitätsprüfung, E-Mail-Freigabe
-- media-admin.html → Steuerung von Videos, Musik, Slideshow
-- settings.json → Globale Steuerung (Mode, Approved)
-- emails.json → Partner-E-Mails
-- rotator.json → Video Rotation
-- slideshow.json → Bild-Slideshow
-- music.json → Musik-Playlist
-- quotes.json → Zitate
+## Dateien
+- lp-template.html → Partner-LP (zieht Mail per ?id=... aus emails.json)
+- lp-admin.html → Freigabe & Pflege (GitHub Contents API)
+- unikat-generator.html → IDs erzeugen & nach emails.json schreiben
+- settings.json → mode=video|slideshow, approved (globaler Hinweis)
+- emails.json → Liste aus Objekten {id,email,approved}
+- rotator.json / slideshow.json / music.json / quotes.json
 
-## Ziel
-Automatisches Erzeugen von 1000+ individuellen LPs mit einzigartigen URLs.
+## Live-Aufruf (Beispiel)
+/lp-template.html?id=FSA-2025-10-07-0001
+
+## Sicherheit
+GitHub Token nur im Admin verwenden (nie in Links/URL).

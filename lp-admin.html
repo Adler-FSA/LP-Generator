@@ -2,74 +2,129 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>⚙️ LP Admin Core v1.3.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LP-Admin – Qualitätsprüfung (v2.0.0)</title>
 <style>
-  body { font-family:Arial,sans-serif; max-width:900px; margin:40px auto; background:#f8f9fa; color:#222; }
-  h1 { text-align:center; }
-  table { width:100%; border-collapse:collapse; margin-top:20px; }
-  th,td { border:1px solid #ccc; padding:8px; text-align:left; }
-  th { background:#eee; }
-  .approved { color:green; font-weight:bold; }
-  .pending { color:orange; font-weight:bold; }
-  button { padding:6px 12px; margin:2px; }
+  body{font-family:Inter,system-ui,Arial,sans-serif;background:#0b0b10;color:#eee;margin:0}
+  header{padding:16px 20px;background:#15151f;border-bottom:1px solid #2b2b3a}
+  main{max-width:1100px;margin:20px auto;padding:0 20px}
+  .card{background:#141420;border:1px solid #292941;border-radius:12px;padding:16px;margin-bottom:16px}
+  input,button{padding:10px 12px;border-radius:8px;border:1px solid #3a3a55;background:#0e0e18;color:#fff}
+  button{background:#d4af37;color:#000;border:none;font-weight:700;cursor:pointer}
+  table{width:100%;border-collapse:collapse}
+  th,td{border-bottom:1px solid #2b2b3a;padding:10px;text-align:left}
+  .ok{color:#16d19a;font-weight:700}.pending{color:#ffc46b;font-weight:700}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  small{color:#9aa}
+  code{background:#0e0e18;padding:2px 6px;border-radius:6px}
 </style>
 </head>
 <body>
-<h1>⚙️ LP Admin – Qualitätsprüfung v1.3.0</h1>
-<p>Simulierte Verwaltung von Partner-E-Mails. (In Realität Commit auf GitHub API)</p>
+<header><strong>LP‑Admin v2.0.0</strong> – Qualitätsprüfung & E‑Mail-Freigabe</header>
+<main>
+  <div class="card">
+    <h3>GitHub Verbindung</h3>
+    <div class="row">
+      <input id="owner" placeholder="OWNER, z.B. Adler-FSA" />
+      <input id="repo" placeholder="REPO, z.B. LP-Generator" />
+      <input id="path" value="emails.json" />
+      <input id="token" placeholder="GitHub Token (nur Admin, niemals teilen!)" type="password"/>
+      <button onclick="loadEmails()">Laden</button>
+    </div>
+    <small>Hinweis: Es wird die <em>GitHub Contents API</em> verwendet. Der Token darf nur von Admins genutzt werden.</small>
+  </div>
 
-<h2>Bestehende Partner</h2>
-<table id="emailTable">
-  <thead>
-    <tr><th>ID</th><th>E-Mail</th><th>Status</th><th>Aktionen</th></tr>
-  </thead>
-  <tbody></tbody>
-</table>
+  <div class="card">
+    <h3>Eintrag erzeugen (Unikat-ID + E‑Mail)</h3>
+    <div class="row">
+      <input id="newId" placeholder="FSA-YYYY-MM-DD-0001" />
+      <input id="newEmail" type="email" placeholder="partner@mail.com" />
+      <button onclick="addEntry()">Hinzufügen (approved=false)</button>
+    </div>
+    <small>ID-Generator siehe <code>unikat-generator.html</code>. Wenn leer, wird automatisch eine neue ID erzeugt.</small>
+  </div>
 
-<h2>Neue E-Mail hinzufügen</h2>
-<form id="addForm">
-  <label>ID: <input type="text" id="newId" required></label>
-  <label>E-Mail: <input type="email" id="newEmail" required></label>
-  <button type="submit">Hinzufügen</button>
-</form>
+  <div class="card">
+    <h3>Bestehende Einträge</h3>
+    <table id="tbl"><thead><tr><th>ID</th><th>E‑Mail</th><th>Status</th><th>Aktion</th></tr></thead><tbody></tbody></table>
+  </div>
+</main>
 
 <script>
-async function loadEmails(){
-  try {
-    const res = await fetch('emails.json');
-    const data = await res.json();
-    renderTable(data.emails);
-  } catch(e){
-    console.error('Fehler beim Laden der emails.json');
-  }
+async function ghGet(owner,repo,path,token){
+  const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{
+    headers:{Authorization:`token ${token}`}
+  });
+  if(!r.ok) throw new Error('Fetch error'); 
+  return r.json();
+}
+async function ghPut(owner,repo,path,token,content,sha,message){
+  const body={
+    message, content:btoa(unescape(encodeURIComponent(JSON.stringify(content,null,2)))),
+    sha
+  };
+  const r=await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`,{
+    method:'PUT', headers:{Authorization:`token ${token}`,'Content-Type':'application/json'}, body:JSON.stringify(body)
+  });
+  if(!r.ok) throw new Error('Write error'); 
+  return r.json();
+}
+function genId(){
+  const d=new Date(); const pad=n=>String(n).padStart(2,'0');
+  return `FSA-${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}-${Math.floor(Math.random()*9000+1000)}`;
 }
 
-function renderTable(emails){
-  const tbody=document.querySelector('#emailTable tbody');
-  tbody.innerHTML="";
-  emails.forEach((e,i)=>{
-    const row=document.createElement('tr');
-    row.innerHTML=`<td>${e.id}</td><td>${e.email}</td>
-                   <td class="${e.approved?'approved':'pending'}">${e.approved?'✅ freigegeben':'⏳ ausstehend'}</td>
-                   <td>
-                     <button onclick="toggleStatus(${i})">Status wechseln</button>
-                   </td>`;
-    tbody.appendChild(row);
+let CACHE={list:[], sha:null};
+
+async function loadEmails(){
+  const owner=document.getElementById('owner').value;
+  const repo=document.getElementById('repo').value;
+  const path=document.getElementById('path').value;
+  const token=document.getElementById('token').value;
+  const res=await ghGet(owner,repo,path,token);
+  CACHE.sha=res.sha;
+  const json=JSON.parse(atob(res.content));
+  CACHE.list=json.emails||[];
+  render();
+}
+
+function render(){
+  const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
+  CACHE.list.forEach((e,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${e.id}</td><td>${e.email||'—'}</td>
+      <td>${e.approved?'<span class="ok">✅ freigegeben</span>':'<span class="pending">⏳ ausstehend</span>'}</td>
+      <td>
+        <button onclick="toggle(${i})">${e.approved?'Auf ausstehend':'Freigeben'}</button>
+      </td>`;
+    tb.appendChild(tr);
   });
 }
 
-function toggleStatus(index){
-  alert('Status wird gewechselt (Demo) – in Realität: Update von emails.json per Commit.');
+async function addEntry(){
+  const owner=document.getElementById('owner').value;
+  const repo=document.getElementById('repo').value;
+  const path=document.getElementById('path').value;
+  const token=document.getElementById('token').value;
+  const id=document.getElementById('newId').value || genId();
+  const mail=(document.getElementById('newEmail').value||'').trim();
+  if(!mail){ alert('Bitte E‑Mail eintragen'); return; }
+  CACHE.list.push({id, email:mail, approved:false});
+  const content={emails:CACHE.list};
+  await ghPut(owner,repo,path,token,content,CACHE.sha,`Add ${id}`);
+  alert('Eintrag hinzugefügt.'); loadEmails();
 }
 
-document.getElementById('addForm').addEventListener('submit',e=>{
-  e.preventDefault();
-  const id=document.getElementById('newId').value;
-  const mail=document.getElementById('newEmail').value;
-  alert('Neue E-Mail hinzugefügt (Demo): '+id+' -> '+mail);
-});
-
-loadEmails();
+async function toggle(i){
+  const owner=document.getElementById('owner').value;
+  const repo=document.getElementById('repo').value;
+  const path=document.getElementById('path').value;
+  const token=document.getElementById('token').value;
+  CACHE.list[i].approved=!CACHE.list[i].approved;
+  const content={emails:CACHE.list};
+  await ghPut(owner,repo,path,token,content,CACHE.sha,`Approve ${CACHE.list[i].id}: ${CACHE.list[i].approved}`);
+  alert('Status geändert.'); loadEmails();
+}
 </script>
 </body>
 </html>

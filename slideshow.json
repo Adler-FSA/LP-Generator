@@ -1,4 +1,1 @@
-{
-  "interval": 15,
-  "images": ["slide1.jpg","slide2.jpg","slide3.jpg"]
-}
+{ "interval": 15, "images": [] }
