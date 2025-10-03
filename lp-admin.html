@@ -1,2 +1,20 @@
-<!-- LP Admin -->
-<html><head><title>LP Admin</title></head><body><h1>⚙️ LP Admin Oberfläche</h1><p>Admin Panel für Einstellungen.</p></body></html>
+<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="UTF-8"><title>⚙️ LP Admin v1.3.0</title></head>
+<body>
+<h1>⚙️ LP Admin v1.3.0</h1>
+<p>Hier kannst du JSON-Dateien steuern (Demo-Version).</p>
+<form onsubmit="saveEmail();return false;">
+  <label>E-Mail eintragen:</label>
+  <input type="email" id="email" required>
+  <button type="submit">Speichern</button>
+</form>
+<script>
+function saveEmail(){
+  const email=document.getElementById('email').value;
+  alert('E-Mail wird gespeichert in emails.json: '+email);
+  // Demo: In echt würde hier ein Commit an GitHub API erfolgen
+}
+</script>
+</body>
+</html>

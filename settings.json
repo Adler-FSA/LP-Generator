@@ -1,1 +1,4 @@
-{ "glow": true, "heroMarginTop": "80px" }
+{
+  "hero": { "title": "Dein Geld. Deine Freiheit." },
+  "mode": "video"
+}
