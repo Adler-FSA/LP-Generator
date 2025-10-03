@@ -3,10 +3,11 @@
 Landingpage Generator für die Finanzielle Souveränitäts Akademie.
 
 ## Steuerung über JSON
-- settings.json → Modus video/slideshow
+- settings.json → Modus video/slideshow + approved true/false
 - slideshow.json → Bilder und Intervalle
-- quotes.json → Zitate, erscheinen automatisch im Template
+- quotes.json → Zitate
+- music.json → Musik-Playlist
 - emails.json → Partner-E-Mails
 
 ## Aktuelle Version
-- v1.4.0 (05.10.2025)
+- v1.5.0 (06.10.2025)

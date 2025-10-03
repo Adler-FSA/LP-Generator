@@ -1,10 +1,14 @@
 # 📜 Changelog – LP-Generator
 
-## v1.4.0 – Verbesserungen (05.10.2025)
-- Hero-Abstand nochmals optimiert
-- Zitate ausgelagert in quotes.json (leichter austauschbar)
-- Kino jetzt mit 16:9 Verhältnis (responsive)
-- settings.json & slideshow.json bleiben Steuerdateien
+## v1.5.0 – Musik + Approval (06.10.2025)
+- 🎵 Musiksteuerung eingebaut (music.json + Button)
+- 🔑 Admin-Freigabe über settings.json → approved true/false
+- 📝 README.md erweitert
+
+## v1.4.0 – Verbesserungen
+- Hero-Abstand optimiert
+- Zitate ausgelagert in quotes.json
+- Kino 16:9 responsive
 
 ## v1.3.0 – Admin Steuerung
 - LP-Admin kann emails.json direkt anpassen

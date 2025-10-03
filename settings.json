@@ -1,4 +1,5 @@
 {
   "hero": { "title": "Dein Geld. Deine Freiheit." },
-  "mode": "video"
+  "mode": "video",
+  "approved": false
 }
