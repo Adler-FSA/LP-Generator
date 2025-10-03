@@ -1,3 +1,16 @@
 {
-  "steps": []
+  "steps": [
+    {
+      "title": "Start",
+      "text": "Loslegen und Überblick gewinnen."
+    },
+    {
+      "title": "Grundkurs",
+      "text": "Basiswissen aufbauen."
+    },
+    {
+      "title": "Onboarding",
+      "text": "Tools & Zugänge erhalten."
+    }
+  ]
 }

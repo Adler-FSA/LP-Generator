@@ -1,1 +1,55 @@
-<h1>⚙️ Admin Oberfläche</h1><p>Steuerung für JSON und Inhalte.</p>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LP‑Admin (Qualitätsprüfung)</title>
+<style>
+  body{font-family:Inter,system-ui,Arial,sans-serif;background:#0b0b10;color:#eee;margin:0}
+  header{padding:16px 20px;background:#15151f;border-bottom:1px solid #2b2b3a}
+  main{max-width:1100px;margin:20px auto;padding:0 20px}
+  .card{background:#141420;border:1px solid #292941;border-radius:12px;padding:16px;margin-bottom:16px}
+  input,button{padding:10px 12px;border-radius:8px;border:1px solid #3a3a55;background:#0e0e18;color:#fff}
+  button{background:#d4af37;color:#000;border:none;font-weight:700;cursor:pointer}
+  table{width:100%;border-collapse:collapse}
+  th,td{border-bottom:1px solid #2b2b3a;padding:10px;text-align:left}
+  .ok{color:#16d19a;font-weight:700}.pending{color:#ffc46b;font-weight:700}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  small{color:#9aa}
+  code{background:#0e0e18;padding:2px 6px;border-radius:6px}
+</style>
+</head>
+<body>
+<header><strong>LP‑Admin</strong> – Qualitätsprüfung & E‑Mail‑Freigabe</header>
+<main>
+  <div class="card">
+    <h3>Hinweis</h3>
+    <p>Diese Demo‑Adminseite zeigt, wie die Freigabe mit <em>emails.json</em> funktioniert. Für echte Commits nutze die GitHub Contents API (Token nur für Admins!).</p>
+    <p>Struktur eines Eintrags:</p>
+    <pre><code>{
+  "id": "FSA-2025-10-07-0001",
+  "email": "partner@mail.com",
+  "approved": true
+}</code></pre>
+  </div>
+
+  <div class="card">
+    <h3>Aktuelle Einträge (nur Ansicht)</h3>
+    <table id="tbl"><thead><tr><th>ID</th><th>E‑Mail</th><th>Status</th></tr></thead><tbody></tbody></table>
+  </div>
+</main>
+
+<script>
+async function loadJSON(url){ try{ const r=await fetch(url,{cache:'no-store'}); return await r.json(); }catch(e){ return null; } }
+(async ()=>{
+  const data = await loadJSON('emails.json') || {emails:[]};
+  const tb = document.querySelector('#tbl tbody');
+  data.emails.forEach(e=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${e.id}</td><td>${e.email||'—'}</td><td>${e.approved?'✅':'⏳'}</td>`;
+    tb.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>

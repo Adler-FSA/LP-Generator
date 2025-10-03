@@ -1,17 +1,24 @@
-# 🚀 Release Notes – LP-Generator Core v2.0.0 (Final)
+# 🚀 Release Notes – LP‑Generator v2.0.0 (Final)
 
-### Was ist neu
-- Vollständiger Partner-Flow: ID erzeugen → E-Mail eintragen → Admin-Freigabe
-- `lp-template.html` liest E-Mail per `?id=...` und zeigt Status (⏳/✅)
-- `lp-admin.html` verwaltet Einträge via GitHub Contents API (Token-basiert)
-- `unikat-generator.html` erzeugt IDs und kann direkt nach `emails.json` schreiben
+**Ziel:** Akquise‑Motor – 1000+ individuelle LPs, jeweils mit Unikat‑ID & Partner‑E‑Mail.  
+**Steuerung:** JSON‑Hintertüren, keine Tokens/Parameter in URL außer `id`.
 
-### Dateien
-- lp-template.html, lp-admin.html, unikat-generator.html
-- settings.json, emails.json, rotator.json, slideshow.json, music.json, quotes.json
-- README.md, CHANGELOG.md
+### Features
+- `lp-template.html` mit:
+  - E‑Mail aus `emails.json` per `?id=...` (Unique‑One‑Mail‑Per‑Page)
+  - Freigabe‑Banner (⏳) bis `approved:true`
+  - CTA mit Mailto + Copy‑Button
+  - Kino 16:9: Video (rotator.json) oder Slideshow (slideshow.json)
+  - Musik‑Button (music.json)
+- Admin & Media Hinweise
+- Übersicht `index.html`
 
-### Live-Aufruf (Beispiel)
-- `https://adler-fsa.github.io/LP-Generator/lp-template.html?id=FSA-2025-10-07-0001`
+### JSON‑Dateien
+- `settings.json` – `{ "mode": "video" | "slideshow" }`
+- `emails.json` – `[ { id, email, approved } ]`
+- `rotator.json`, `slideshow.json`, `music.json`, `quotes.json`, `reise.json`
 
-✅ Damit ist der Akquise‑Motor produktionsbereit (ohne Server, via GitHub JSON).
+### Beispiel
+- `/lp-template.html?id=FSA-2025-10-07-0001` ⇒ zeigt freigegebene E‑Mail
+
+✅ Produktionsbereit ohne Server (GitHub Pages + JSON).
