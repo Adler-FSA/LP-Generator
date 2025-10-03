@@ -7,6 +7,10 @@
     {
       "type": "vimeo",
       "id": "76979871"
+    },
+    {
+      "type": "mp4",
+      "src": "https://www.w3schools.com/html/mov_bbb.mp4"
     }
   ]
 }

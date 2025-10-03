@@ -12,6 +12,7 @@
     section {padding:100px 20px;max-width:1200px;margin:0 auto;}
     .card {background:rgba(20,20,30,0.75);padding:30px;border-radius:12px;margin-bottom:30px;}
     #slideshow-bg {position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background-size:cover;background-position:center;transition:background-image 1s;}
+    #kinoFrame iframe {width:100%;height:480px;border:none;}
     #musikBtn {position:fixed;bottom:20px;right:20px;padding:10px 18px;background:#222;color:#fff;border:none;border-radius:50px;cursor:pointer;z-index:10;}
     #welcomeBox{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:2000;}
     #welcomeInner{background:#111;padding:40px;border-radius:12px;max-width:400px;text-align:center;}
@@ -67,7 +68,7 @@
 <section id="kino">
   <div class="card">
     <h2>🎬 Kino</h2>
-    <div id="kinoFrame">Inhalte folgen…</div>
+    <div id="kinoFrame"></div>
   </div>
 </section>
 
@@ -83,12 +84,11 @@ async function loadConfigs(){
     const slideshow = await fetch("slideshow.json").then(r=>r.json());
     const reise = await fetch("reise.json").then(r=>r.json());
     const emails = await fetch("emails.json").then(r=>r.json());
+    const rotator = await fetch("rotator.json").then(r=>r.json());
 
     // Hero
     document.getElementById("heroTitle").textContent = settings.title;
     document.getElementById("heroSubtitle").textContent = settings.subtitle;
-
-    // Mentor
     document.getElementById("mentorText").textContent = settings.mentorText;
 
     // Reise
@@ -103,6 +103,21 @@ async function loadConfigs(){
     let cta = document.getElementById("ctaBtn");
     cta.href = "mailto:" + emails.main;
     cta.textContent = "🚀 Jetzt kostenlos starten – " + emails.main;
+
+    // Kino
+    let kinoFrame=document.getElementById("kinoFrame");
+    if(rotator.videos && rotator.videos.length>0){
+      let vid=rotator.videos[0];
+      if(vid.type==="youtube"){
+        kinoFrame.innerHTML=`<iframe src="https://www.youtube.com/embed/${vid.id}?autoplay=1&mute=1&loop=1&playlist=${vid.id}" allow="autoplay;fullscreen"></iframe>`;
+      } else if(vid.type==="vimeo"){
+        kinoFrame.innerHTML=`<iframe src="https://player.vimeo.com/video/${vid.id}?autoplay=1&loop=1&muted=1" allow="autoplay;fullscreen"></iframe>`;
+      } else if(vid.type==="mp4"){
+        kinoFrame.innerHTML=`<video autoplay loop muted playsinline><source src="${vid.src}" type="video/mp4"></video>`;
+      }
+    } else {
+      kinoFrame.textContent="Keine Videos eingetragen.";
+    }
 
     // Slideshow
     let bg = document.getElementById("slideshow-bg");
