@@ -1,7 +1,6 @@
 {
   "title": "🚀 Finanzielle Souveränität Akademie",
   "subtitle": "Dein Geld. Deine Freiheit.",
-  "themeColor": "#d4af37",
-  "enableMusic": true,
-  "enableSlideshow": true
+  "background": "url('https://picsum.photos/1920/1080?blur')",
+  "themeColor": "#d4af37"
 }
