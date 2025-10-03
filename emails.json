@@ -1,1 +1,3 @@
-{ "emails": [] }
+{
+  "partner": "demo@example.com"
+}
