@@ -1,5 +1,12 @@
 {
-  "rotationEnabled": true,
-  "preferredSource": "YouTube",
-  "skipSuspicious": true
+  "videos": [
+    {
+      "type": "youtube",
+      "id": "miWBKSszEIw"
+    },
+    {
+      "type": "vimeo",
+      "id": "76979871"
+    }
+  ]
 }

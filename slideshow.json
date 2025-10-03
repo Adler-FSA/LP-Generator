@@ -1,10 +1,27 @@
 {
-  "interval": 15000,
-  "images": [
-    "https://picsum.photos/id/1011/1920/1080",
-    "https://picsum.photos/id/1015/1920/1080",
-    "https://picsum.photos/id/1021/1920/1080",
-    "https://picsum.photos/id/1039/1920/1080",
-    "https://picsum.photos/id/1043/1920/1080"
-  ]
+  "slideshow": {
+    "interval": 15000,
+    "images": [
+      {
+        "src": "https://source.unsplash.com/1600x900/?eagle,fly",
+        "caption": "🦅 Adlerflug"
+      },
+      {
+        "src": "https://source.unsplash.com/1600x900/?blockchain,finance",
+        "caption": "🌐 Blockchain"
+      },
+      {
+        "src": "https://source.unsplash.com/1600x900/?education,books",
+        "caption": "📚 Wissen"
+      },
+      {
+        "src": "https://source.unsplash.com/1600x900/?teamwork,success",
+        "caption": "🤝 Community"
+      },
+      {
+        "src": "https://source.unsplash.com/1600x900/?future,technology",
+        "caption": "🚀 Zukunft"
+      }
+    ]
+  }
 }
