@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>🚀 LP Template v1.5.0</title>
+<title>🚀 LP Template Core</title>
 <style>
   body { margin:0; font-family:Arial,sans-serif; background:#000; color:#fff; }
   header { position:fixed; top:0; width:100%; background:rgba(0,0,0,0.6); padding:20px; text-align:center; }
@@ -14,7 +14,7 @@
 </style>
 </head>
 <body>
-<header>🌐 Finanzielle Souveränitäts Akademie</header>
+<header>🌐 Finanzielle Souveränitäts Akademie – LP Generator</header>
 <h1>Dein Geld.<br><span style="color:#1cc2a0">Deine Freiheit.</span></h1>
 <div id="quotes"></div>
 <div id="kino"></div>
@@ -70,6 +70,13 @@
         else{player.pause();btn.textContent="🎵 Start";}
       };
     });
+  });
+
+  // Emails laden
+  fetch('emails.json').then(r=>r.json()).then(data=>{
+    if(data.emails && data.emails.length>0){
+      document.body.innerHTML=document.body.innerHTML.replace(/EMAIL_PLACEHOLDER/g,data.emails[0]);
+    }
   });
 </script>
 </body>

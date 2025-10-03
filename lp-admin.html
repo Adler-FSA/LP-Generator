@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
-<head><meta charset="UTF-8"><title>⚙️ LP Admin v1.3.0</title></head>
-<body>
-<h1>⚙️ LP Admin v1.3.0</h1>
-<p>Hier kannst du JSON-Dateien steuern (Demo-Version).</p>
+<head><meta charset="UTF-8"><title>⚙️ LP Admin Core</title></head>
+<body style="font-family:Arial,sans-serif;max-width:800px;margin:40px auto;">
+<h1>⚙️ LP Admin – Qualitätsprüfung</h1>
+<p>Mit Token anmelden, um E-Mails freizugeben.</p>
 <form onsubmit="saveEmail();return false;">
   <label>E-Mail eintragen:</label>
   <input type="email" id="email" required>
@@ -13,8 +13,7 @@
 function saveEmail(){
   const email=document.getElementById('email').value;
   alert('E-Mail wird gespeichert in emails.json: '+email);
-  // Demo: In echt würde hier ein Commit an GitHub API erfolgen
+  // Demo: In Realität hier GitHub API Commit
 }
 </script>
-</body>
-</html>
+</body></html>

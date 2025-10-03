@@ -1,13 +1,17 @@
-# 🚀 LP-Generator
+# 🚀 LP-Generator Core
 
-Landingpage Generator für die Finanzielle Souveränitäts Akademie.
+Dies ist der Akquise-Motor (Memo 01 / 02 Ziel).
 
-## Steuerung über JSON
-- settings.json → Modus video/slideshow + approved true/false
-- slideshow.json → Bilder und Intervalle
-- quotes.json → Zitate
-- music.json → Musik-Playlist
+## Funktionen
+- lp-template.html → Basis-Template für Partner-Pages
+- lp-admin.html → Qualitätsprüfung, E-Mail-Freigabe
+- media-admin.html → Steuerung von Videos, Musik, Slideshow
+- settings.json → Globale Steuerung (Mode, Approved)
 - emails.json → Partner-E-Mails
+- rotator.json → Video Rotation
+- slideshow.json → Bild-Slideshow
+- music.json → Musik-Playlist
+- quotes.json → Zitate
 
-## Aktuelle Version
-- v1.5.0 (06.10.2025)
+## Ziel
+Automatisches Erzeugen von 1000+ individuellen LPs mit einzigartigen URLs.
