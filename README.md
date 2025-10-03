@@ -1,27 +1,23 @@
 # 🚀 LP-Generator
 
-Dies ist das zentrale Repository für den **Landingpage-Generator (FSA Projekt)**.
+Dieses Repo enthält den Landingpage-Generator mit Admin-Tools und Media-Steuerung.
 
-## 📂 Hauptdateien
-- `lp-template.html` – Master Landingpage Template
-- `lp-admin.html` – Admin Oberfläche
-- `media-admin.html` – Media Steuerung
-- `settings.json` – Globale Einstellungen
-- `rotator.json` – Video-Rotation
-- `slideshow.json` – Bild-Slideshow
-- `music.json` – Musikverwaltung
-- `emails.json` – E-Mail Verwaltung
-- `reise.json` – Inhalte & Module (Reise)
+## Hauptdateien
+- lp-template.html
+- lp-admin.html
+- media-admin.html
 
-## 🌍 Live-Demos (GitHub Pages)
-- [LP-Template](https://adler-fsa.github.io/LP-Generator/lp-template.html)
-- [LP-Admin](https://adler-fsa.github.io/LP-Generator/lp-admin.html)
-- [Media-Admin](https://adler-fsa.github.io/LP-Generator/media-admin.html)
+## JSON Steuerung
+- settings.json
+- rotator.json
+- slideshow.json
+- music.json
+- emails.json
+- reise.json
 
-👉 Zukünftige Seiten (Platzhalter für Erweiterungen):
-- `mentor.html` – Mentor Inhalte
-- `campus.html` – Campus Übersicht
-- `kino.html` – Kino / Video Module
+## Platzhalterseiten
+- mentor.html
+- campus.html
+- kino.html
 
-## ⚙️ Hinweise
-Alle Änderungen an HTML/JSON-Dateien werden nach dem Commit automatisch online veröffentlicht (GitHub Pages Deployment).
+Alle Seiten sind direkt über GitHub Pages erreichbar.

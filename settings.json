@@ -1,1 +1,4 @@
-{ "settings": {} }
+{
+  "hero": {"title": "Dein Geld. Deine Freiheit."},
+  "mentor": {"headline": "Dein digitaler Mentor"}
+}
