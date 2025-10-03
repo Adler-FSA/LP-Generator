@@ -1,23 +1,9 @@
-# 🚀 LP-Generator
+# 🚀 LP-Generator v1.1.0
 
-Dieses Repo enthält den Landingpage-Generator mit Admin-Tools und Media-Steuerung.
-
-## Hauptdateien
-- lp-template.html
-- lp-admin.html
-- media-admin.html
-
-## JSON Steuerung
-- settings.json
-- rotator.json
-- slideshow.json
-- music.json
-- emails.json
-- reise.json
-
-## Platzhalterseiten
-- mentor.html
-- campus.html
-- kino.html
-
-Alle Seiten sind direkt über GitHub Pages erreichbar.
+Upgrade (Memo 02 Fixes):
+- Hero-Abstand vergrößert
+- Zitate korrekt eingefügt
+- Reise-Abschnitt verbessert
+- Button "Später ansehen" Fix
+- Kino ohne Filter
+- Glow-Effekte zurück

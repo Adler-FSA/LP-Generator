@@ -1,6 +1,1 @@
-{
-  "onAir": 1,
-  "videos": [
-    {"host": "YouTube", "url": "https://youtube.com/example1"}
-  ]
-}
+{ "onAir": 1, "videos": [] }

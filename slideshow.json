@@ -1,5 +1,1 @@
-{
-  "interval": 15,
-  "images": ["slide1.jpg", "slide2.jpg"],
-  "backgroundMusic": "terra-mater.mp3"
-}
+{ "interval": 15, "images": [] }
