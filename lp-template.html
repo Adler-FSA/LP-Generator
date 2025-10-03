@@ -3,43 +3,60 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LP Template – JSON Test</title>
+  <title>🚀 LP-Template mit Slideshow</title>
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, sans-serif;
-      color: white;
-      text-align: center;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: #000;
-      background-size: cover;
-      background-position: center;
+    body { margin:0; font-family:sans-serif; color:#fff; background:#000; }
+    h1 { padding:20px; }
+
+    #slideshow-bg {
+      position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      background-size:cover;
+      background-position:center;
+      z-index:-1;
+      transition: background-image 1s ease-in-out;
     }
-    h1 { font-size: 2.2rem; }
-    p  { font-size: 1.3rem; opacity: 0.85; }
+
+    .content {
+      position:relative;
+      z-index:10;
+      padding:40px;
+    }
   </style>
 </head>
 <body>
-  <h1 id="title">Lade...</h1>
-  <p id="subtitle"></p>
+  <div id="slideshow-bg"></div>
+
+  <div class="content">
+    <h1>🚀 LP-Template mit Slideshow</h1>
+    <p>Hintergrundbilder wechseln automatisch alle 15 Sekunden.<br>
+    Gesteuert über <code>slideshow.json</code>.</p>
+  </div>
 
   <script>
-    // JSON laden
-    fetch("settings.json")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("title").textContent = data.title;
-        document.getElementById("subtitle").textContent = data.subtitle;
-        document.body.style.background = data.background;
-        document.body.style.color = data.themeColor;
-      })
-      .catch(err => {
-        console.error("Fehler beim Laden von settings.json:", err);
-      });
+  async function startSlideshow() {
+    try {
+      const res = await fetch("slideshow.json");
+      const config = await res.json();
+      const images = config.images;
+      const interval = config.interval || 15000;
+
+      let index = 0;
+      const bg = document.getElementById("slideshow-bg");
+
+      function updateImage() {
+        bg.style.backgroundImage = `url('${images[index]}')`;
+        index = (index + 1) % images.length;
+      }
+
+      updateImage();
+      setInterval(updateImage, interval);
+    } catch(e) {
+      console.error("Slideshow konnte nicht geladen werden", e);
+    }
+  }
+
+  startSlideshow();
   </script>
 </body>
 </html>
