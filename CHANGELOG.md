@@ -1,5 +1,11 @@
 # 📜 Changelog – LP-Generator Core
 
+## v1.3.0 Core (07.10.2025)
+- Admin-Panel Upgrade: Anzeige aller Partner aus emails.json in einer Tabelle
+- Statuswechsel (approved true/false) simuliert
+- Hinzufügen neuer Partner-E-Mails simuliert
+- Optische Verbesserungen im Admin
+
 ## v1.2.0 Core (07.10.2025)
 - E-Mail anhand Unikat-ID (`?id=...`) geladen aus emails.json
 - Jede LP zeigt genau 1 Mail → Unique-One-Mail-Per-Page-Prinzip
