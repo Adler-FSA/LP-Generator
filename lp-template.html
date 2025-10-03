@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>🚀 LP Template Core v1.1.0</title>
+<title>🚀 LP Template Core v1.2.0</title>
 <style>
   body { margin:0; font-family:Arial,sans-serif; background:#000; color:#fff; }
   header { position:fixed; top:0; width:100%; background:rgba(0,0,0,0.6); padding:20px; text-align:center; }
@@ -12,20 +12,28 @@
   #kino iframe, #kino img { position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:12px; object-fit:cover; }
   #musikBtn { position:fixed; bottom:20px; right:20px; padding:10px 16px; background:#d4af37; color:#000; border:none; border-radius:30px; cursor:pointer; font-weight:bold; }
   #approvalBanner { text-align:center; background:#660000; padding:15px; margin:20px auto; max-width:600px; border-radius:8px; font-weight:bold; }
+  #emailBox { text-align:center; margin:30px auto; font-size:1.2rem; }
+  #emailBox button { margin:10px; padding:10px 18px; border:none; border-radius:6px; background:#d4af37; cursor:pointer; font-weight:bold; }
 </style>
 </head>
 <body>
-<header>🌐 Finanzielle Souveränitäts Akademie – LP Generator v1.1.0</header>
+<header>🌐 Finanzielle Souveränitäts Akademie – LP Generator v1.2.0</header>
 <h1>Dein Geld.<br><span style="color:#1cc2a0">Deine Freiheit.</span></h1>
 <div id="quotes"></div>
 <div id="kino"></div>
 <audio id="bgMusic" loop></audio>
 <button id="musikBtn">🎵 Start</button>
 <div id="approval"></div>
+<div id="emailBox"></div>
 <script>
   async function loadJSON(url){
     try{ const r=await fetch(url); return await r.json(); }
     catch(e){ console.error("Fehler beim Laden:",url); return {}; }
+  }
+
+  function getParam(name){
+    const urlParams=new URLSearchParams(window.location.search);
+    return urlParams.get(name);
   }
 
   // Quotes
@@ -38,12 +46,10 @@
 
   // Settings
   loadJSON('settings.json').then(settings=>{
-    // Approval
     if(!settings.approved){
       document.getElementById('approval').innerHTML='<div id="approvalBanner">⏳ Diese LP ist noch nicht freigegeben – Eintrag erfolgt nach Qualitätsprüfung.</div>';
     }
 
-    // Kino
     if(settings.mode === 'slideshow'){
       loadJSON('slideshow.json').then(data=>{
         let idx=0;
@@ -56,7 +62,6 @@
       document.getElementById('kino').innerHTML='<iframe src="https://www.youtube.com/embed/miWBKSszEIw?autoplay=1&mute=1&loop=1"></iframe>';
     }
 
-    // Musik
     loadJSON('music.json').then(music=>{
       const player=document.getElementById('bgMusic');
       if(music.tracks && music.tracks.length>0){ player.src=music.tracks[0]; }
@@ -69,10 +74,20 @@
     });
   });
 
-  // Emails
+  // Emails anhand ID
+  const lpID=getParam("id");
   loadJSON('emails.json').then(data=>{
-    if(data.emails && data.emails.length>0){
-      document.body.innerHTML=document.body.innerHTML.replace(/EMAIL_PLACEHOLDER/g,data.emails[0]);
+    if(data.emails){
+      const found=data.emails.find(e=>e.id===lpID);
+      if(found){
+        if(found.approved){
+          document.getElementById('emailBox').innerHTML=`📧 Kontakt: <strong>${found.email}</strong><br><button onclick="window.location='mailto:${found.email}'">E-Mail senden</button>`;
+        } else {
+          document.getElementById('approval').innerHTML='<div id="approvalBanner">⏳ Diese LP ist noch nicht freigegeben – Eintrag erfolgt nach Qualitätsprüfung.</div>';
+        }
+      } else {
+        document.getElementById('emailBox').innerHTML="<p style='color:red'>❌ Keine Partner-E-Mail für diese ID gefunden.</p>";
+      }
     }
   });
 </script>
