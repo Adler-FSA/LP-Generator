@@ -3,10 +3,71 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Finanzielle Souveränitäts Akademie - LP Template Starter</title>
+  <title>🚀 LP-Template Starter</title>
+  <style>
+    body {margin:0;font-family:sans-serif;background:#000;color:#fff;text-align:center;}
+    #slideshow {position:relative;width:100%;height:100vh;overflow:hidden;}
+    #slideshow img {position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1s;}
+    #slideshow img.active {opacity:1;}
+    #caption {position:absolute;bottom:20px;left:0;right:0;color:#fff;font-size:1.4rem;
+      text-shadow:0 0 8px rgba(0,0,0,0.8);font-weight:600;}
+    header {background:rgba(0,0,0,0.6);padding:12px;position:fixed;top:0;left:0;right:0;z-index:10;}
+    header nav a {margin:0 15px;color:#fff;text-decoration:none;font-weight:600;}
+    header nav a:hover {color:#f4d03f;}
+    #musikBtn {position:fixed;bottom:20px;right:20px;padding:10px 18px;background:#222;color:#fff;
+      border:none;border-radius:50px;cursor:pointer;z-index:10;}
+  </style>
 </head>
 <body>
-  <h1>🚀 LP-Template Starter</h1>
-  <p>Dies ist die Starterversion. Inhalte (Hero, Mentor, Reise, CTA, Kino, Musik) werden im finalen Mastercode ergänzt.</p>
+  <header>
+    <nav>
+      <a href="https://www.finanziellesouveraenitaet.de">Startseite</a>
+      <a href="https://www.finanziellesouveraenitaet.de/campus">Campus</a>
+      <a href="https://www.finanziellesouveraenitaet.de/grundkurs-anfaenger">Grundkurs</a>
+      <a href="https://www.finanziellesouveraenitaet.de/onboarding">Onboarding</a>
+      <a href="https://www.finanziellesouveraenitaet.de/krypto-glossar-pro">Krypto-Glossar Pro</a>
+    </nav>
+  </header>
+
+  <div id="slideshow"><div id="caption"></div></div>
+
+  <audio id="bgMusic" autoplay loop>
+    <source src="terra-mater-inspiring-cinematic-epic-272565.mp3" type="audio/mpeg">
+  </audio>
+  <button id="musikBtn">🎵 Musik stoppen</button>
+
+  <script>
+    async function loadConfig(){
+      const settings = await fetch('settings.json').then(r=>r.json());
+      const slideData = await fetch('slideshow.json').then(r=>r.json());
+
+      // Musiksteuerung
+      const musikBtn=document.getElementById('musikBtn');
+      const bgMusic=document.getElementById('bgMusic');
+      musikBtn.addEventListener('click',()=>{
+        if(bgMusic.paused){bgMusic.play();musikBtn.textContent="🎵 Musik stoppen";}
+        else{bgMusic.pause();musikBtn.textContent="🎵 Musik starten";}
+      });
+
+      // Slideshow
+      const slideshow=document.getElementById('slideshow');
+      const caption=document.getElementById('caption');
+      let idx=0;
+      slideData.slideshow.images.forEach((img,i)=>{
+        const el=document.createElement('img');
+        el.src=img.src;
+        if(i===0){el.classList.add('active');caption.textContent=img.caption;}
+        slideshow.appendChild(el);
+      });
+      const slides=document.querySelectorAll('#slideshow img');
+      setInterval(()=>{
+        slides[idx].classList.remove('active');
+        idx=(idx+1)%slides.length;
+        slides[idx].classList.add('active');
+        caption.textContent=slideData.slideshow.images[idx].caption;
+      }, slideData.slideshow.interval);
+    }
+    loadConfig();
+  </script>
 </body>
 </html>

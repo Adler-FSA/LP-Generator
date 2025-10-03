@@ -1,6 +1,7 @@
 {
-  "heroTitle": "Dein Geld. Deine Freiheit.",
-  "heroSubtitle": "Die Welt verändert sich: Inflation, KI, Blockchain.",
-  "emailPlaceholder": "EMAIL_PLACEHOLDER",
-  "showWelcomeBox": true
+  "title": "🚀 Finanzielle Souveränität Akademie",
+  "subtitle": "Dein Geld. Deine Freiheit.",
+  "themeColor": "#d4af37",
+  "enableMusic": true,
+  "enableSlideshow": true
 }

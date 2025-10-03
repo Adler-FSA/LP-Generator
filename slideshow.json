@@ -1,10 +1,27 @@
 {
-  "enabled": true,
-  "interval": 15000,
-  "images": [
-    "slide1.jpg",
-    "slide2.jpg",
-    "slide3.jpg"
-  ],
-  "music": "terra-mater-inspiring-cinematic-epic-272565.mp3"
+  "slideshow": {
+    "interval": 15000,
+    "images": [
+      {
+        "src": "https://source.unsplash.com/1600x900/?eagle,fly",
+        "caption": "🦅 Adlerflug – Freiheit und Überblick"
+      },
+      {
+        "src": "https://source.unsplash.com/1600x900/?blockchain,finance",
+        "caption": "🌐 Blockchain – Die Basis unserer neuen Welt"
+      },
+      {
+        "src": "https://source.unsplash.com/1600x900/?education,books",
+        "caption": "📚 Wissen – Investition mit den besten Zinsen"
+      },
+      {
+        "src": "https://source.unsplash.com/1600x900/?teamwork,success",
+        "caption": "🤝 Gemeinsam stark – Akademie & Community"
+      },
+      {
+        "src": "https://source.unsplash.com/1600x900/?future,technology",
+        "caption": "🚀 Zukunft gestalten – Deine finanzielle Souveränität"
+      }
+    ]
+  }
 }
