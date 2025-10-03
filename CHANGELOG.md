@@ -1,16 +1,21 @@
 # 📜 Changelog – LP-Generator
 
-## v1.3.0 – Admin Steuerung (geplant)
+## v1.4.0 – Verbesserungen (05.10.2025)
+- Hero-Abstand nochmals optimiert
+- Zitate ausgelagert in quotes.json (leichter austauschbar)
+- Kino jetzt mit 16:9 Verhältnis (responsive)
+- settings.json & slideshow.json bleiben Steuerdateien
+
+## v1.3.0 – Admin Steuerung
 - LP-Admin kann emails.json direkt anpassen
 - Sicherheits-Hinweis: Token-Check Pflicht
-- README.md dokumentiert Admin-Bereich
 
 ## v1.2.0 – Slideshow Integration
 - Slideshow als Option für Hero/Kino hinzugefügt
 - Steuerung über slideshow.json
 - settings.json: Schalter mode: "video" | "slideshow"
 
-## v1.1.0 – Memo 02 Fixes (04.10.2025)
+## v1.1.0 – Memo 02 Fixes
 - Hero-Abstand vergrößert
 - Zitate korrekt integriert
 - Reise-Abschnitt korrigiert
@@ -18,6 +23,5 @@
 - Kino ohne Filter
 - Glow-Effekte zurück
 
-## v1.0.0 – Initial Release (03.10.2025)
+## v1.0.0 – Initial Release
 - Erstes Release des LP-Generators
-- Enthalten: lp-template.html, lp-admin.html, media-admin.html
