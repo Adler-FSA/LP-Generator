@@ -1,29 +1,121 @@
-<!doctype html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Dein Geld. Deine Freiheit.</title><link rel='stylesheet' href='assets/base.css'></head>
-<body><div class='music'><button id='musicBtn'>🎵 Musik</button></div>
-<div class='nav'><a href='#hero'>Startseite</a><a href='#reise'>Reise</a><a href='#kino'>Kino</a><a href='#teilen'>Teilen</a></div>
-<main class='wrap'>
-<section id='hero' class='hero'><h1><span class='a'>Dein Geld.</span><br><span class='b'>Deine Freiheit.</span></h1><p class='sub'>Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst.</p><button class='cta' id='ctaVoice'>💡 Einladung anhören</button></section>
-<section class='panel ticker'><p id='tickerText'>Wird geladen …</p></section>
-<section class='grid'><div class='panel'><div class='row status'><strong>Status</strong><span class='dot red' id='sR'></span><span class='dot yellow' id='sY'></span><span class='dot green' id='sG'></span></div>
-<div class='row' style='margin-top:8px'><input class='field' placeholder='Vorname'><input class='field' placeholder='Nachname'></div>
-<div class='row'><input class='field' placeholder='E‑Mail'><select class='field' id='voiceSel'><option value='male'>Einladungsstimme: männlich</option><option value='female'>Einladungsstimme: weiblich</option></select></div>
-<div class='row'><button class='badge'>Freischalten</button><button class='badge'>Später</button><button class='badge' id='copyMail'>📋 E‑Mail kopieren</button></div><p class='small' id='approvedBy'>Für dich freigeschaltet von …</p></div>
-<aside class='panel'><h3>Deine Vorteile</h3><ul><li>🛡️ Vermögen schützen</li><li>🔑 Zugang zu Krypto</li><li>🤖 Einkommen mit KI</li><li>🧭 Klarheit statt Chaos</li></ul><p class='small'>All das bekommst du schon im kostenlosen Grundkurs.</p></aside></section>
-<section id='mentor' class='panel' style='margin-top:18px'><h2><img src='img/mentor-icon.svg' width='22' style='vertical-align:-4px;margin-right:8px'>Dein digitaler Mentor</h2><p>Ich bin dein digitaler Mentor. Dein menschlicher <strong>Co‑Mentor</strong> meldet sich per E‑Mail, sobald deine Seite freigeschaltet ist.</p></section>
-<section id='reise' class='panel' style='margin-top:18px'><h2>Deine Reise zur finanziellen Souveränität</h2><div id='reiseList'></div></section>
-<section id='kino' class='panel kino' style='margin-top:18px'><div class='row' style='justify-content:space-between;align-items:center'><h2 style='margin:0'>Kino</h2><span class='tag' id='kinoNow'>Jetzt im Kino</span></div><div id='kinoFrame' style='margin-top:10px'></div><p class='small' id='kinoPreview'></p></section>
-<section id='teilen' class='panel share' style='margin-top:18px'><h2>Teile diese Seite</h2><div class='row'><a class='btn' id='shareTg'>✈️ Telegram</a><a class='btn' id='shareWa'>💬 WhatsApp</a><a class='btn' id='shareFb'>📘 Facebook</a><a class='btn' id='shareIg'>📸 Instagram</a><a class='btn' id='shareTt'>🎵 TikTok</a></div></section>
-<footer>LP‑Generator v3.0.3 — JSON‑gesteuert</footer></main>
-<script>
-async function J(p){const r=await fetch(p);return r.json()}
-const q=s=>document.querySelector(s);(async()=>{
- const settings=await J('data/settings.json'), quotes=await J('data/quotes.json'), rotator=await J('data/rotator.json'), kino=await J('data/kino.json'), reise=await J('data/reise.json');
- ['red','yellow','green'].forEach((c,i)=>q('#s'+c[0].toUpperCase()).style.opacity = settings.ampel===c?1:.25);
- q('#tickerText').textContent = quotes.join('  •  ');
- q('#reiseList').innerHTML = reise.map(r=>`<div class='row' style='align-items:center;margin:8px 0'><span style='font-size:22px'>${r.icon}</span><div style='padding-left:10px'><strong>${r.title}</strong><div class='small'>${r.text}</div></div></div>`).join('');
- q('#kinoNow').textContent = 'Jetzt im Kino: '+kino.now; q('#kinoFrame').innerHTML = `<iframe src="${rotator[0].src}" allowfullscreen loading="lazy"></iframe>`; q('#kinoPreview').textContent='Vorschau: '+kino.preview.join(' · ');
- const url=location.href, text=settings.share_text; q('#shareWa').href='https://wa.me/?text='+encodeURIComponent(text+' '+url); q('#shareTg').href='https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text); q('#shareFb').href='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url); q('#shareIg').href=url; q('#shareTt').href=url;
- const voiceSel=q('#voiceSel'); function speak(t){try{const u=new SpeechSynthesisUtterance(t);const pref=voiceSel.value.includes('female')?'female':'male';const v=speechSynthesis.getVoices().find(v=>v.lang.startsWith('de')&&v.name.toLowerCase().includes(pref)); if(v) u.voice=v; u.rate=1.02; u.pitch=pref==='female'?1.05:.95; u.volume=1.0; speechSynthesis.speak(u);}catch(e){}}
- q('#ctaVoice').addEventListener('click',()=>{ const msg='Hallo neugieriger Adler! Schön, dass du da bist. Ich lade dich ein, die Reise zu dir selbst zu beginnen. Ich bin dein Weggefährte – genau wie du stand ich einmal vor derselben Frage: Wie werde ich finanziell souverän? Überwinde deine Ängste, starte jetzt und erhebe dich zu neuen Perspektiven. Wir sind viele – und wir lernen, souverän zu leben.'; if(window.bgAudio){bgAudio.volume=.35; setTimeout(()=>bgAudio.volume=.75,12000);} speak(msg); });
- const music=await J('data/music.json'); const btn=q('#musicBtn'); window.bgAudio=new Audio(music.playlist[0].file); bgAudio.loop=true; bgAudio.volume=.75; if(settings.music){ try{ await bgAudio.play(); }catch(e){} } btn.addEventListener('click',()=>{ if(bgAudio.paused){bgAudio.play()} else{bgAudio.pause()} });
-})();</script></body></html>
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Dein Geld. Deine Freiheit.</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+  <!-- Menü (mittig) -->
+  <div class="header">
+    <a class="navbtn" href="index.html">Startseite</a>
+    <a class="navbtn" href="#reise">Reise</a>
+    <a class="navbtn" href="#kino">Kino</a>
+    <a class="navbtn" href="#teilen">Teilen</a>
+  </div>
+
+  <!-- Musik-Chip (links oben – Start/Stop handled in JS) -->
+  <button class="music-chip" id="musicChip">🎵 Musik</button>
+
+  <!-- HERO -->
+  <section class="hero">
+    <!-- optionales Hintergrundvideo (kann leer bleiben – Poster deckt ab) -->
+    <video class="bg-video" autoplay muted playsinline loop poster="assets/hero_fallback.jpg"></video>
+    <div class="bg-dim"></div>
+    <div>
+      <h1>Dein Geld.<div class="sub">Deine Freiheit.</div></h1>
+      <p>Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst.</p>
+      <!-- CTA nur hier (einmal). Startet TTS (Replay) + Musik-Ducking -->
+      <button class="cta" onclick="ctaReplay()">💡 Einladung anhören</button>
+    </div>
+  </section>
+
+  <!-- Partner-Panel (Werkzustand: Partner → User; Freischalt-Ampel) -->
+  <div class="panel">
+    <div id="ticker" class="small"></div>
+    <div class="row" style="margin-top:10px">
+      <div class="card">
+        <div class="title">Status <span class="small">• Ampel</span></div>
+        <div style="margin-top:.6rem" class="grid-2">
+          <div class="card" style="background:#0f1926">
+            <div class="small">Vorname</div>
+            <input class="inp">
+            <div class="small" style="margin-top:.6rem">Nachname</div>
+            <input class="inp">
+            <div class="small" style="margin-top:.6rem">E-Mail</div>
+            <input class="inp">
+            <div style="display:flex; gap:.6rem; margin-top:.8rem">
+              <button class="navbtn">Freischalten</button>
+              <button class="navbtn">Später</button>
+            </div>
+            <div class="small" style="opacity:.75;margin-top:.6rem">
+              Für dich freigeschaltet von <strong>Alex Adler</strong> — adler.partner@example.com
+            </div>
+          </div>
+          <div class="card list">
+            <div class="title">Deine Vorteile</div>
+            <ul>
+              <li>🛡️ Vermögen schützen</li>
+              <li>🔑 Zugang zu Krypto</li>
+              <li>🤖 Einkommen mit KI</li>
+              <li>🎯 Klarheit statt Chaos</li>
+            </ul>
+            <div class="small" style="opacity:.8;margin-top:.6rem">
+              All das bekommst du schon im kostenlosen Grundkurs.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="title">„Eine Investition in Wissen bringt die besten Zinsen.“ — Franklin</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mentor -->
+  <div class="panel">
+    <div class="card">
+      <div class="title">🦅 Dein digitaler Mentor</div>
+      <div class="small" style="margin-top:.4rem">
+        Ich bin dein digitaler Mentor. Dein menschlicher <strong>Co-Mentor</strong> meldet sich per E-Mail, sobald deine Seite freigeschaltet ist.
+      </div>
+    </div>
+  </div>
+
+  <!-- Reise -->
+  <div id="reise" class="panel">
+    <div class="card">
+      <div class="title">Deine Reise zur finanziellen Souveränität</div>
+      <ul id="reiseList" class="small" style="margin-top:.6rem"></ul>
+    </div>
+  </div>
+
+  <!-- Kino -->
+  <div id="kino" class="kino">
+    <div class="card">
+      <div class="title">Kino <span class="badge">Jetzt im Kino</span></div>
+      <div class="small">Vorschau & Ankündigungen (aus <code>kino.json</code>)</div>
+      <div style="height:10px"></div>
+      <div id="kinoTicker" class="small"></div>
+    </div>
+  </div>
+
+  <!-- Teilen -->
+  <div id="teilen" class="social">
+    <div class="title">Teile diese Seite</div>
+    <div class="small">Empfehle die Akademie in deiner Community.</div>
+    <div style="margin-top:.6rem">
+      <a class="socbtn">📨 Telegram</a>
+      <a class="socbtn">💬 WhatsApp</a>
+      <a class="socbtn">📘 Facebook</a>
+      <a class="socbtn">📸 Instagram</a>
+      <a class="socbtn">🎵 TikTok</a>
+    </div>
+  </div>
+
+  <div class="footer small">LP-Generator v3.0.4 — JSON-gesteuert</div>
+
+  <script src="assets/script.js"></script>
+</body>
+</html>
