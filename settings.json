@@ -1,1 +1,6 @@
-{"mode":"video"}
+{
+  "mode": "video",
+  "musicEnabled": true,
+  "kinoEnabled": true,
+  "slideshowEnabled": false
+}

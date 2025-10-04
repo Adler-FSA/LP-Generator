@@ -1,1 +1,60 @@
-<!-- Landingpage Template v2.3.0 -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LP Template v2.3.1</title>
+<style>
+  body { font-family:Arial,sans-serif; margin:0; background:#000; color:#f8fafc; }
+  header { position:fixed; top:0; left:0; width:100%; padding:10px; background:rgba(0,0,0,.6); z-index:10; }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px; }
+  .card { background:rgba(255,255,255,0.05); border-radius:12px; padding:20px; margin-bottom:20px; }
+  #progress { background:#1e293b; border-radius:10px; padding:10px; margin:20px 0; }
+  #progress span { display:inline-block; margin:2px; padding:6px 10px; border-radius:6px; background:#334155; color:#fff; font-size:.9rem; }
+  #quotesBox { font-style:italic; text-align:center; margin:20px 0; }
+</style>
+</head>
+<body>
+<header>
+  <nav>
+    <a href="#hero" style="color:#facc15;text-decoration:none;font-weight:bold">Startseite</a>
+  </nav>
+</header>
+
+<main style="padding-top:60px">
+  <div class="wrap">
+    <div class="card">
+      <h1>Dein Geld. Deine Freiheit.</h1>
+      <p>Landingpage Demo v2.3.1</p>
+      <div id="emailBox"></div>
+    </div>
+
+    <div id="quotesBox" class="card">Zitat wird geladen...</div>
+
+    <div id="progress" class="card">Fortschritt wird geladen...</div>
+  </div>
+</main>
+
+<script>
+async function loadJSON(url){ const r=await fetch(url,{cache:'no-store'}); return await r.json(); }
+(async()=>{
+  // Quotes
+  const quotes = await loadJSON('quotes.json');
+  if(quotes && quotes.quotes && quotes.quotes.length){
+    document.getElementById('quotesBox').innerText = quotes.quotes[Math.floor(Math.random()*quotes.quotes.length)];
+  } else {
+    document.getElementById('quotesBox').innerText = "Keine Zitate vorhanden.";
+  }
+
+  // Progress
+  const reise = await loadJSON('reise.json');
+  const progressBox = document.getElementById('progress');
+  if(reise && reise.steps){
+    progressBox.innerHTML = reise.steps.map(s=>`<span>${s}</span>`).join("");
+  } else {
+    progressBox.innerText = "Noch keine Schritte definiert.";
+  }
+})();
+</script>
+</body>
+</html>

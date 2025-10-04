@@ -1,1 +1,5 @@
-{"videos":["https://youtu.be/demo1","https://youtu.be/demo2"]}
+{
+  "videos": [
+    "https://youtu.be/demo1"
+  ]
+}
