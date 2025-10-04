@@ -1,2 +1,19 @@
-<!-- Admin Panel Rota Style -->
-<html><body><h1>LP Admin</h1></body></html>
+
+<!doctype html><html lang="de"><meta charset="utf-8">
+<title>LP‑Admin v2.4.8</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>body{background:#0b1120;color:#e6edff;font:16px system-ui} .wrap{max-width:900px;margin:20px auto;padding:10px} .card{background:#0f172a;border:1px solid #22314f;border-radius:12px;padding:14px}</style>
+<div class="wrap">
+  <h1>LP‑Admin (Ansicht)</h1>
+  <div class="card">
+    <p>Diese Demo zeigt die Einträge aus <code>emails.json</code>. Schreiben erfolgt über Git (kein Browser‑Write).</p>
+    <div id="list">Lade …</div>
+  </div>
+</div>
+<script>
+(async()=>{
+  const r=await fetch('emails.json'); const j=await r.json();
+  const html=(j.list||[]).map(x=>`• ${x.id||'-'} — ${x.name||'-'} — ${x.email||'-'} — ${(x.approved?'✅ freigegeben':'⏳ pending')}`).join('<br>');
+  document.getElementById('list').innerHTML = html || 'leer';
+})();
+</script>
