@@ -1,121 +1,327 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Dein Geld. Deine Freiheit.</title>
-  <link rel="stylesheet" href="assets/style.css"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dein Geld. Deine Freiheit.</title>
+<style>
+/* ====== BASIC RESET ====== */
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+     background:#0b1620;color:#e9f0f5;line-height:1.5}
+/* ====== LAYOUT ====== */
+.wrap{max-width:1080px;margin:0 auto;padding:24px}
+nav{position:sticky;top:0;z-index:50;background:rgba(11,22,32,.75);
+    backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+nav .nav{display:flex;gap:12px;align-items:center;padding:10px 16px}
+.badge{padding:8px 14px;border-radius:999px;background:#152333;border:1px solid rgba(255,255,255,.08)}
+/* ====== HERO ====== */
+.hero{display:grid;gap:12px;place-items:center;margin:56px 0 24px}
+h1{font-size:42px;margin:0;text-align:center}
+.h1b{color:#19f0c9}
+.sub{opacity:.8}
+/* CTA */
+.cta{display:inline-flex;gap:10px;align-items:center;padding:12px 18px;border-radius:12px;
+     background:#ffd24a;color:#1a1a1a;font-weight:700;border:0;cursor:pointer;box-shadow:0 6px 20px rgba(255,210,74,.25)}
+.cta:active{transform:translateY(1px)}
+/* ====== PANEL: WERKSZUSTAND/PARTNER ====== */
+.card{background:#0f1e2b;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;box-shadow:0 12px 50px rgba(0,0,0,.35)}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:1fr 1fr}
+.input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#0b1620;color:#e9f0f5}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:#14283a;color:#e9f0f5;cursor:pointer}
+.btn.gold{background:#ffd24a;color:#1a1a1a;border:0}
+.muted{opacity:.8;font-size:14px}
+/* Ampel */
+.ampel{display:flex;align-items:center;gap:8px}
+.dot{width:10px;height:10px;border-radius:999px;opacity:.4}
+.dot.r{background:#ff5b5b}.dot.y{background:#ffd24a}.dot.g{background:#36f3a7}
+.dot.active{opacity:1;box-shadow:0 0 10px currentColor}
+/* ====== REISE (Accordion) ====== */
+.acc{display:grid;gap:10px}
+.acc .item{border-radius:12px;background:#0f1e2b;border:1px solid rgba(255,255,255,.08)}
+.acc .head{cursor:pointer;padding:14px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.acc .body{max-height:0;overflow:hidden;padding:0 16px;transition:max-height .35s ease}
+.acc .item.open .body{max-height:200px;padding-bottom:14px}
+/* ====== KINO ====== */
+.kino .frame{aspect-ratio:16/9;width:100%;border:0;border-radius:14px;overflow:hidden;background:#000}
+/* ====== SHARE ====== */
+.share{display:flex;gap:10px;flex-wrap:wrap}
+.share a{display:inline-flex;gap:8px;align-items:center;text-decoration:none;padding:10px 12px;border-radius:12px;background:#14283a;border:1px solid rgba(255,255,255,.08);color:#e9f0f5}
+small{opacity:.6}
+/* ====== MUSIC FLOAT ====== */
+.music-fab{position:fixed;left:12px;top:12px;z-index:60}
+.music{padding:6px 10px;border-radius:999px;background:#152333;border:1px solid rgba(255,255,255,.08);cursor:pointer}
+footer{padding:40px 16px;text-align:center;opacity:.6}
+@media (max-width:900px){.grid-2{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <!-- Menü (mittig) -->
-  <div class="header">
-    <a class="navbtn" href="index.html">Startseite</a>
-    <a class="navbtn" href="#reise">Reise</a>
-    <a class="navbtn" href="#kino">Kino</a>
-    <a class="navbtn" href="#teilen">Teilen</a>
-  </div>
+<nav><div class="nav wrap">
+  <button class="badge" id="btnHome">Startseite</button>
+  <button class="badge" id="btnReise">Reise</button>
+  <button class="badge" id="btnKino">Kino</button>
+  <button class="badge" id="btnTeilen">Teilen</button>
+</div></nav>
 
-  <!-- Musik-Chip (links oben – Start/Stop handled in JS) -->
-  <button class="music-chip" id="musicChip">🎵 Musik</button>
+<div class="music-fab"><button id="musicBtn" class="music">🎵 Musik</button></div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <!-- optionales Hintergrundvideo (kann leer bleiben – Poster deckt ab) -->
-    <video class="bg-video" autoplay muted playsinline loop poster="assets/hero_fallback.jpg"></video>
-    <div class="bg-dim"></div>
-    <div>
-      <h1>Dein Geld.<div class="sub">Deine Freiheit.</div></h1>
-      <p>Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst.</p>
-      <!-- CTA nur hier (einmal). Startet TTS (Replay) + Musik-Ducking -->
-      <button class="cta" onclick="ctaReplay()">💡 Einladung anhören</button>
+<section class="hero wrap">
+  <h1>Dein Geld.<br><span class="h1b">Deine Freiheit.</span></h1>
+  <p class="sub">Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst.</p>
+  <button class="cta" id="btnInvite">💡 Einladung anhören</button>
+</section>
+
+<section class="wrap">
+  <div class="card grid">
+    <div class="row" style="align-items:center;justify-content:space-between">
+      <div style="font-weight:700">Status • Ampel</div>
+      <div class="ampel"><span class="dot r" id="dotR"></span><span class="dot y" id="dotY"></span><span class="dot g" id="dotG"></span></div>
     </div>
-  </section>
 
-  <!-- Partner-Panel (Werkzustand: Partner → User; Freischalt-Ampel) -->
-  <div class="panel">
-    <div id="ticker" class="small"></div>
-    <div class="row" style="margin-top:10px">
-      <div class="card">
-        <div class="title">Status <span class="small">• Ampel</span></div>
-        <div style="margin-top:.6rem" class="grid-2">
-          <div class="card" style="background:#0f1926">
-            <div class="small">Vorname</div>
-            <input class="inp">
-            <div class="small" style="margin-top:.6rem">Nachname</div>
-            <input class="inp">
-            <div class="small" style="margin-top:.6rem">E-Mail</div>
-            <input class="inp">
-            <div style="display:flex; gap:.6rem; margin-top:.8rem">
-              <button class="navbtn">Freischalten</button>
-              <button class="navbtn">Später</button>
-            </div>
-            <div class="small" style="opacity:.75;margin-top:.6rem">
-              Für dich freigeschaltet von <strong>Alex Adler</strong> — adler.partner@example.com
-            </div>
-          </div>
-          <div class="card list">
-            <div class="title">Deine Vorteile</div>
-            <ul>
-              <li>🛡️ Vermögen schützen</li>
-              <li>🔑 Zugang zu Krypto</li>
-              <li>🤖 Einkommen mit KI</li>
-              <li>🎯 Klarheit statt Chaos</li>
-            </ul>
-            <div class="small" style="opacity:.8;margin-top:.6rem">
-              All das bekommst du schon im kostenlosen Grundkurs.
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="title">„Eine Investition in Wissen bringt die besten Zinsen.“ — Franklin</div>
-      </div>
+    <div class="grid grid-2">
+      <input class="input" placeholder="Vorname" id="vorname" />
+      <input class="input" placeholder="Nachname" id="nachname" />
+      <input class="input" placeholder="E-Mail" id="email" />
+      <select class="input" id="voiceSel">
+        <option value="male">Einladungsstimme: männlich</option>
+        <option value="female">Einladungsstimme: weiblich</option>
+      </select>
     </div>
-  </div>
 
-  <!-- Mentor -->
-  <div class="panel">
-    <div class="card">
-      <div class="title">🦅 Dein digitaler Mentor</div>
-      <div class="small" style="margin-top:.4rem">
-        Ich bin dein digitaler Mentor. Dein menschlicher <strong>Co-Mentor</strong> meldet sich per E-Mail, sobald deine Seite freigeschaltet ist.
-      </div>
+    <div class="row">
+      <button class="btn gold" id="btnActivate">🚀 Aktivieren & Freischalten</button>
+      <button class="btn" id="btnLater">⏳ Später</button>
+      <button class="btn" id="btnCopy">📋 E-Mail kopieren</button>
+    </div>
+
+    <div class="muted" id="ownerLine">Für dich freigeschaltet von … — …</div>
+  </div>
+</section>
+
+<section class="wrap" id="mentor">
+  <div class="card">
+    <h3>🧠 Dein digitaler Mentor</h3>
+    <p>Ich bin dein digitaler Mentor. Dein menschlicher Co-Mentor meldet sich per E-Mail, sobald deine Seite freigeschaltet ist.</p>
+  </div>
+</section>
+
+<section class="wrap" id="reise">
+  <div class="card">
+    <h3>🛤️ Deine Reise zur finanziellen Souveränität</h3>
+    <p class="muted">👉 Klicke auf die Titel, um mehr zu erfahren.</p>
+    <div class="acc" id="acc"></div>
+  </div>
+</section>
+
+<section class="wrap kino" id="kino">
+  <div class="card">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <h3>🎬 Jetzt im Kino</h3>
+      <small id="kinoNext"></small>
+    </div>
+    <div class="frame">
+      <iframe id="yt" width="100%" height="100%" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
   </div>
+</section>
 
-  <!-- Reise -->
-  <div id="reise" class="panel">
-    <div class="card">
-      <div class="title">Deine Reise zur finanziellen Souveränität</div>
-      <ul id="reiseList" class="small" style="margin-top:.6rem"></ul>
+<section class="wrap" id="share">
+  <div class="card">
+    <h3>🔗 Teile diese Seite</h3>
+    <p class="muted">Empfehle die Akademie in deiner Community.</p>
+    <div class="share">
+      <a id="sh-tg" target="_blank">📨 Telegram</a>
+      <a id="sh-wa" target="_blank">💬 WhatsApp</a>
+      <a id="sh-fb" target="_blank">📘 Facebook</a>
+      <a id="sh-ig" target="_blank">📸 Instagram</a>
+      <a id="sh-tt" target="_blank">🎵 TikTok</a>
     </div>
   </div>
+</section>
 
-  <!-- Kino -->
-  <div id="kino" class="kino">
-    <div class="card">
-      <div class="title">Kino <span class="badge">Jetzt im Kino</span></div>
-      <div class="small">Vorschau & Ankündigungen (aus <code>kino.json</code>)</div>
-      <div style="height:10px"></div>
-      <div id="kinoTicker" class="small"></div>
-    </div>
-  </div>
+<footer>LP-Generator v3.1.0 — Werkzustand ▸ Partner ▸ User — Single-File build</footer>
 
-  <!-- Teilen -->
-  <div id="teilen" class="social">
-    <div class="title">Teile diese Seite</div>
-    <div class="small">Empfehle die Akademie in deiner Community.</div>
-    <div style="margin-top:.6rem">
-      <a class="socbtn">📨 Telegram</a>
-      <a class="socbtn">💬 WhatsApp</a>
-      <a class="socbtn">📘 Facebook</a>
-      <a class="socbtn">📸 Instagram</a>
-      <a class="socbtn">🎵 TikTok</a>
-    </div>
-  </div>
+<script>
+/* =======================
+   INLINE "JSON"-KONFIG
+   ======================= */
+const CFG = {
+  partner: {
+    ownerName: "Alex Adler",
+    ownerEmail: "adler.partner@example.com",
+    status: "pending" // "red" | "pending" | "approved"
+  },
+  invite: {
+    male:  "Hallo neugieriger Adler! Schön, dass du vorbeischaust. Ich lade dich ein, die Reise zu dir selbst zu beginnen. Finanzielle Souveränität wartet – überwinde deine Ängste und starte!",
+    female:"Hey, schön dass du da bist! Lass uns deine Reise zur finanziellen Souveränität starten. Du kannst das – ich begleite dich dabei."
+  },
+  music: {
+    // Fallback-Audio (frei nutzbares Placeholder-Ambient)
+    src: "https://cdn.pixabay.com/download/audio/2021/11/15/audio_6a8b1b7c6d.mp3?filename=ambient-background-110874.mp3",
+    volume: 0.35
+  },
+  kino: {
+    now:   { provider:"youtube", id:"dQw4w9WgXcQ", title:"Peru 8K — Demo" },
+    next:  "Vorschau: „Was läuft als Nächstes“ in Kürze"
+  },
+  reise: [
+    {title:"🚫 Nie mehr Fremdbestimmung", text:"Du lernst, Entscheidungen selbstbewusst zu treffen – mit Plan statt Bauchgefühl."},
+    {title:"🚀 Wer will, folgt der Einladung", text:"Der erste Schritt ist klein: E-Mail übernehmen und Mentor kontaktieren."},
+    {title:"🌐 Zugang zur Krypto-Welt", text:"Verstehe Bitcoin & Co. – sicher, einfach, verantwortungsvoll."},
+    {title:"🤖 Einkommen mit KI", text:"Nutze moderne Tools produktiv – statt dich von ihnen treiben zu lassen."},
+    {title:"🧠 Klarheit statt Chaos", text:"Struktur, Checklisten, einen Weg, der zu dir passt."}
+  ]
+};
 
-  <div class="footer small">LP-Generator v3.0.4 — JSON-gesteuert</div>
+/* =======================
+   ELEMENTE
+   ======================= */
+const dotR = document.getElementById('dotR');
+const dotY = document.getElementById('dotY');
+const dotG = document.getElementById('dotG');
+const ownerLine = document.getElementById('ownerLine');
+const btnInvite = document.getElementById('btnInvite');
+const btnActivate = document.getElementById('btnActivate');
+const btnLater = document.getElementById('btnLater');
+const btnCopy = document.getElementById('btnCopy');
+const voiceSel = document.getElementById('voiceSel');
+const acc = document.getElementById('acc');
+const kinoNext = document.getElementById('kinoNext');
+const yt = document.getElementById('yt');
+const musicBtn = document.getElementById('musicBtn');
 
-  <script src="assets/script.js"></script>
+/* =======================
+   AMPel / OWNER
+   ======================= */
+function setAmpel(status){
+  dotR.classList.remove('active'); dotY.classList.remove('active'); dotG.classList.remove('active');
+  if(status==='red'){dotR.classList.add('active')}
+  else if(status==='pending'){dotY.classList.add('active')}
+  else {dotG.classList.add('active')}
+}
+function refreshOwner(){
+  ownerLine.textContent = `Für dich freigeschaltet von ${CFG.partner.ownerName} — ${CFG.partner.ownerEmail}`;
+}
+
+/* =======================
+   REISE (ACCORDION)
+   ======================= */
+function buildAccordion(){
+  acc.innerHTML='';
+  CFG.reise.forEach((step,i)=>{
+    const item=document.createElement('div'); item.className='item';
+    const head=document.createElement('div'); head.className='head'; head.innerHTML = `<span>${step.title}</span><span>＋</span>`;
+    const body=document.createElement('div'); body.className='body'; body.innerHTML = `<p>${step.text}</p>`;
+    head.addEventListener('click',()=>{
+      const open=item.classList.toggle('open');
+      head.lastElementChild.textContent=open?'－':'＋';
+    });
+    item.appendChild(head); item.appendChild(body); acc.appendChild(item);
+  });
+}
+
+/* =======================
+   KINO
+   ======================= */
+function buildKino(){
+  kinoNext.textContent = CFG.kino.next;
+  if(CFG.kino.provider==='youtube'){
+    yt.src = `https://www.youtube-nocookie.com/embed/${CFG.kino.id}?rel=0&modestbranding=1`;
+  }
+}
+
+/* =======================
+   SHARE
+   ======================= */
+function setShareLinks(){
+  const url = location.href;
+  document.getElementById('sh-tg').href = `https://t.me/share/url?url=${encodeURIComponent(url)}`;
+  document.getElementById('sh-wa').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`;
+  document.getElementById('sh-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+  document.getElementById('sh-ig').href = `https://www.instagram.com/?url=${encodeURIComponent(url)}`;
+  document.getElementById('sh-tt').href = `https://www.tiktok.com/share?url=${encodeURIComponent(url)}`;
+}
+
+/* =======================
+   MUSIK
+   ======================= */
+const audio = new Audio(CFG.music.src);
+audio.loop = true;
+audio.volume = CFG.music.volume;
+
+async function tryPlayMusic(){
+  try{ await audio.play(); musicBtn.textContent='🎵 Musik • an'; }
+  catch(e){ musicBtn.textContent='🎵 Musik starten'; }
+}
+musicBtn.addEventListener('click', ()=> {
+  if(audio.paused){ audio.play(); musicBtn.textContent='🎵 Musik • an'; }
+  else { audio.pause(); musicBtn.textContent='🎵 Musik • aus'; }
+});
+
+/* =======================
+   TTS EINLADUNG
+   ======================= */
+let speaking=false;
+function speak(text){
+  const s = new SpeechSynthesisUtterance(text);
+  s.lang = 'de-DE';
+  s.rate = 1.02;
+  // leichte Absenkung Musik
+  const oldVol = audio.volume;
+  audio.volume = Math.max(0, oldVol * 0.25);
+  s.onend = ()=>{ audio.volume = oldVol; speaking=false; };
+  speaking=true; speechSynthesis.cancel(); speechSynthesis.speak(s);
+}
+
+btnInvite.addEventListener('click', ()=>{
+  const v = voiceSel.value==='female' ? CFG.invite.female : CFG.invite.male;
+  if(audio.paused) tryPlayMusic(); // falls Autoplay blockte
+  speak(v);
+});
+
+/* =======================
+   FORM / BUTTONS
+   ======================= */
+btnActivate.addEventListener('click', ()=>{
+  // Demo: wir schalten auf pending → admin prüft → approved
+  CFG.partner.status = 'pending';
+  setAmpel('pending');
+  alert('Danke! Dein Eintrag ist im System. Der Admin prüft & bestätigt.');
+});
+btnLater.addEventListener('click', ()=>{
+  document.querySelector('.card').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+btnCopy.addEventListener('click', async ()=>{
+  try{
+    await navigator.clipboard.writeText(CFG.partner.ownerEmail);
+    btnCopy.textContent='✅ E-Mail kopiert';
+    setTimeout(()=>btnCopy.textContent='📋 E-Mail kopieren',1200);
+  }catch(e){ alert(CFG.partner.ownerEmail); }
+});
+
+/* =======================
+   NAV
+   ======================= */
+document.getElementById('btnHome').onclick = ()=>window.scrollTo({top:0,behavior:'smooth'});
+document.getElementById('btnReise').onclick = ()=>document.getElementById('reise').scrollIntoView({behavior:'smooth'});
+document.getElementById('btnKino').onclick  = ()=>document.getElementById('kino').scrollIntoView({behavior:'smooth'});
+document.getElementById('btnTeilen').onclick= ()=>document.getElementById('share').scrollIntoView({behavior:'smooth'});
+
+/* =======================
+   INIT
+   ======================= */
+function init(){
+  setAmpel(CFG.partner.status==='approved'?'approved':(CFG.partner.status==='pending'?'pending':'red'));
+  refreshOwner();
+  buildAccordion();
+  buildKino();
+  setShareLinks();
+  tryPlayMusic(); // Start direkt – Browser blockt ggf. bis User klickt
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
