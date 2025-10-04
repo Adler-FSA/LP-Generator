@@ -1,1 +1,5 @@
-{"version":"2.4.3","theme":"dark"}
+{
+  "mode": "video",
+  "musicEnabled": true,
+  "kinoEnabled": true
+}

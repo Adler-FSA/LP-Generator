@@ -1,17 +1,65 @@
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <title>Media Admin v2.4.3</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media‑Admin</title>
+<style>
+  :root{--bg:#0b0b10;--card:#141420;--bd:#292941;--ink:#eee;--mut:#94a3b8}
+  body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);margin:0}
+  header{padding:16px 20px;background:#15151f;border-bottom:1px solid #2b2b3a}
+  main{max-width:1100px;margin:20px auto;padding:0 20px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+  .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
+  h3{margin:0 0 10px}
+  .item{border-top:1px dashed #2b2b3a;padding-top:10px;margin-top:10px}
+  a{color:#93c5fd}
+</style>
 </head>
 <body>
-  <h1>Media Admin Panel</h1>
-  <p>Rota-Style Steuerung für:</p>
-  <ul>
-    <li>🎬 Videos</li>
-    <li>🎵 Musik</li>
-    <li>🖼️ Slideshow</li>
-  </ul>
+<header><strong>Media‑Admin</strong> – Rota‑Style Übersicht (read‑only)</header>
+<main class="grid">
+  <section class="card">
+    <h3>🎬 Videos (rotator.json)</h3>
+    <div id="videos"></div>
+  </section>
+  <section class="card">
+    <h3>🎵 Musik (music.json)</h3>
+    <div id="tracks"></div>
+  </section>
+  <section class="card">
+    <h3>🖼 Slideshow (slideshow.json)</h3>
+    <div id="slides"></div>
+  </section>
+  <section class="card">
+    <h3>🧠 Zitate (quotes.json)</h3>
+    <div id="quotes"></div>
+  </section>
+</main>
+<script>
+async function loadJSON(u){ const r=await fetch(u,{cache:'no-store'}); return await r.json(); }
+(async()=>{
+  const rot = await loadJSON('rotator.json');
+  const mus = await loadJSON('music.json');
+  const sli = await loadJSON('slideshow.json');
+  const quo = await loadJSON('quotes.json');
+
+  (rot.videos||[]).forEach((u,i)=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML = (u.includes('http')?`<a href="${u}" target="_blank">${u}</a>`:u);
+    videos.appendChild(el);
+  });
+  (mus.tracks||mus.music||[]).forEach((u,i)=>{
+    const el=document.createElement('div'); el.className='item'; el.textContent=u; tracks.appendChild(el);
+  });
+  (sli.images||sli.slides||[]).forEach((u,i)=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML = (u.includes('http')?`<a href="${u}" target="_blank">${u}</a>`:u);
+    slides.appendChild(el);
+  });
+  (quo.quotes||[]).forEach((t,i)=>{
+    const el=document.createElement('div'); el.className='item'; el.textContent='„'+t+'“'; quotes.appendChild(el);
+  });
+})();
+</script>
 </body>
 </html>
