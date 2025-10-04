@@ -1,5 +1,3 @@
 {
-  "rotationEnabled": true,
-  "preferredSource": "YouTube",
-  "skipSuspicious": true
+  "videos": ["video1.mp4", "video2.mp4"]
 }

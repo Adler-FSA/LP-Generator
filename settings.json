@@ -1,6 +1,5 @@
 {
-  "heroTitle": "Dein Geld. Deine Freiheit.",
-  "heroSubtitle": "Die Welt verändert sich: Inflation, KI, Blockchain.",
-  "emailPlaceholder": "EMAIL_PLACEHOLDER",
-  "showWelcomeBox": true
+  "version": "3.0.0",
+  "siteTitle": "LP Generator",
+  "musicEnabled": true
 }

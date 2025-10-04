@@ -1,8 +1,3 @@
 {
-  "tracks": [
-    {
-      "title": "Inspiring Theme",
-      "url": "media/inspiring.mp3"
-    }
-  ]
+  "tracks": ["terra-mater.mp3", "epic-journey.mp3"]
 }

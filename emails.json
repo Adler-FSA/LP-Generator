@@ -1,16 +1,3 @@
 {
-  "partners": [
-    {
-      "id": "FSA-2025-10-07-0001",
-      "name": "Alex Adler",
-      "email": "adler.partner@example.com",
-      "approved": true
-    },
-    {
-      "id": "FSA-2025-10-07-0002",
-      "name": "Becca Braun",
-      "email": "partner2@example.com",
-      "approved": false
-    }
-  ]
+  "partners": ["partner1@example.com", "partner2@example.com"]
 }

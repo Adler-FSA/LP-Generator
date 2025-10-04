@@ -1,8 +1,3 @@
 {
-  "items": [
-    {
-      "title": "Start",
-      "desc": "Dein erster Schritt"
-    }
-  ]
+  "steps": ["Tag 1: Start", "Tag 2: Wallet", "Tag 3: Mentor"]
 }
