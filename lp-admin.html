@@ -1,1 +1,36 @@
-<!DOCTYPE html><html><head><title>LP-Admin</title></head><body><h1>LP Admin – E-Mail Freigabe</h1></body></html>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LP‑Admin (Qualitätsprüfung)</title>
+<style>
+  body{font-family:Inter,system-ui,Arial,sans-serif;background:#0b0b10;color:#eee;margin:0}
+  header{padding:16px 20px;background:#15151f;border-bottom:1px solid #2b2b3a}
+  main{max-width:1100px;margin:20px auto;padding:0 20px}
+  .card{background:#141420;border:1px solid #292941;border-radius:12px;padding:16px;margin-bottom:16px}
+  table{width:100%;border-collapse:collapse} th,td{border-bottom:1px solid #2b2b3a;padding:10px;text-align:left}
+</style>
+</head>
+<body>
+<header><strong>LP‑Admin</strong> – Qualitätsprüfung & E‑Mail‑Freigabe</header>
+<main>
+  <div class="card">
+    <h3>Aktuelle Einträge (nur Ansicht)</h3>
+    <table id="tbl"><thead><tr><th>ID</th><th>E‑Mail</th><th>Status</th></tr></thead><tbody></tbody></table>
+  </div>
+</main>
+<script>
+async function loadJSON(u){ try{ const r=await fetch(u,{cache:'no-store'}); return await r.json(); }catch(e){ return null; } }
+(async ()=>{
+  const data = await loadJSON('emails.json') || {emails:[]};
+  const arr = data.emails || data;
+  const tb = document.querySelector('#tbl tbody');
+  arr.forEach(e=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML="<td>"+e.id+"</td><td>"+(e.email||'—')+"</td><td>"+(e.approved?'✅':'⏳')+"</td>";
+    tb.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>
