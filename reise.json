@@ -1,22 +1,27 @@
 [
   {
-    "title": "Nie mehr Fremdbestimmung.",
-    "text": "Du nimmst deine finanzielle Zukunft selbst in die Hand."
+    "title": "Nie mehr Fremdbestimmung",
+    "icon": "🚀",
+    "text": "Du bestimmst den Kurs."
   },
   {
-    "title": "Vermögen schützen.",
-    "text": "Lerne, Risiken zu managen und Chancen zu nutzen."
+    "title": "Wer wirklich will, folgt der Einladung",
+    "icon": "📨",
+    "text": "Der erste Schritt zählt."
   },
   {
-    "title": "Zugang zur Krypto-Welt.",
-    "text": "Verstehe Grundlagen und starte sicher."
+    "title": "Viele entdecken täglich die Krypto‑Welt",
+    "icon": "🧠",
+    "text": "Lernen & verstehen."
   },
   {
-    "title": "Einkommen mit KI.",
-    "text": "Nutze Automatisierung für neue Einkommensquellen."
+    "title": "Angst entsteht aus Unwissenheit",
+    "icon": "🧩",
+    "text": "Wissen schafft Ruhe."
   },
   {
-    "title": "Klarheit statt Chaos.",
-    "text": "Struktur statt Lärm – Schritt für Schritt."
+    "title": "Deshalb gibt es die Akademie",
+    "icon": "🎓",
+    "text": "Struktur, Mentor, Fortschritt."
   }
 ]

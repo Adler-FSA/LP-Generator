@@ -1,173 +1,29 @@
-<!doctype html><html lang="de"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dein Geld. Deine Freiheit.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#0f1624;--card:#111b2b;--ink:#dbe7ff;--muted:#9fb1d8;--ac:#ffd24b;--pill:#1b2740;--gl:#f0d57433}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(1200px 500px at 50% -10%,#172338 20%,#0f1624 60%);color:var(--ink);font:16px/1.55 Inter,system-ui}
-.wrap{max-width:1200px;margin:0 auto;padding:24px 20px}
-.nav{position:sticky;top:8px;display:flex;gap:10px;justify-content:center;z-index:40}
-.nav a,.nav button{background:#1a2237;border:none;color:var(--ink);padding:10px 16px;border-radius:999px;cursor:pointer;text-decoration:none;font-weight:600;box-shadow:0 2px 0 #0b1220}
-.nav .music{position:fixed;left:10px;top:10px}
-.hero{min-height:58vh;display:flex;align-items:center;justify-content:center;text-align:center;gap:16px;flex-direction:column}
-h1{font-size:48px;margin:0 0 6px;font-weight:800;letter-spacing:.3px}
-h1 b{color:#21e0a6}
-p.lead{color:var(--muted);max-width:820px;margin:0 auto}
-.cta{display:inline-flex;align-items:center;gap:10px;background:var(--ac);color:#1a1a1a;border:none;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer;box-shadow:0 10px 40px #00000055}
-section{margin:28px auto}
-.card{background:var(--card);border-radius:16px;padding:16px 20px;box-shadow:0 0 0 1px #172036,inset 0 0 0 1px #0d1421,0 24px 70px #00000066}
-.grid{display:grid;gap:16px;grid-template-columns:1.2fr 1fr}
-.badge{display:inline-flex;gap:8px;align-items:center;background:#1a2237;border-radius:10px;padding:8px 12px;margin-bottom:8px;color:#8ea4c9}
-.small{font-size:14px;color:#9fb1d8}
-.ticker{overflow:hidden;border-radius:14px;background:#0f1624;box-shadow:0 0 0 1px #172036,0 18px 50px #00000055}
-.ticker ul{display:flex;gap:30px;list-style:none;padding:10px 16px;margin:0;animation:mar 34s linear infinite}
-.ticker li{white-space:nowrap;background:#1a2237;padding:8px 12px;border-radius:999px;box-shadow:0 0 0 1px #27385d}
-@keyframes mar{to{transform:translateX(-50%)}}
-.kino iframe{width:100%;height:56.25vw;max-height:420px;border:0;border-radius:14px}
-.reise li{padding:10px 12px;border-bottom:1px solid #1d2a45}
-.ampel{display:flex;align-items:center;gap:10px}
-.dot{width:10px;height:10px;border-radius:50%}
-.dot.r{background:#ef5350}.dot.y{background:#f6c945}.dot.g{background:#65e572}
-.footer{opacity:.6;text-align:center;margin:26px 0}
-input,select{width:100%;background:#0f1624;border:1px solid #1d2a45;color:var(--ink);border-radius:10px;padding:10px}
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-.pill{background:#24324e;border-radius:10px;padding:10px 14px;display:inline-flex;align-items:center;gap:10px}
-</style>
-</head><body>
-<nav class="nav">
-  <button class="music" id="musicBtn">🎵 Musik</button>
-  <a href="#start">Startseite</a>
-  <a href="#reise">Reise</a>
-  <a href="#kino">Kino</a>
-  <a href="#share">Teilen</a>
-</nav>
-
-<div class="wrap" id="start">
-  <section class="hero">
-    <h1>Dein Geld.<br><b>Deine Freiheit.</b></h1>
-    <p class="lead">Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst.</p>
-    <button class="cta" id="speakBtn">💡 Einladung anhören</button>
-  </section>
-
-  <section class="card grid">
-    <div>
-      <div class="badge ampel"><span>Status</span><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
-      <div class="actions">
-        <input placeholder="Vorname">
-        <input placeholder="Nachname">
-        <input placeholder="E‑Mail">
-        <select id="voiceSel">
-          <option value="male">Einladungsstimme: männlich</option>
-          <option value="female">Einladungsstimme: weiblich</option>
-        </select>
-      </div>
-      <div class="actions" style="margin-top:10px">
-        <span class="pill">🔔 Später</span>
-        <span class="pill">📋 E‑Mail kopieren</span>
-      </div>
-      <div class="pill" style="margin-top:10px;display:inline-flex">Für dich freigeschaltet von <b>&nbsp;Alex Adler</b> — adler.partner@example.com</div>
-    </div>
-    <div class="card">
-      <div class="small" id="quote"></div>
-      <h3>Deine Vorteile</h3>
-      <ul class="reise" id="benefits"></ul>
-    </div>
-  </section>
-
-  <section class="ticker card"><ul id="ticker"></ul></section>
-
-  <section class="card">
-    <h3>🦅 Dein digitaler Mentor</h3>
-    <p>Ich bin dein digitaler Mentor. Dein menschlicher <b>Co‑Mentor</b> meldet sich per E‑Mail, sobald deine Seite freigeschaltet ist.</p>
-  </section>
-
-  <section class="card kino" id="kino">
-    <div class="badge" id="kinoNow">Jetzt im Kino</div>
-    <div id="player"></div>
-  </section>
-
-  <section class="card" id="share">
-    <h3>Teile diese Seite</h3>
-    <p>Empfehle die Akademie in deiner Community.</p>
-    <div class="actions">
-      <a class="pill" href="#" onclick="share('telegram')">📨 Telegram</a>
-      <a class="pill" href="#" onclick="share('whatsapp')">💬 WhatsApp</a>
-      <a class="pill" href="#" onclick="share('facebook')">📘 Facebook</a>
-      <a class="pill" href="#" onclick="share('instagram')">📸 Instagram</a>
-      <a class="pill" href="#" onclick="share('tiktok')">🎵 TikTok</a>
-    </div>
-  </section>
-
-  <div class="footer">LP‑Generator v3.0.3 — Musik + Stimme starten gemeinsam. Steuerung via JSON.</div>
-</div>
-
-<audio id="bgm" preload="auto" loop src="audio/terra-mater-inspiring-cinematic-epic.mp3"></audio>
-
+<!doctype html><html lang='de'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>Dein Geld. Deine Freiheit.</title><link rel='stylesheet' href='assets/base.css'></head>
+<body><div class='music'><button id='musicBtn'>🎵 Musik</button></div>
+<div class='nav'><a href='#hero'>Startseite</a><a href='#reise'>Reise</a><a href='#kino'>Kino</a><a href='#teilen'>Teilen</a></div>
+<main class='wrap'>
+<section id='hero' class='hero'><h1><span class='a'>Dein Geld.</span><br><span class='b'>Deine Freiheit.</span></h1><p class='sub'>Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst.</p><button class='cta' id='ctaVoice'>💡 Einladung anhören</button></section>
+<section class='panel ticker'><p id='tickerText'>Wird geladen …</p></section>
+<section class='grid'><div class='panel'><div class='row status'><strong>Status</strong><span class='dot red' id='sR'></span><span class='dot yellow' id='sY'></span><span class='dot green' id='sG'></span></div>
+<div class='row' style='margin-top:8px'><input class='field' placeholder='Vorname'><input class='field' placeholder='Nachname'></div>
+<div class='row'><input class='field' placeholder='E‑Mail'><select class='field' id='voiceSel'><option value='male'>Einladungsstimme: männlich</option><option value='female'>Einladungsstimme: weiblich</option></select></div>
+<div class='row'><button class='badge'>Freischalten</button><button class='badge'>Später</button><button class='badge' id='copyMail'>📋 E‑Mail kopieren</button></div><p class='small' id='approvedBy'>Für dich freigeschaltet von …</p></div>
+<aside class='panel'><h3>Deine Vorteile</h3><ul><li>🛡️ Vermögen schützen</li><li>🔑 Zugang zu Krypto</li><li>🤖 Einkommen mit KI</li><li>🧭 Klarheit statt Chaos</li></ul><p class='small'>All das bekommst du schon im kostenlosen Grundkurs.</p></aside></section>
+<section id='mentor' class='panel' style='margin-top:18px'><h2><img src='img/mentor-icon.svg' width='22' style='vertical-align:-4px;margin-right:8px'>Dein digitaler Mentor</h2><p>Ich bin dein digitaler Mentor. Dein menschlicher <strong>Co‑Mentor</strong> meldet sich per E‑Mail, sobald deine Seite freigeschaltet ist.</p></section>
+<section id='reise' class='panel' style='margin-top:18px'><h2>Deine Reise zur finanziellen Souveränität</h2><div id='reiseList'></div></section>
+<section id='kino' class='panel kino' style='margin-top:18px'><div class='row' style='justify-content:space-between;align-items:center'><h2 style='margin:0'>Kino</h2><span class='tag' id='kinoNow'>Jetzt im Kino</span></div><div id='kinoFrame' style='margin-top:10px'></div><p class='small' id='kinoPreview'></p></section>
+<section id='teilen' class='panel share' style='margin-top:18px'><h2>Teile diese Seite</h2><div class='row'><a class='btn' id='shareTg'>✈️ Telegram</a><a class='btn' id='shareWa'>💬 WhatsApp</a><a class='btn' id='shareFb'>📘 Facebook</a><a class='btn' id='shareIg'>📸 Instagram</a><a class='btn' id='shareTt'>🎵 TikTok</a></div></section>
+<footer>LP‑Generator v3.0.3 — JSON‑gesteuert</footer></main>
 <script>
-const S = {};
-async function boot(){
-  S.settings = await (await fetch('data/settings.json')).json();
-  S.quotes   = await (await fetch('data/quotes.json')).json();
-  S.music    = await (await fetch('data/music.json')).json();
-  S.rotator  = await (await fetch('data/rotator.json')).json();
-  S.reise    = await (await fetch('data/reise.json')).json();
-
-  document.getElementById('quote').textContent = S.settings.hero.quote;
-
-  // Reise/Vorteile
-  const ben = document.getElementById('benefits');
-  ['Vermögen schützen.','Zugang zu Krypto','Einkommen mit KI','Klarheit statt Chaos']
-    .forEach(t=>{const li=document.createElement('li');li.textContent='• '+t;ben.appendChild(li)});
-  // Ticker
-  const t = document.getElementById('ticker');
-  [...S.quotes, ...S.quotes].forEach(q=>{const li=document.createElement('li');li.textContent=q;t.appendChild(li)});
-
-  // Kino
-  const k = S.rotator.videos[0];
-  const pid = (k.platform==='youtube') ? `https://www.youtube.com/embed/${k.id}?rel=0&playsinline=1` : '';
-  document.getElementById('player').innerHTML = `<iframe src="${pid}" allow="accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>`;
-  document.getElementById('kinoNow').textContent = 'Jetzt im Kino: '+k.title;
-
-  // Musik & Speech
-  const audio = document.getElementById('bgm');
-  audio.volume = (S.settings.music && S.settings.music.volume_start) || 0.12;
-  // try autoplay softly
-  audio.play().catch(()=>{});
-
-  document.getElementById('speakBtn').addEventListener('click', async ()=>{
-    // Fade down a bit
-    fadeTo(audio, ((S.settings.music||{}).volume_start)||0.12, 400);
-    speakInvitation();
-    // after TTS ~12s, raise volume a touch
-    setTimeout(()=>fadeTo(audio, ((S.settings.music||{}).volume_after_speech)||0.28, 800), 12000);
-  });
-  document.getElementById('musicBtn').addEventListener('click',()=>{
-    if(audio.paused){audio.play();}else{audio.pause();}
-  });
-}
-function fadeTo(audio, target, ms){
-  const steps=20, start=audio.volume, dv=(target-start)/steps, dt=ms/steps;
-  let i=0; const h=setInterval(()=>{ i++; audio.volume=Math.max(0,Math.min(1,start+dv*i)); if(i>=steps) clearInterval(h); }, dt);
-}
-function speakInvitation(){
-  const sel = document.getElementById('voiceSel').value;
-  const text = "Hallo neugieriger Adler! Schön, dass du vorbeischaust. Ich lade dich ein, die Reise zu dir selbst zu beginnen. Ich bin dein Weggefährte – auch ich stand einmal vor genau der gleichen Frage wie du jetzt: Wie werde ich finanziell souverän? Überwinde deine Ängste, starte jetzt und erhebe dich zu neuen Perspektiven. Wir sind viele – und wir lernen gemeinsam, souverän zu leben.";
-  const ut = new SpeechSynthesisUtterance(text);
-  ut.lang = (sel==='female')?'de-DE':'de-DE';
-  ut.rate = 1.0; ut.pitch = (sel==='female')?1.15:0.95;
-  speechSynthesis.cancel(); speechSynthesis.speak(ut);
-}
-function share(net){
-  const url = location.href; const txt = encodeURIComponent("Dein Geld. Deine Freiheit. – Meine persönliche Akademie-Page");
-  const m = {
-    telegram:`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${txt}`,
-    whatsapp:`https://api.whatsapp.com/send?text=${txt}%20${encodeURIComponent(url)}`,
-    facebook:`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-    instagram:url, tiktok:url
-  };
-  window.open(m[net]||url,'_blank');
-}
-boot();
-</script>
-</body></html>
+async function J(p){const r=await fetch(p);return r.json()}
+const q=s=>document.querySelector(s);(async()=>{
+ const settings=await J('data/settings.json'), quotes=await J('data/quotes.json'), rotator=await J('data/rotator.json'), kino=await J('data/kino.json'), reise=await J('data/reise.json');
+ ['red','yellow','green'].forEach((c,i)=>q('#s'+c[0].toUpperCase()).style.opacity = settings.ampel===c?1:.25);
+ q('#tickerText').textContent = quotes.join('  •  ');
+ q('#reiseList').innerHTML = reise.map(r=>`<div class='row' style='align-items:center;margin:8px 0'><span style='font-size:22px'>${r.icon}</span><div style='padding-left:10px'><strong>${r.title}</strong><div class='small'>${r.text}</div></div></div>`).join('');
+ q('#kinoNow').textContent = 'Jetzt im Kino: '+kino.now; q('#kinoFrame').innerHTML = `<iframe src="${rotator[0].src}" allowfullscreen loading="lazy"></iframe>`; q('#kinoPreview').textContent='Vorschau: '+kino.preview.join(' · ');
+ const url=location.href, text=settings.share_text; q('#shareWa').href='https://wa.me/?text='+encodeURIComponent(text+' '+url); q('#shareTg').href='https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text); q('#shareFb').href='https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url); q('#shareIg').href=url; q('#shareTt').href=url;
+ const voiceSel=q('#voiceSel'); function speak(t){try{const u=new SpeechSynthesisUtterance(t);const pref=voiceSel.value.includes('female')?'female':'male';const v=speechSynthesis.getVoices().find(v=>v.lang.startsWith('de')&&v.name.toLowerCase().includes(pref)); if(v) u.voice=v; u.rate=1.02; u.pitch=pref==='female'?1.05:.95; u.volume=1.0; speechSynthesis.speak(u);}catch(e){}}
+ q('#ctaVoice').addEventListener('click',()=>{ const msg='Hallo neugieriger Adler! Schön, dass du da bist. Ich lade dich ein, die Reise zu dir selbst zu beginnen. Ich bin dein Weggefährte – genau wie du stand ich einmal vor derselben Frage: Wie werde ich finanziell souverän? Überwinde deine Ängste, starte jetzt und erhebe dich zu neuen Perspektiven. Wir sind viele – und wir lernen, souverän zu leben.'; if(window.bgAudio){bgAudio.volume=.35; setTimeout(()=>bgAudio.volume=.75,12000);} speak(msg); });
+ const music=await J('data/music.json'); const btn=q('#musicBtn'); window.bgAudio=new Audio(music.playlist[0].file); bgAudio.loop=true; bgAudio.volume=.75; if(settings.music){ try{ await bgAudio.play(); }catch(e){} } btn.addEventListener('click',()=>{ if(bgAudio.paused){bgAudio.play()} else{bgAudio.pause()} });
+})();</script></body></html>

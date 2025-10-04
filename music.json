@@ -1,8 +1,9 @@
 {
   "playlist": [
     {
-      "title": "Inspiring Epic (Demo)",
-      "file": "audio/terra-mater-inspiring-cinematic-epic.mp3"
+      "title": "Hero Theme (Demo)",
+      "file": "audio/hero.mp3",
+      "gain_duck": 0.35
     }
   ]
 }

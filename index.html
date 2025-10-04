@@ -1,43 +1,5 @@
-<!DOCTYPE html><html lang="de"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>LP‑Generator – Übersicht</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#0f1624;--card:#111b2b;--ink:#dbe7ff;--muted:#92a3c2;--glow:#f0d57433;--pill:#1b2740}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Inter,system-ui,-apple-system,Segoe UI}
-.wrap{max-width:1100px;margin:48px auto;padding:0 20px}
-h1{font-weight:800;letter-spacing:.2px}
-.grid{display:grid;gap:20px;grid-template-columns:1fr 1fr}
-.card{background:var(--card);border-radius:14px;padding:20px;box-shadow:0 0 0 1px #172036,inset 0 0 0 1px #0d1421,0 20px 60px #00000066}
-a.button{display:inline-block;background:#24324e;padding:10px 14px;border-radius:999px;color:var(--ink);text-decoration:none;margin:8px 10px 0 0}
-.badge{display:inline-flex;gap:8px;align-items:center;background:#1a2237;border-radius:10px;padding:8px 12px;margin:6px 10px 0 0;color:var(--muted)}
-code{background:#0b1322;border-radius:6px;padding:2px 6px}
-footer{opacity:.6;margin-top:24px}
-</style></head><body>
-<div class="wrap">
-  <h1>🚀 LP‑Generator Übersicht <span class="badge" id="ver"></span></h1>
-  <div class="grid">
-    <div class="card">
-      <h3>🌐 Hauptseiten</h3>
-      <a class="button" href="lp-template.html" target="_blank">Landingpage Template</a>
-      <a class="button" href="lp-admin.html" target="_blank">LP‑Admin</a>
-      <a class="button" href="media-admin.html" target="_blank">Media‑Admin</a>
-    </div>
-    <div class="card">
-      <h3>⚙️ JSON Steuerung</h3>
-      <div>
-        <a class="button" href="data/settings.json" target="_blank">settings.json</a>
-        <a class="button" href="data/emails.json" target="_blank">emails.json</a>
-        <a class="button" href="data/quotes.json" target="_blank">quotes.json</a>
-        <a class="button" href="data/slideshow.json" target="_blank">slideshow.json</a>
-        <a class="button" href="data/music.json" target="_blank">music.json</a>
-        <a class="button" href="data/rotator.json" target="_blank">rotator.json</a>
-        <a class="button" href="data/reise.json" target="_blank">reise.json</a>
-      </div>
-    </div>
-  </div>
-  <footer>LP‑Generator v<span id="vf">3.0.3</span> — gesteuert über JSON (keine LocalStorage‑Daten).</footer>
-</div>
-<script>fetch('data/settings.json').then(r=>r.json()).then(j=>{document.getElementById('ver').textContent='v'+(j.version||'3.0.3')})</script>
-</body></html>
+<!doctype html><meta charset='utf-8'><link rel='stylesheet' href='assets/base.css'><title>LP-Generator Übersicht v3.0.3</title>
+<div class='wrap'><h1>🚀 LP‑Generator Übersicht <span class='small'>v3.0.3</span></h1><div class='grid'>
+<div class='panel'><h2>Hauptseiten</h2><p><a class='tag' href='lp-template.html' target='_blank'>Landingpage Template</a></p><p><a class='tag' href='lp-admin.html' target='_blank'>LP‑Admin</a></p><p><a class='tag' href='media-admin.html' target='_blank'>Media‑Admin</a></p></div>
+<div class='panel'><h2>JSON Steuerung</h2><p class='row'><a class='tag' href='data/settings.json' target='_blank'>settings.json</a><a class='tag' href='data/emails.json' target='_blank'>emails.json</a><a class='tag' href='data/quotes.json' target='_blank'>quotes.json</a><a class='tag' href='data/slideshow.json' target='_blank'>slideshow.json</a><a class='tag' href='data/music.json' target='_blank'>music.json</a><a class='tag' href='data/rotator.json' target='_blank'>rotator.json</a><a class='tag' href='data/kino.json' target='_blank'>kino.json</a><a class='tag' href='data/reise.json' target='_blank'>reise.json</a></p><p class='small'>Änderungen an JSON-Dateien werden beim nächsten Laden wirksam.</p></div>
+</div></div>

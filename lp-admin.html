@@ -1,35 +1,4 @@
-<!doctype html><html lang="de"><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>LP‑Admin (Demo)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-<style>
-body{margin:0;background:#0f1624;color:#dbe7ff;font:16px/1.5 Inter,system-ui}
-.wrap{max-width:1000px;margin:40px auto;padding:0 20px}
-.card{background:#111b2b;border-radius:14px;padding:20px;box-shadow:0 20px 60px #00000066}
-h1{display:flex;align-items:center;gap:12px}
-table{width:100%;border-collapse:collapse;margin-top:12px}
-th,td{padding:10px;border-bottom:1px solid #1d2a45}
-.badge{background:#1a2237;border-radius:999px;padding:6px 10px;color:#8ea4c9}
-.sta{display:inline-block;width:9px;height:9px;border-radius:50%}
-.sta.red{background:#ef5350}.sta.yellow{background:#f6c945}.sta.green{background:#65e572}
-</style>
-<div class="wrap">
-  <div class="card">
-    <h1>LP‑Admin <span class="badge">Demo</span></h1>
-    <p>Diese Ansicht liest <code>data/emails.json</code> und zeigt den Status (red/yellow/green) an. Änderungen erfolgen derzeit per JSON‑Edit (kein Backend).</p>
-    <table><thead><tr><th>ID</th><th>Vorname</th><th>Nachname</th><th>E‑Mail</th><th>Status</th></tr></thead>
-      <tbody id="rows"></tbody></table>
-  </div>
-</div>
-<script>
-fetch('data/emails.json').then(r=>r.json()).then(j=>{
-  const tb=document.getElementById('rows');
-  (j.partners||[]).forEach(p=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${p.id}</td><td>${p.firstname}</td><td>${p.lastname}</td>
-      <td>${p.email}</td><td>${st(p.status)}</td>`;
-    tb.appendChild(tr);
-  });
-});
-function st(s){const c=s==='approved'?'green':(s==='pending'?'yellow':'red');
-  return `<span class="sta ${c}"></span> ${s}`;}
-</script>
+<!doctype html><meta charset='utf-8'><link rel='stylesheet' href='assets/base.css'>
+<div class='wrap panel'><h1>LP‑Admin <span class='tag'>Demo</span></h1><p class='small'>Diese Ansicht liest <code>data/emails.json</code> und zeigt Partner‑Status (red/yellow/green) an.</p>
+<table style='width:100%;border-collapse:collapse'><thead><tr><th>ID</th><th>Vorname</th><th>Nachname</th><th>E‑Mail</th><th>Status</th></tr></thead><tbody id='rows'></tbody></table></div>
+<script>fetch('data/emails.json').then(r=>r.json()).then(list=>{const tb=document.getElementById('rows');tb.innerHTML=list.map((e,i)=>`<tr><td>${i+1}</td><td>${e.vorname||''}</td><td>${e.nachname||''}</td><td>${e.email||''}</td><td>${e.status||'pending'}</td></tr>`).join('');});</script>

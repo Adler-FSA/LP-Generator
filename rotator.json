@@ -1,14 +1,6 @@
-{
-  "videos": [
-    {
-      "title": "Eagle in Flight",
-      "platform": "youtube",
-      "id": "rX2c7SYk4L8"
-    },
-    {
-      "title": "Peru 8K",
-      "platform": "youtube",
-      "id": "1La4QzGeaaQ"
-    }
-  ]
-}
+[
+  {
+    "title": "Eagle in Flight",
+    "src": "https://www.youtube.com/embed/qoQm0wEopSE"
+  }
+]

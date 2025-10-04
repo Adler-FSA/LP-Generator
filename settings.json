@@ -1,16 +1,9 @@
 {
-  "version": "3.0.3",
-  "ampel": true,
-  "music": {
-    "autoplay": true,
-    "volume_start": 0.12,
-    "volume_after_speech": 0.28
-  },
-  "voices": {
-    "male": "de-DE",
-    "female": "de-DE"
-  },
-  "hero": {
-    "quote": "„Eine Investition in Wissen bringt die besten Zinsen.“ — Franklin"
-  }
+  "ampel": "red",
+  "music": true,
+  "voices": [
+    "maennlich",
+    "weiblich"
+  ],
+  "share_text": "Dein Geld. Deine Freiheit. Komm mit auf die Reise."
 }

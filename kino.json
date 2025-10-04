@@ -1,15 +1,7 @@
 {
-  "now": {
-    "title": "Eagle Flight",
-    "id": "miWBKSszEIw",
-    "type": "youtube"
-  },
-  "next": [
-    {
-      "date": "2025-10-10",
-      "title": "Peru 8K HDR",
-      "id": "XXXXYYYY",
-      "type": "youtube"
-    }
+  "now": "Eagle in Flight",
+  "preview": [
+    "Nächste Woche: Bitcoin Basics",
+    "Bald: Sicherheit & Selbstverwahrung"
   ]
 }
