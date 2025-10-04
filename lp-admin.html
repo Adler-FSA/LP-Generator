@@ -1,5 +1,1 @@
-<!doctype html><html lang="de"><meta charset="utf-8">
-<title>LP‑Admin (Ansicht)</title><meta name="viewport" content="width=device-width, initial-scale=1">
-<style>body{background:#0b1120;color:#e6edff;font:16px system-ui;margin:0;padding:22px} .card{max-width:900px;margin:0 auto;background:#0f172a;border:1px solid #22314f;border-radius:12px;padding:16px}</style>
-<div class="card"><h1>LP‑Admin (Qualitätsprüfung)</h1><p>Nur Ansicht der <code>emails.json</code>. Freischaltung erfolgt durch Änderung <code>approved:true</code> im Repo.</p><div id="list">lade…</div></div>
-<script>(async()=>{const j=await (await fetch('emails.json')).json();document.getElementById('list').innerHTML=(j.partners||[]).map(p=>`• ${p.id} — ${p.first_name} ${p.last_name} — ${p.email} — ${(p.approved?'✅':'⏳')}`).join('<br>')||'leer';})();</script>
+<!doctype html><html lang='de'><head><meta charset='utf-8'><title>LP Admin</title></head><body><h1>LP-Admin v2.4.9</h1></body></html>
