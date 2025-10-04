@@ -1,5 +1,15 @@
 {
-  "current": "Eagle in Flight",
-  "video": "https://www.youtube.com/embed/8vL7YkQG7SU?rel=0",
-  "next": "Peru 8K"
+  "now": {
+    "title": "Eagle Flight",
+    "id": "miWBKSszEIw",
+    "type": "youtube"
+  },
+  "next": [
+    {
+      "date": "2025-10-10",
+      "title": "Peru 8K HDR",
+      "id": "XXXXYYYY",
+      "type": "youtube"
+    }
+  ]
 }

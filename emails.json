@@ -1,3 +1,11 @@
 {
-  "partners": ["partner1@example.com", "partner2@example.com"]
+  "partners": [
+    {
+      "id": "p001",
+      "firstName": "",
+      "lastName": "",
+      "email": "",
+      "status": "empty"
+    }
+  ]
 }

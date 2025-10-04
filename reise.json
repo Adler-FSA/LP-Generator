@@ -1,3 +1,20 @@
 {
-  "steps": ["Tag 1: Start", "Tag 2: Wallet", "Tag 3: Mentor"]
+  "steps": [
+    {
+      "title": "Verstehen",
+      "text": "Grundlagen & Orientierung."
+    },
+    {
+      "title": "Anwenden",
+      "text": "Wallet, Sicherheit, erste Schritte."
+    },
+    {
+      "title": "Verdienen",
+      "text": "Einkommen mit KI & Krypto."
+    },
+    {
+      "title": "Weitergeben",
+      "text": "Mentor werden & helfen."
+    }
+  ]
 }

@@ -1,5 +1,11 @@
 {
-  "version": "3.0.0",
-  "siteTitle": "LP Generator",
-  "musicEnabled": true
+  "ampel": "red",
+  "invitationText": "Hallo neugieriger Adler! Schön, dass du da bist. Ich lade dich ein, deine Reise zur finanziellen Souveränität zu beginnen. Ich bin dein Weggefährte – lass uns starten.",
+  "voices": {
+    "default": "male",
+    "available": [
+      "male",
+      "female"
+    ]
+  }
 }

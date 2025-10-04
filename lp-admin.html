@@ -1,2 +1,28 @@
-<!-- LP Admin -->
-<html><body><h1>Admin Panel</h1><p>Token Verwaltung, JSON Steuerung</p></body></html>
+<!doctype html><html lang="de"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LP-Admin v3.0.1</title>
+<style>
+body{font-family:Inter,system-ui,Arial,sans-serif;background:#0b1220;color:#e5f1ff;margin:0;padding:20px}
+.card{background:#101a2d;border:1px solid #1b2a48;border-radius:16px;padding:18px;max-width:980px;margin:0 auto;box-shadow:0 0 0 3px #f3c96933}
+h1{margin:0 0 10px} table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border-bottom:1px solid #1b2a48;padding:8px;text-align:left}
+.btn{background:#203a63;border:1px solid #1b2a48;color:#d9ecff;border-radius:10px;padding:8px 12px;cursor:pointer}
+.badge{display:inline-block;background:#0c1629;border:1px solid #1b2a48;border-radius:10px;padding:6px 10px;margin-left:10px}
+</style></head><body>
+<div class="card">
+<h1>LP-Admin <small class="badge">Demo</small></h1>
+<p>Diese Ansicht liest <code>data/emails.json</code> und zeigt den Status (red/yellow/green) an. Änderungen erfolgen derzeit per JSON-Edit (kein Backend).</p>
+<table id="t"><thead><tr><th>ID</th><th>Vorname</th><th>Nachname</th><th>E-Mail</th><th>Status</th></tr></thead><tbody></tbody></table>
+</div>
+<script>
+async function load(){ const r=await fetch('data/emails.json'); const j=await r.json();
+ const tb=document.querySelector('#t tbody'); tb.innerHTML='';
+ (j.partners||[]).forEach(p=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td>${p.id||''}</td><td>${p.firstName||''}</td><td>${p.lastName||''}</td><td>${p.email||''}</td><td>${p.status||''}</td>`;
+  tb.appendChild(tr);
+ });
+}
+load();
+</script>
+</body></html>
