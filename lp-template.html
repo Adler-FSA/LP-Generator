@@ -1,31 +1,41 @@
-<!DOCTYPE html><html lang='de'><head><meta charset='UTF-8'>
-<title>Landingpage Template</title>
-<style>
-body{margin:0;font-family:Arial,sans-serif;background:#000;color:#fff;text-align:center}
-.hero{position:relative;height:100vh;overflow:hidden}
-.hero iframe,.hero img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1}
-.overlay{position:relative;top:30%;margin:0 auto;background:rgba(0,0,0,.6);padding:30px;border-radius:12px;max-width:500px}
-input{padding:10px;width:80%;margin-top:12px;border-radius:6px;border:none}
-button{margin-top:12px;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;font-weight:bold}
-button:hover{background:#d4af37;color:#000}
-</style></head>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Dein Geld. Deine Freiheit.</title>
+  <style>
+    body, html {margin:0; padding:0; height:100%; overflow:hidden; font-family:Arial, sans-serif;}
+    video {position:fixed; right:0; bottom:0; min-width:100%; min-height:100%; object-fit:cover;}
+    .overlay {position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center;}
+    .box {background:#111827; padding:30px; border-radius:10px; text-align:center; color:white; max-width:400px; width:100%;}
+    input {padding:10px; border-radius:6px; border:none; width:80%; margin-bottom:10px;}
+    button {padding:10px 20px; border:none; border-radius:6px; background:#38bdf8; color:#111; cursor:pointer;}
+    button:hover {background:#0ea5e9;}
+  </style>
+</head>
 <body>
-<div class='hero'>
-<iframe src='https://www.youtube.com/embed/miWBKSszEIw?autoplay=1&mute=1&loop=1&playlist=miWBKSszEIw' frameborder='0'></iframe>
-<div class='overlay'>
-<h1>🦅 Dein Geld. Deine Freiheit.</h1>
-<p>Trage deine E-Mail ein und erhalte deine persönliche Landingpage:</p>
-<input type='email' id='emailInput' placeholder='Deine E-Mail'>
-<br><button onclick='genLP()'>Freischalten</button>
-<p id='result'></p>
-</div>
-</div>
-<script>
-function genLP(){
-  const mail=document.getElementById('emailInput').value.trim();
-  if(!mail){alert('Bitte E-Mail eintragen!');return;}
-  const id='FSA-'+new Date().toISOString().split('T')[0]+'-'+Math.floor(Math.random()*10000);
-  document.getElementById('result').innerHTML='Deine LP: <a href="lp-template.html?id='+id+'">Link öffnen</a>';
-}
-</script>
-</body></html>
+  <video autoplay muted loop>
+    <source src="https://cdn.coverr.co/videos/coverr-flying-eagle-2744/1080p.mp4" type="video/mp4">
+  </video>
+  <div class="overlay">
+    <div class="box">
+      <h1>🦅 Dein Geld. Deine Freiheit.</h1>
+      <p>Trage deine E-Mail ein und erhalte deine persönliche Landingpage:</p>
+      <input type="email" id="email" placeholder="Deine E-Mail">
+      <br>
+      <button onclick="generate()">Freischalten</button>
+      <p id="output"></p>
+    </div>
+  </div>
+  <script>
+    function generate(){
+      let email = document.getElementById("email").value;
+      if(email){
+        document.getElementById("output").innerText = "✅ Freigegeben für: " + email + "\nDeine URL: demo/" + btoa(email) + ".html";
+      } else {
+        alert("Bitte E-Mail eingeben!");
+      }
+    }
+  </script>
+</body>
+</html>
