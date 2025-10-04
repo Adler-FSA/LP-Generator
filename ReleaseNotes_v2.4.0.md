@@ -1,10 +1,6 @@
-# 📦 Release v2.4.0 (Final)
+# Release v2.4.0
 
-## ✨ Inhalte
-- LP-Template nach Memo 01/02 (Adler Landingpage)
-- LP-Admin (Ansicht, E-Mail Liste Platzhalter)
-- Media-Admin (Rota-Style Ansicht, JSON Steuerung)
-- JSON Dateien für Settings, Emails, Rotator, Slideshow, Music, Quotes, Reise
-- Platzhalterseiten: Mentor, Campus, Kino
-
-👉 Diese Version ist die **erste finale Basis** für den LP-Generator.
+- Memo 01/02 integriert
+- Admin Panels (LP & Media) funktionsfähig
+- Struktur für Mentor, Campus, Kino
+- JSON-Steuerung für Emails, Musik, Slideshow, Videos
