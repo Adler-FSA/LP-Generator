@@ -1,0 +1,1 @@
+# LP‑Generator v2.5.0 – FINAL\n\n- Vollständige LP (Hero, Ticker, Mentor, Kino, Teilen)\n- Getrenntes Partner‑Setup als Overlay (Werkzustand/Pending)\n- Ampel‑Logik (red/yellow/green)\n- Einladung anhören (Web Speech TTS)\n- Musik‑Schalter oben links, Playlist via music.json\n- JSON‑Steuerung (settings, emails, quotes, rotator, slideshow, kino, music)\n

@@ -1,64 +1,19 @@
 {
-  "items": [
-    {
-      "icon": "🚀",
-      "text": "Langfristig denken"
-    },
-    {
-      "icon": "🔑",
-      "text": "Zugang zur Welt der Krypto‑Assets"
-    },
-    {
-      "icon": "🤖",
-      "text": "Einkommen mit KI & Automatisierung"
-    },
-    {
-      "icon": "🎯",
-      "text": "Klarheit statt Chaos"
-    },
-    {
-      "icon": "🧠",
-      "text": "Investiere in dich selbst"
-    },
-    {
-      "icon": "📈",
-      "text": "Vermögen schützen"
-    },
-    {
-      "icon": "🌐",
-      "text": "Dezentrale Zukunft verstehen"
-    },
-    {
-      "icon": "💡",
-      "text": "Wissen ist Zinseszins"
-    },
-    {
-      "icon": "🛡️",
-      "text": "Risiko managen"
-    },
-    {
-      "icon": "⏳",
-      "text": "Geduld schlägt Hektik"
-    },
-    {
-      "icon": "📚",
-      "text": "Lernen > Spekulieren"
-    },
-    {
-      "icon": "🧭",
-      "text": "Souverän statt abhängig"
-    },
-    {
-      "icon": "💬",
-      "text": "Fragen stellen, Antworten finden"
-    },
-    {
-      "icon": "🧩",
-      "text": "Komplexes einfach erklärt"
-    },
-    {
-      "icon": "🕊️",
-      "text": "Freiheit beginnt im Kopf"
-    }
+  "quotes": [
+    "Langfristig denken.",
+    "Zugang zur Welt der Krypto‑Assets.",
+    "Einkommen mit KI & Automatisierung.",
+    "Klarheit statt Chaos.",
+    "Nie mehr Fremdbestimmung.",
+    "Investiere in dich selbst.",
+    "Vermögen schützen.",
+    "Dezentrale Zukunft verstehen.",
+    "Wissen ist Zinseszins.",
+    "Risiko managen.",
+    "Geduld schlägt Hektik.",
+    "Lernen > Spekulieren.",
+    "Souverän statt abhängig.",
+    "Komplexes einfach erklärt.",
+    "Freiheit beginnt im Kopf."
   ]
 }
