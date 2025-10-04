@@ -2,33 +2,40 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
+  <title>🚀 Landingpage</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LP-Template – Akquise-Motor</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#0f172a; color:#f8fafc; margin:0; padding:20px; }
-    .box { max-width:600px; margin:40px auto; padding:20px; background:#1e293b; border-radius:12px; text-align:center; }
-    input, button { padding:10px; margin:10px 0; width:90%; border-radius:6px; border:none; }
-    button { background:#38bdf8; color:#fff; font-weight:bold; cursor:pointer; }
-    button:hover { background:#0ea5e9; }
+    body{background:#000;color:#fff;font-family:system-ui,Arial,sans-serif;margin:0;padding:20px}
+    .card{background:rgba(255,255,255,0.1);padding:20px;border-radius:12px;max-width:600px;margin:40px auto;box-shadow:0 0 20px rgba(0,0,0,.5)}
+    h1{margin-top:0}
+    .email{background:#111;padding:10px;border-radius:8px;margin:10px 0;font-size:1.1rem}
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>🚀 Dein Zugang</h1>
-    <p>Trage hier deine E-Mail ein, um deine eigene Landingpage-ID zu generieren:</p>
-    <input type="email" id="email" placeholder="deine@email.de" required>
-    <button onclick="saveEmail()">E-Mail eintragen</button>
-    <p id="result"></p>
+  <div class="card">
+    <h1>🚀 Deine persönliche Landingpage</h1>
+    <p id="output">Lade Daten...</p>
   </div>
 
   <script>
-    function saveEmail(){
-      const email = document.getElementById('email').value;
-      if(!email) { alert('Bitte E-Mail eingeben!'); return; }
-      const id = 'FSA-' + new Date().toISOString().split('T')[0] + '-' + Math.floor(Math.random()*10000);
-      document.getElementById('result').innerText = '✅ Deine ID: ' + id + '\n(E-Mail gespeichert: ' + email + ')';
-      // Hinweis: Hier würden wir in emails.json schreiben (Demo nur Anzeige)
+    async function loadData(){
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+      const email = params.get('email');
+
+      const res = await fetch('emails.json');
+      const data = await res.json();
+      const entry = data.find(e=>e.id===id);
+
+      if(entry && entry.approved){
+        document.getElementById('output').innerHTML = 
+          `✅ Freigegeben für: <div class='email'>${entry.email}</div>`;
+      } else {
+        document.getElementById('output').innerHTML = 
+          `⏳ Wartet auf Freigabe für <div class='email'>${email}</div>`;
+      }
     }
+    loadData();
   </script>
 </body>
 </html>

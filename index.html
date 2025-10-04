@@ -2,20 +2,34 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
+  <title>🚀 Dein Zugang</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LP-Generator Übersicht v2.1.0</title>
   <style>
-    body { font-family: Arial, sans-serif; background:#0f172a; color:#f8fafc; padding:20px; }
-    h1 { color:#38bdf8; }
-    a { display:block; margin:8px 0; color:#fbbf24; text-decoration:none; }
-    a:hover { text-decoration:underline; }
+    body{background:#0f172a;font-family:system-ui,Arial,sans-serif;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}
+    .card{background:#1e293b;padding:30px;border-radius:12px;box-shadow:0 0 20px rgba(0,0,0,.4);max-width:400px;width:100%;text-align:center}
+    h1{margin-top:0;font-size:1.6rem}
+    input{width:100%;padding:10px;margin:15px 0;border-radius:8px;border:none;font-size:1rem}
+    button{background:#38bdf8;color:#fff;border:none;padding:12px 20px;border-radius:8px;font-size:1rem;cursor:pointer;width:100%}
+    button:hover{background:#0ea5e9}
   </style>
 </head>
 <body>
-  <h1>🚀 LP-Generator Übersicht v2.1.0</h1>
-  <p>Klicke auf die Links – sie öffnen sich im neuen Tab.</p>
-  <h3>Hauptseiten</h3>
-  <a href="lp-template.html" target="_blank">Landingpage Template (Akquise-Motor)</a>
-  <a href="emails.json" target="_blank">Emails.json (Partner E-Mails)</a>
+  <div class="card">
+    <h1>🚀 Dein Zugang</h1>
+    <p>Trage hier deine E-Mail ein, um deine eigene Landingpage-ID zu generieren:</p>
+    <input type="email" id="email" placeholder="deine@email.de" required>
+    <button onclick="generateID()">E-Mail eintragen</button>
+  </div>
+
+  <script>
+    function generateID(){
+      const email = document.getElementById('email').value.trim();
+      if(!email){alert('Bitte E-Mail eingeben');return;}
+      const date = new Date().toISOString().split('T')[0];
+      const unique = Math.floor(Math.random()*9000)+1000;
+      const id = `FSA-${date}-${unique}`;
+      window.location.href = `lp-template.html?id=${id}&email=${encodeURIComponent(email)}`;
+    }
+  </script>
 </body>
 </html>
