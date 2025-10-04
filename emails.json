@@ -1,11 +1,20 @@
 {
   "partners": [
     {
-      "id": "FSA-2025-10-07-0001",
+      "id": "FSA-2025-10-08-0001",
       "first_name": "Alex",
       "last_name": "Adler",
-      "email": "partner1@example.com",
-      "approved": true
+      "email": "partner@example.com",
+      "approved": true,
+      "voice": "male"
+    },
+    {
+      "id": "FSA-2025-10-08-0002",
+      "first_name": "Chris",
+      "last_name": "Mentor",
+      "email": "mentor@example.com",
+      "approved": false,
+      "voice": "female"
     }
   ]
 }
