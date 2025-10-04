@@ -1,8 +1,1 @@
-{
-  "interval": 15,
-  "images": [
-    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1600&auto=format",
-    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format",
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1600&auto=format"
-  ]
-}
+{"images":["bild1.jpg","bild2.jpg"],"interval":15}
