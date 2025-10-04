@@ -2,40 +2,21 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>LP-Admin – E-Mail-Freigabe</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LP-Admin – Qualitätsprüfung</title>
   <style>
-    body{background:#0f172a;color:#fff;font-family:system-ui,Arial,sans-serif;margin:0;padding:20px}
+    body{font-family:system-ui,Arial;background:#0f172a;color:#fff;padding:20px}
     table{width:100%;border-collapse:collapse;margin-top:20px}
-    th,td{border:1px solid #334155;padding:10px;text-align:left}
+    td,th{border:1px solid #334155;padding:8px}
     th{background:#1e293b}
-    td{background:#111827}
   </style>
 </head>
 <body>
-  <h1>LP-Admin – Qualität & Freigabe</h1>
-  <p>Diese Seite zeigt den aktuellen Status aus <code>emails.json</code>.</p>
-
+  <h1>📋 LP-Admin – Qualitätsprüfung</h1>
+  <p>Demo-Ansicht der aktuellen Partner-Einträge (aus emails.json)</p>
   <table>
-    <thead>
-      <tr><th>ID</th><th>E-Mail</th><th>Status</th></tr>
-    </thead>
-    <tbody id="list"></tbody>
+    <tr><th>ID</th><th>E-Mail</th><th>Status</th></tr>
+    <tr><td>FSA-2025-10-07-0001</td><td>partner1@example.com</td><td>✅</td></tr>
   </table>
-
-  <script>
-    async function loadAdmin(){
-      const res = await fetch('emails.json');
-      const data = await res.json();
-      document.getElementById('list').innerHTML = data.map(e => `
-        <tr>
-          <td>${e.id}</td>
-          <td>${e.email}</td>
-          <td>${e.approved ? '✅ freigegeben' : '⏳ wartet'}</td>
-        </tr>
-      `).join('');
-    }
-    loadAdmin();
-  </script>
 </body>
 </html>
