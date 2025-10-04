@@ -1,9 +1,1 @@
-{
-  "ampel": "red",
-  "music": true,
-  "voices": [
-    "maennlich",
-    "weiblich"
-  ],
-  "share_text": "Dein Geld. Deine Freiheit. Komm mit auf die Reise."
-}
+{"ampel":"red","music":true,"voice":"de-DE","voice_gender":"male","autoplay_voice":true,"autoplay_music":true}

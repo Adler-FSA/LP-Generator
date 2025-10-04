@@ -1,9 +1,1 @@
-{
-  "playlist": [
-    {
-      "title": "Hero Theme (Demo)",
-      "file": "audio/hero.mp3",
-      "gain_duck": 0.35
-    }
-  ]
-}
+{"tracks":["https://adler-fsa.github.io/FSA-Admin/data/terra-mater.mp3"],"fallback":[]}
