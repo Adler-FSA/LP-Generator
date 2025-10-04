@@ -1,14 +1,14 @@
 {
   "videos": [
     {
-      "title": "Eagle Flight",
-      "id": "miWBKSszEIw",
-      "type": "youtube"
+      "title": "Eagle in Flight",
+      "platform": "youtube",
+      "id": "rX2c7SYk4L8"
     },
     {
-      "title": "City Night Timelapse",
-      "id": "76979871",
-      "type": "vimeo"
+      "title": "Peru 8K",
+      "platform": "youtube",
+      "id": "1La4QzGeaaQ"
     }
   ]
 }

@@ -1,28 +1,35 @@
-<!doctype html><html lang="de"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LP-Admin v3.0.1</title>
+<!doctype html><html lang="de"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>LP‑Admin (Demo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-body{font-family:Inter,system-ui,Arial,sans-serif;background:#0b1220;color:#e5f1ff;margin:0;padding:20px}
-.card{background:#101a2d;border:1px solid #1b2a48;border-radius:16px;padding:18px;max-width:980px;margin:0 auto;box-shadow:0 0 0 3px #f3c96933}
-h1{margin:0 0 10px} table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{border-bottom:1px solid #1b2a48;padding:8px;text-align:left}
-.btn{background:#203a63;border:1px solid #1b2a48;color:#d9ecff;border-radius:10px;padding:8px 12px;cursor:pointer}
-.badge{display:inline-block;background:#0c1629;border:1px solid #1b2a48;border-radius:10px;padding:6px 10px;margin-left:10px}
-</style></head><body>
-<div class="card">
-<h1>LP-Admin <small class="badge">Demo</small></h1>
-<p>Diese Ansicht liest <code>data/emails.json</code> und zeigt den Status (red/yellow/green) an. Änderungen erfolgen derzeit per JSON-Edit (kein Backend).</p>
-<table id="t"><thead><tr><th>ID</th><th>Vorname</th><th>Nachname</th><th>E-Mail</th><th>Status</th></tr></thead><tbody></tbody></table>
+body{margin:0;background:#0f1624;color:#dbe7ff;font:16px/1.5 Inter,system-ui}
+.wrap{max-width:1000px;margin:40px auto;padding:0 20px}
+.card{background:#111b2b;border-radius:14px;padding:20px;box-shadow:0 20px 60px #00000066}
+h1{display:flex;align-items:center;gap:12px}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{padding:10px;border-bottom:1px solid #1d2a45}
+.badge{background:#1a2237;border-radius:999px;padding:6px 10px;color:#8ea4c9}
+.sta{display:inline-block;width:9px;height:9px;border-radius:50%}
+.sta.red{background:#ef5350}.sta.yellow{background:#f6c945}.sta.green{background:#65e572}
+</style>
+<div class="wrap">
+  <div class="card">
+    <h1>LP‑Admin <span class="badge">Demo</span></h1>
+    <p>Diese Ansicht liest <code>data/emails.json</code> und zeigt den Status (red/yellow/green) an. Änderungen erfolgen derzeit per JSON‑Edit (kein Backend).</p>
+    <table><thead><tr><th>ID</th><th>Vorname</th><th>Nachname</th><th>E‑Mail</th><th>Status</th></tr></thead>
+      <tbody id="rows"></tbody></table>
+  </div>
 </div>
 <script>
-async function load(){ const r=await fetch('data/emails.json'); const j=await r.json();
- const tb=document.querySelector('#t tbody'); tb.innerHTML='';
- (j.partners||[]).forEach(p=>{
-  const tr=document.createElement('tr');
-  tr.innerHTML=`<td>${p.id||''}</td><td>${p.firstName||''}</td><td>${p.lastName||''}</td><td>${p.email||''}</td><td>${p.status||''}</td>`;
-  tb.appendChild(tr);
- });
-}
-load();
+fetch('data/emails.json').then(r=>r.json()).then(j=>{
+  const tb=document.getElementById('rows');
+  (j.partners||[]).forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${p.id}</td><td>${p.firstname}</td><td>${p.lastname}</td>
+      <td>${p.email}</td><td>${st(p.status)}</td>`;
+    tb.appendChild(tr);
+  });
+});
+function st(s){const c=s==='approved'?'green':(s==='pending'?'yellow':'red');
+  return `<span class="sta ${c}"></span> ${s}`;}
 </script>
-</body></html>

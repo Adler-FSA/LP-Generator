@@ -1,20 +1,22 @@
-{
-  "steps": [
-    {
-      "title": "Verstehen",
-      "text": "Grundlagen & Orientierung."
-    },
-    {
-      "title": "Anwenden",
-      "text": "Wallet, Sicherheit, erste Schritte."
-    },
-    {
-      "title": "Verdienen",
-      "text": "Einkommen mit KI & Krypto."
-    },
-    {
-      "title": "Weitergeben",
-      "text": "Mentor werden & helfen."
-    }
-  ]
-}
+[
+  {
+    "title": "Nie mehr Fremdbestimmung.",
+    "text": "Du nimmst deine finanzielle Zukunft selbst in die Hand."
+  },
+  {
+    "title": "Vermögen schützen.",
+    "text": "Lerne, Risiken zu managen und Chancen zu nutzen."
+  },
+  {
+    "title": "Zugang zur Krypto-Welt.",
+    "text": "Verstehe Grundlagen und starte sicher."
+  },
+  {
+    "title": "Einkommen mit KI.",
+    "text": "Nutze Automatisierung für neue Einkommensquellen."
+  },
+  {
+    "title": "Klarheit statt Chaos.",
+    "text": "Struktur statt Lärm – Schritt für Schritt."
+  }
+]

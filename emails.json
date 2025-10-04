@@ -1,11 +1,11 @@
 {
   "partners": [
     {
-      "id": "p001",
-      "firstName": "",
-      "lastName": "",
-      "email": "",
-      "status": "empty"
+      "id": 1,
+      "firstname": "Alex",
+      "lastname": "Adler",
+      "email": "adler.partner@example.com",
+      "status": "approved"
     }
   ]
 }
