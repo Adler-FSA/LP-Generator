@@ -1,16 +1,1 @@
-{
-  "list": [
-    {
-      "id": "FSA-2025-10-07-0001",
-      "name": "Alex Sasse",
-      "email": "partner1@example.com",
-      "approved": true
-    },
-    {
-      "id": "FSA-2025-10-07-0002",
-      "name": "Chris Adler",
-      "email": "partner2@example.com",
-      "approved": false
-    }
-  ]
-}
+{"emails":["EMAIL_PLACEHOLDER"]}
