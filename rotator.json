@@ -1,4 +1,6 @@
 {
-  "title": "Eagle in Flight",
-  "video": "https://www.youtube.com/embed/aqz-KE-bpKQ?rel=0&modestbranding=1"
+  "videos": [
+    "https://www.youtube.com/embed/8vL7YkQG7SU?rel=0",
+    "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
+  ]
 }

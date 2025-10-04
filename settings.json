@@ -1,11 +1,9 @@
 {
-  "autoplay": false,
+  "approval": "pending",
   "music": {
-    "tracks": [
-      {
-        "title": "Calm Background",
-        "url": "https://cdn.pixabay.com/download/audio/2022/10/24/audio_2f4c854a81.mp3?filename=calm-ambient-124008.mp3"
-      }
-    ]
+    "autoplay": false
+  },
+  "voices": {
+    "default": "male"
   }
 }

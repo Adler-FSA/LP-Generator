@@ -1,1 +1,69 @@
-<!doctype html><meta http-equiv='refresh' content='0; url=lp-template.html'>
+<!doctype html><html lang="de"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LP‑Generator Übersicht v2.5.0</title>
+<style>
+:root{
+  --bg:#0b1526; --panel:#0e1b30; --ink:#e6eefc; --mut:#9fb3c8; --accent:#ffd34d; --glow:#ffde72;
+  --brand:#16e2b5; --danger:#ec5d57; --pending:#ffc657; --ok:#4cd964;
+  --card:#0f1f38; --stroke:#163252; --shadow:0 12px 40px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 500px at 50% -10%,rgba(251,223,95,.07),transparent 40%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+h1,h2,h3{margin:0 0 12px}
+a{color:#79b8ff}
+.small{font-size:.9rem;color:var(--mut)}
+.nav{position:sticky;top:0;z-index:50;display:flex;gap:12px;padding:14px 16px;background:linear-gradient(#0b1526c8,#0b152660)}
+.nav .pill{padding:10px 18px;border-radius:32px;background:#122541;border:1px solid #19345a;box-shadow:inset 0 0 0 1px #0b203a, var(--shadow);cursor:pointer}
+.nav .pill.active{outline:2px solid #244c80}
+.btn{display:inline-flex;align-items:center;gap:10px;border:none;cursor:pointer;padding:12px 18px;border-radius:12px;background:#1a355d;color:var(--ink);border:1px solid #244c80;box-shadow:var(--shadow);transition:.15s}
+.btn:hover{transform:translateY(-1px);}
+.btn.gold{background:linear-gradient(#ffd34d,#f3b847); color:#231b00}
+.wrap{max-width:1140px;margin:0 auto;padding:28px 18px}
+.card{background:linear-gradient(180deg,#0f1f38b8,#0d1a30ee);border:1px solid #1c3b62;border-radius:16px;box-shadow:0 0 0 1px #122a47, 0 20px 60px rgba(0,0,0,.35);padding:18px;margin:16px 0;position:relative}
+.glow{box-shadow:0 0 0 1px #1c3b62, 0 0 30px 2px rgba(255,211,77,.15), 0 20px 60px rgba(0,0,0,.45)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:900px){.row{grid-template-columns:1fr}}
+.badge{display:inline-flex;align-items:center;gap:8px;border-radius:36px;border:1px solid #213e62;background:#0f213beb;padding:8px 12px;box-shadow:var(--shadow)}
+.status{display:flex;gap:10px;align-items:center}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.red{background:var(--danger)} .dot.yellow{background:var(--pending)} .dot.green{background:var(--ok)}
+.input{display:flex;gap:12px;flex-wrap:wrap}
+.input input,.input select{flex:1 1 220px;background:#0b1a31;border:1px solid #1b3458;color:var(--ink);padding:12px 14px;border-radius:10px}
+.ticker{overflow:hidden;white-space:nowrap;border-radius:12px;border:1px solid #1c3b62;background:#0d1a30;box-shadow:0 0 0 1px #1c3b62, 0 0 28px rgba(255,211,77,.12)}
+.ticker .inner{display:inline-block;padding-block:10px; animation:scroll 35s linear infinite}
+.ticker .item{display:inline-flex;align-items:center;gap:10px;margin-right:36px;padding:6px 14px;background:#0f1f38;border:1px solid #1a355d;border-radius:999px}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.video{aspect-ratio:16/9;width:100%;border:0;border-radius:12px}
+.footer{opacity:.7;margin:24px 0;text-align:center}
+.icon{width:22px;height:22px;border-radius:6px;background:linear-gradient(180deg,#e5c66b,#b9891f);display:inline-grid;place-items:center;color:#000}
+.share{display:flex;flex-wrap:wrap;gap:12px}
+.share a{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1px solid #284a7b;background:#0f2140;text-decoration:none;color:var(--ink)}
+.audio-toggle{position:fixed;left:12px;top:12px;z-index:100; background:#0f2140;border:1px solid #244c80;border-radius:999px;padding:8px 14px}
+.heroTitle{font-size:44px;line-height:1.15}
+.heroKicker{font-size:22px;color:var(--brand);font-weight:800}
+</style></head><body>
+<div class="wrap">
+  <h1>🚀 LP‑Generator Übersicht <span class="small">v2.5.0</span></h1>
+  <p>Klicke auf die Links – sie öffnen in einem neuen Tab.</p>
+  <div class="row">
+    <div class="card glow">
+      <h3>🌍 Hauptseiten</h3>
+      <p><a class="btn" target="_blank" href="lp-template.html">Landingpage Template</a></p>
+      <p><a class="btn" target="_blank" href="lp-admin.html">LP‑Admin</a></p>
+      <p><a class="btn" target="_blank" href="media-admin.html">Media‑Admin</a></p>
+    </div>
+    <div class="card glow">
+      <h3>⚙️ JSON Steuerung</h3>
+      <div class="share">
+        <a target="_blank" href="settings.json">settings.json</a>
+        <a target="_blank" href="emails.json">emails.json</a>
+        <a target="_blank" href="rotator.json">rotator.json</a>
+        <a target="_blank" href="slideshow.json">slideshow.json</a>
+        <a target="_blank" href="music.json">music.json</a>
+        <a target="_blank" href="quotes.json">quotes.json</a>
+        <a target="_blank" href="kino.json">kino.json</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body></html>
