@@ -1,65 +1,43 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Media‑Admin</title>
-<style>
-  :root{--bg:#0b0b10;--card:#141420;--bd:#292941;--ink:#eee;--mut:#94a3b8}
-  body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);margin:0}
-  header{padding:16px 20px;background:#15151f;border-bottom:1px solid #2b2b3a}
-  main{max-width:1100px;margin:20px auto;padding:0 20px}
-  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
-  .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
-  h3{margin:0 0 10px}
-  .item{border-top:1px dashed #2b2b3a;padding-top:10px;margin-top:10px}
-  a{color:#93c5fd}
-</style>
-</head>
-<body>
-<header><strong>Media‑Admin</strong> – Rota‑Style Übersicht (read‑only)</header>
-<main class="grid">
-  <section class="card">
-    <h3>🎬 Videos (rotator.json)</h3>
-    <div id="videos"></div>
-  </section>
-  <section class="card">
-    <h3>🎵 Musik (music.json)</h3>
-    <div id="tracks"></div>
-  </section>
-  <section class="card">
-    <h3>🖼 Slideshow (slideshow.json)</h3>
-    <div id="slides"></div>
-  </section>
-  <section class="card">
-    <h3>🧠 Zitate (quotes.json)</h3>
-    <div id="quotes"></div>
-  </section>
-</main>
-<script>
-async function loadJSON(u){ const r=await fetch(u,{cache:'no-store'}); return await r.json(); }
-(async()=>{
-  const rot = await loadJSON('rotator.json');
-  const mus = await loadJSON('music.json');
-  const sli = await loadJSON('slideshow.json');
-  const quo = await loadJSON('quotes.json');
+<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media-Admin – Rota-Style</title><style>
+:root{--ink:#e6f1ff; --bg:#0b1020; --mut:#9fb0c6; --card:#101826; --glow:#f2c94c;}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:18px}
+.glow{box-shadow:0 0 0 2px rgba(242,201,76,.12), 0 20px 60px rgba(0,0,0,.45);}
+.card{background:rgba(16,24,38,.76);backdrop-filter:blur(6px);border:1px solid #1e293b;border-radius:18px;padding:18px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:#eab308;color:#111827;border:none;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer}
+.btn.secondary{background:#1f2a44;color:#dbe6ff}
+.badge{display:inline-block;background:#13223a;padding:6px 10px;border-radius:999px;margin-right:8px}
+.nav{position:sticky;top:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:10;padding:10px 12px;display:flex;gap:12px;justify-content:center}
+.nav a{color:#fff;text-decoration:none;background:#141c2b;padding:10px 14px;border-radius:999px;border:1px solid #27344c}
+.nav a:hover{background:#1a2438}
+h1,h2,h3{margin:10px 0}
+.center{display:flex;justify-content:center}
+.music-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:20}
+.ticker{margin:18px auto;overflow:hidden;border-radius:16px;border:1px solid #1e293b;background:rgba(16,24,38,.76)}
+.ticker .inner{display:flex;gap:5vw; padding:12px 0; animation:mar 40s linear infinite}
+.ticker .item{white-space:nowrap; font-size:clamp(16px, 2.6vw, 22px)}
+@keyframes mar{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+.mtip{display:flex;align-items:flex-start;gap:10px;margin:10px 0;color:#dbeafe}
+.mtip img{width:28px;height:28px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+@media (max-width:900px){.hero{grid-template-columns:1fr}}
 
-  (rot.videos||[]).forEach((u,i)=>{
-    const el=document.createElement('div'); el.className='item';
-    el.innerHTML = (u.includes('http')?`<a href="${u}" target="_blank">${u}</a>`:u);
-    videos.appendChild(el);
-  });
-  (mus.tracks||mus.music||[]).forEach((u,i)=>{
-    const el=document.createElement('div'); el.className='item'; el.textContent=u; tracks.appendChild(el);
-  });
-  (sli.images||sli.slides||[]).forEach((u,i)=>{
-    const el=document.createElement('div'); el.className='item';
-    el.innerHTML = (u.includes('http')?`<a href="${u}" target="_blank">${u}</a>`:u);
-    slides.appendChild(el);
-  });
-  (quo.quotes||[]).forEach((t,i)=>{
-    const el=document.createElement('div'); el.className='item'; el.textContent='„'+t+'“'; quotes.appendChild(el);
-  });
-})();
-</script>
-</body>
-</html>
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px} .tab{padding:8px 12px;border-radius:999px;border:1px solid #2a3a56;background:#121b2c;color:#dbe6ff;cursor:pointer} .tab.active{background:#1b2841}
+pre{white-space:pre-wrap}
+</style></head><body><div class="wrap">
+<h2>🎛️ Media‑Admin (Rota‑Style)</h2>
+<div class="tabs"><div class="tab active" data-v="video">🎥 Video</div><div class="tab" data-v="music">🎵 Musik</div><div class="tab" data-v="bgslides">🖼️ Hintergrund‑Slides</div><div class="tab" data-v="kinoslides">🎞️ Kino‑Slides</div><div class="tab" data-v="settings">⚙️ Settings</div></div>
+<div id="pane" class="card glow"></div></div>
+<script>
+async function get(u){ return (await fetch(u,{cache:'no-store'})).json(); }
+const pane=document.getElementById('pane');
+async function show(which){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.v===which));
+  if(which==='video'){ const x=await get('rotator.json'); pane.innerHTML='<h3>Video Rotator</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
+  if(which==='music'){ const x=await get('music.json'); pane.innerHTML='<h3>Musik</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
+  if(which==='bgslides'){ const x=await get('slideshow.json'); pane.innerHTML='<h3>Hintergrund Slides</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
+  if(which==='kinoslides'){ const x=await get('kino-slides.json'); pane.innerHTML='<h3>Kino Slides</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
+  if(which==='settings'){ const x=await get('settings.json'); pane.innerHTML='<h3>Settings</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v)); show('video');
+</script></body></html>

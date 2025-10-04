@@ -1,41 +1,36 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LP‑Admin – Qualitätsprüfung</title>
-<style>
-  :root{--bg:#0b0b10;--card:#141420;--bd:#292941;--ink:#eee;--mut:#94a3b8;--btn:#2563eb;--btnb:#1d4ed8}
-  body{font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink);margin:0}
-  header{padding:16px 20px;background:#15151f;border-bottom:1px solid #2b2b3a}
-  main{max-width:1100px;margin:20px auto;padding:0 20px}
-  .card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
-  table{width:100%;border-collapse:collapse} th,td{border-bottom:1px solid #2b2b3a;padding:10px;text-align:left}
-  input,button{padding:10px;border-radius:8px;border:1px solid #2b2b3a;background:#0f0f18;color:var(--ink)}
-  button{background:var(--btn);border-color:var(--btnb);cursor:pointer}
-  .row{display:flex;gap:8px;margin:10px 0}
-</style>
-</head>
-<body>
-<header><strong>LP‑Admin</strong> – Qualitätsprüfung & E‑Mail‑Freigabe</header>
-<main>
-  <div class="card">
-    <h3>Partner‑E‑Mails (aus emails.json)</h3>
-    <table id="tbl"><thead><tr><th>ID</th><th>E‑Mail</th><th>Status</th></tr></thead><tbody></tbody></table>
-    <p style="color:#94a3b8">Hinweis: Schreiben ist auf GitHub Pages nicht möglich – diese Ansicht ist read‑only (Memo 03 bringt Bearbeitung).</p>
-  </div>
-</main>
-<script>
-async function loadJSON(u){ const r=await fetch(u,{cache:'no-store'}); return await r.json(); }
-(async()=>{
-  const data = await loadJSON('emails.json');
-  const list = data.emails || data;
-  const tb = document.querySelector('#tbl tbody'); tb.innerHTML='';
-  (list||[]).forEach(e=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${e.id||'—'}</td><td>${e.email||'—'}</td><td>${e.approved?'✅ freigegeben':'⏳ ausstehend'}</td>`;
-    tb.appendChild(tr);
-  });
-})();
-</script>
-</body>
-</html>
+<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LP-Admin – Qualität & Freigabe</title><style>
+:root{--ink:#e6f1ff; --bg:#0b1020; --mut:#9fb0c6; --card:#101826; --glow:#f2c94c;}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:18px}
+.glow{box-shadow:0 0 0 2px rgba(242,201,76,.12), 0 20px 60px rgba(0,0,0,.45);}
+.card{background:rgba(16,24,38,.76);backdrop-filter:blur(6px);border:1px solid #1e293b;border-radius:18px;padding:18px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:#eab308;color:#111827;border:none;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer}
+.btn.secondary{background:#1f2a44;color:#dbe6ff}
+.badge{display:inline-block;background:#13223a;padding:6px 10px;border-radius:999px;margin-right:8px}
+.nav{position:sticky;top:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:10;padding:10px 12px;display:flex;gap:12px;justify-content:center}
+.nav a{color:#fff;text-decoration:none;background:#141c2b;padding:10px 14px;border-radius:999px;border:1px solid #27344c}
+.nav a:hover{background:#1a2438}
+h1,h2,h3{margin:10px 0}
+.center{display:flex;justify-content:center}
+.music-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:20}
+.ticker{margin:18px auto;overflow:hidden;border-radius:16px;border:1px solid #1e293b;background:rgba(16,24,38,.76)}
+.ticker .inner{display:flex;gap:5vw; padding:12px 0; animation:mar 40s linear infinite}
+.ticker .item{white-space:nowrap; font-size:clamp(16px, 2.6vw, 22px)}
+@keyframes mar{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+.mtip{display:flex;align-items:flex-start;gap:10px;margin:10px 0;color:#dbeafe}
+.mtip img{width:28px;height:28px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+@media (max-width:900px){.hero{grid-template-columns:1fr}}
+
+table{width:100%;border-collapse:collapse} td,th{border-bottom:1px solid #263246;padding:10px;text-align:left} .status{font-size:20px}
+</style></head><body><div class="wrap">
+<h2>LP‑Admin – Qualitätsprüfung & E‑Mail‑Freigabe (Memo 02)</h2>
+<div class="card glow"><p>Diese Demo zeigt die Sicht auf <code>emails.json</code>. Für echte Commits nutze später die GitHub API (Token nur für Admins).</p>
+<pre class="card" style="overflow:auto">Beispiel-Eintrag:
+{{ "id": "FSA-2025-10-07-0001", "email": "partner@mail.com", "firstname": "Alex", "lastname": "Sasse", "approved": true }}</pre></div>
+<div class="card glow"><h3>Aktuelle Einträge</h3><table id="tbl"><thead><tr><th>ID</th><th>Name</th><th>E‑Mail</th><th>Status</th></tr></thead><tbody></tbody></table></div>
+</div><script>
+async function load(){ const r=await fetch('emails.json',{cache:'no-store'}); const d=await r.json(); const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
+(d.partners||[]).forEach(p=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${p.id}</td><td>${(p.firstname||'')+' '+(p.lastname||'')}</td><td>${p.email}</td><td class='status'>${p.approved?'✅':'⏳'}</td>`; tb.appendChild(tr); });} load();
+</script></body></html>

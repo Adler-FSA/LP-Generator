@@ -1,257 +1,148 @@
-<!doctype html>
-<html lang="de">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Finanzielle Souveränitäts Akademie</title>
+<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dein Geld. Deine Freiheit. – v2.4.5</title>
 <style>
-  :root{
-    --bg-card: rgba(15,15,25,0.65);
-    --text: #f2f2f2;
-    --muted: #aaa;
-    --accent: #d4af37;
-    --accent-2:#1cc2a0;
-    --shadow: 0 25px 50px rgba(0,0,0,.65);
-    --radius: 14px;
-    --maxw: 1200px;
-  }
-  *{box-sizing:border-box}
-  body{font-family:Inter,system-ui,sans-serif;color:var(--text);background:#000;margin:0}
-  h1,h2,h3{font-family:Montserrat,sans-serif;font-weight:700;line-height:1.2;color:var(--accent)}
-  header{position:fixed;top:0;left:0;width:100%;display:flex;justify-content:center;align-items:center;padding:20px 40px;z-index:1000;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);color:#fff}
-  header nav{display:flex;gap:40px;flex-wrap:wrap}
-  header a{color:#fff;text-decoration:none;font-weight:600;font-size:1.05rem;padding:6px 14px;border-radius:8px;box-shadow:0 0 14px rgba(255,255,255,0.15);background:rgba(0,0,0,0.4)}
-  header a:hover{color:var(--accent);box-shadow:0 0 18px rgba(212,175,55,0.7)}
-  .bg-video{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;pointer-events:none;background:#000}
-  .bg-video iframe{width:100%;height:100%;border:none}
-  main{padding-top:96px}
-  section{padding:100px 0;position:relative;z-index:2}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
-  .grid{display:grid;gap:32px}
-  .grid.cols-2{grid-template-columns:repeat(2,1fr)}
-  @media (max-width:900px){.grid.cols-2{grid-template-columns:1fr}}
-  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
-  @keyframes pulseBorder{
-    0%{box-shadow:0 0 10px rgba(212,175,55,0.3),0 0 20px rgba(255,255,255,0.1);border:1px solid rgba(212,175,55,0.2)}
-    50%{box-shadow:0 0 35px rgba(212,175,55,0.8),0 0 60px rgba(255,255,255,0.6);border:1px solid rgba(212,175,55,0.8)}
-    100%{box-shadow:0 0 10px rgba(212,175,55,0.3),0 0 20px rgba(255,255,255,0.1);border:1px solid rgba(212,175,55,0.2)}
-  }
-  .card{background:var(--bg-card);border-radius:var(--radius);padding:32px;backdrop-filter:blur(10px);animation:float 9s ease-in-out infinite,pulseBorder 8s ease-in-out infinite}
-  .btn{display:inline-block;margin-top:20px;background:var(--accent);color:#000;padding:14px 28px;border-radius:999px;font-weight:600;text-decoration:none;font-family:Montserrat,sans-serif;font-size:1rem;box-shadow:0 4px 12px rgba(0,0,0,.4)}
-  .btn:hover{background:#e5c85f}.btn.full{display:block;width:100%;text-align:center}
-  .accordion-btn{width:100%;background:none;border:none;outline:none;text-align:left;padding:16px;font-size:1.1rem;font-weight:600;color:var(--accent);cursor:pointer;border-bottom:1px solid rgba(255,255,255,.2);transition:background .3s}
-  .accordion-btn:hover{background:rgba(255,255,255,0.05)}
-  .accordion-content{display:none;padding:0 16px 16px;color:var(--text);font-size:1rem;line-height:1.6}
-  .accordion-item.active .accordion-content{display:block}
-  #musikBtn{position:fixed;bottom:20px;right:20px;z-index:10;padding:10px 18px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50px;font-size:1rem;cursor:pointer;font-family:Inter,sans-serif;box-shadow:0 6px 14px rgba(0,0,0,0.5)}
-  #welcomeBox{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:2000}
-  #welcomeInner{background:var(--bg-card);padding:40px;max-width:520px;width:90%;border-radius:var(--radius);backdrop-filter:blur(10px);text-align:center;animation:pulseBorder 8s ease-in-out infinite}
-  #welcomeInner input{padding:10px;width:80%;border-radius:6px;border:1px solid #ccc;margin:12px 0}
-  #welcomeInner button{margin:8px;padding:10px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:600}
-  #laterBtn{background:#444;color:#fff}#goBtn{background:var(--accent);color:#000}
-  #kinoFrame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#0b0b0f}
-  #kinoFrame iframe,#kinoFrame img{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover}
-  footer{padding:30px 20px;color:#aaa;text-align:center;border-top:1px solid rgba(255,255,255,.06)}
-</style>
-</head>
-<body>
-<header>
-  <nav>
-    <a href="#hero" target="_blank">Startseite</a>
-    <a href="https://www.finanziellesouveraenitaet.de/campus" target="_blank">Campus</a>
-    <a href="https://www.finanziellesouveraenitaet.de/grundkurs-anfaenger" target="_blank">Grundkurs</a>
-    <a href="https://www.finanziellesouveraenitaet.de/onboarding" target="_blank">Onboarding</a>
-    <a href="https://www.finanziellesouveraenitaet.de/krypto-glossar-pro" target="_blank">Krypto‑Glossar Pro</a>
-  </nav>
-</header>
+:root{--ink:#e6f1ff; --bg:#0b1020; --mut:#9fb0c6; --card:#101826; --glow:#f2c94c;}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:18px}
+.glow{box-shadow:0 0 0 2px rgba(242,201,76,.12), 0 20px 60px rgba(0,0,0,.45);}
+.card{background:rgba(16,24,38,.76);backdrop-filter:blur(6px);border:1px solid #1e293b;border-radius:18px;padding:18px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:#eab308;color:#111827;border:none;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer}
+.btn.secondary{background:#1f2a44;color:#dbe6ff}
+.badge{display:inline-block;background:#13223a;padding:6px 10px;border-radius:999px;margin-right:8px}
+.nav{position:sticky;top:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:10;padding:10px 12px;display:flex;gap:12px;justify-content:center}
+.nav a{color:#fff;text-decoration:none;background:#141c2b;padding:10px 14px;border-radius:999px;border:1px solid #27344c}
+.nav a:hover{background:#1a2438}
+h1,h2,h3{margin:10px 0}
+.center{display:flex;justify-content:center}
+.music-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:20}
+.ticker{margin:18px auto;overflow:hidden;border-radius:16px;border:1px solid #1e293b;background:rgba(16,24,38,.76)}
+.ticker .inner{display:flex;gap:5vw; padding:12px 0; animation:mar 40s linear infinite}
+.ticker .item{white-space:nowrap; font-size:clamp(16px, 2.6vw, 22px)}
+@keyframes mar{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+.mtip{display:flex;align-items:flex-start;gap:10px;margin:10px 0;color:#dbeafe}
+.mtip img{width:28px;height:28px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+@media (max-width:900px){.hero{grid-template-columns:1fr}}
 
-<div class="bg-video">
-  <iframe src="https://www.youtube.com/embed/miWBKSszEIw?autoplay=1&mute=1&loop=1&playlist=miWBKSszEIw&controls=0&modestbranding=1&showinfo=0" allow="autoplay; fullscreen"></iframe>
-</div>
-
-<!-- Begrüßung -->
-<div id="welcomeBox">
-  <div id="welcomeInner">
-    <h2>👋 Willkommen zur Finanzielle Souveränität Akademie</h2>
-    <p>Trage deine <strong>seriöse E-Mail-Adresse</strong> ein, um deine persönliche Landingpage zu aktivieren.</p>
-    <input type="email" id="emailInput" placeholder="Deine E-Mail">
-    <div>
-      <button id="goBtn">Freischalten</button>
-      <button id="laterBtn">Später ansehen</button>
-    </div>
-  </div>
-</div>
-
-<main>
-<section id="hero">
-  <div class="wrap grid cols-2">
-    <div class="card">
-      <h1>Dein Geld.<br><span style="color:var(--accent-2)">Deine Freiheit.</span></h1>
+.bg{position:fixed;inset:0;background-size:cover;background-position:center;opacity:.45;z-index:-1}
+.hero .card{min-height:260px}
+.quote{font-style:italic;color:#cbd5e1}
+.kino iframe, .kino .slide{width:100%;height:56vw;max-height:520px;border:0;border-radius:16px}
+.kino{position:relative}
+.kino .kticker{position:absolute;left:50%;transform:translateX(-50%);top:-18px;background:#b91c1c;color:#fff;padding:6px 12px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.popup{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.55)}
+.popin{width:min(560px,92vw)} .popin .row{display:flex;gap:8px;margin:8px 0}
+.popin input{flex:1;padding:12px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#e5e7eb}
+</style></head><body>
+<div class="bg"></div>
+<nav class="nav">
+  <a href="#top">Startseite</a><a href="#campus">Campus</a><a href="#grundkurs">Grundkurs</a>
+  <a href="#onboarding">Onboarding</a><a href="#glossar">Krypto‑Glossar Pro</a>
+</nav>
+<div class="wrap" id="top">
+  <section class="hero">
+    <div class="card glow">
+      <h2 style="color:#facc15;margin-bottom:4px">Dein Geld.</h2>
+      <h2 style="color:#34d399;margin-top:0">Deine Freiheit.</h2>
       <p>Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst.</p>
       <p><strong>Nie mehr Fremdbestimmung.</strong></p>
-      <div id="approvalBanner" style="display:none;margin:10px 0 0;background:#4a1c1c;border:1px solid #7a2a2a;color:#ffb3b3;padding:12px;border-radius:10px;font-weight:700;text-align:center">⏳ Diese LP ist noch nicht freigegeben – Eintrag erfolgt nach Qualitätsprüfung.</div>
-      <div id="emailBox" class="card" style="background:rgba(0,0,0,.35);margin-top:14px"></div>
-      <a href="#cta" class="btn">Jetzt starten</a>
+      <div id="partnerLine" class="badge" style="display:none"></div>
+      <button class="btn" onclick="document.getElementById('popup').style.display='grid'">Jetzt starten</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:20px">
-      <div class="card" style="font-style:italic;text-align:center">„Eine Investition in Wissen bringt die besten Zinsen.“ – Franklin</div>
-      <div class="card">
-        <h2>Deine Vorteile</h2>
-        <ul>
-          <li>💰 Vermögen schützen</li>
-          <li>🔑 Zugang zu Krypto</li>
-          <li>🤖 Einkommen mit KI</li>
-          <li>🌐 Klarheit statt Chaos</li>
-        </ul>
-        <p style="margin-top:1rem;font-weight:600;color:var(--muted);text-align:center">All das bekommst du schon im kostenlosen Grundkurs.</p>
-      </div>
-      <div class="card" style="font-style:italic;text-align:center">„Das Wichtigste ist, in dich selbst zu investieren.“ – Buffett</div>
+    <div class="card glow quote">„Eine Investition in Wissen bringt die besten Zinsen.“ — Franklin</div>
+  </section>
+  <div class="ticker glow" aria-label="Neuigkeiten Laufband"><div class="inner"></div></div>
+  <section class="card glow">
+    <h3>Dein digitaler Mentor</h3>
+    <div class="mtip"></div><div class="mtip"></div>
+    <script>
+      document.currentScript.previousElementSibling.innerHTML = tipIcon() + " Ich begleite dich Schritt für Schritt. Starte mit dem kostenlosen Grundkurs.";
+      document.currentScript.previousElementSibling.previousElementSibling.innerHTML = tipIcon() + " Lies jeden Abschnitt und folge den gelben Buttons.";
+    </script>
+  </section>
+  <section class="card glow kino" id="kino">
+    <div class="kticker">🎬 Jetzt im Kino</div><div id="kinoSlot"></div>
+  </section>
+  <section class="card glow" id="share">
+    <h3>Teile diese Seite</h3><p>Empfehle die Akademie in deiner Community.</p>
+    <div class="center" style="gap:10px;flex-wrap:wrap">
+      <a class="btn secondary" href="#" id="tg">Telegram</a>
+      <a class="btn secondary" href="#" id="wa">WhatsApp</a>
+      <a class="btn secondary" href="#" id="fb">Facebook</a>
+      <a class="btn secondary" href="#" onclick="alert('Teilen in der App öffnen');return false">Instagram</a>
+      <a class="btn secondary" href="#" onclick="alert('Teilen in der App öffnen');return false">TikTok</a>
     </div>
+  </section>
+</div>
+<div class="music-bar"><button id="musicBtn" class="btn">Musik starten</button></div>
+<div id="popup" class="popup" style="display:none">
+  <div class="card glow popin">
+    <h3>👋 Willkommen zur Finanziellen Souveränität Akademie</h3>
+    <p>Trage deine <strong>richtigen Daten</strong> ein, um deine persönliche Landingpage zu aktivieren.</p>
+    <div class="row"><input id="fname" placeholder="Vorname"><input id="lname" placeholder="Nachname"></div>
+    <div class="row"><input id="email" placeholder="E‑Mail"></div>
+    <div class="row"><button class="btn" onclick="activate()">Freischalten</button><button class="btn secondary" onclick="this.closest('#popup').style.display='none'">Später ansehen</button></div>
+    <details style="margin-top:8px"><summary>Warum brauchen wir eine seriöse E‑Mail?</summary>
+      <p>Damit dein Mentor dich erreichen und dir die Zugangsdaten zum Grundkurs zusenden kann. Deine Daten werden nicht im Link gespeichert.</p>
+    </details>
   </div>
-</section>
-
-<section id="accordion">
-  <div class="wrap">
-    <div class="card">
-      <h2>Deine Reise zur finanziellen Souveränität</h2>
-      <p style="color:var(--muted);margin-bottom:10px">👉 Klicke auf die Titel, um mehr zu erfahren</p>
-      <div class="accordion-item">
-        <button class="accordion-btn">🚀 Nie mehr Fremdbestimmung</button>
-        <div class="accordion-content"><p>Starte deinen eigenen Weg. Wer losgeht, entdeckt die Chancen, die in Blockchain, KI und Krypto stecken.</p></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-btn">🎆 Wer es wirklich will, folgt der Einladung</button>
-        <div class="accordion-content"><p>Du bist nicht allein – viele Menschen gehen diesen Weg. Die Community wächst täglich.</p></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-btn">🧠 Viele Tausende entdecken täglich die Krypto-Welt</button>
-        <div class="accordion-content"><p>Die Zukunft ist digital. Blockchain, Krypto und KI eröffnen dir neue Einkommensmöglichkeiten.</p></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-btn">😨 Angst entsteht aus Unwissenheit</button>
-        <div class="accordion-content"><p>Wissen schafft Sicherheit. Genau deshalb gibt es diesen Kurs.</p></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-btn">📚 Deshalb gibt es die Akademie</button>
-        <div class="accordion-content"><p>Hier bekommst du alles, was du brauchst: Klarheit, Praxiswissen und die Tools für deine Freiheit.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="cta">
-  <div class="wrap">
-    <div class="card" style="text-align:center;padding:50px;max-width:780px;margin:0 auto">
-      <h2 style="font-size:2rem;margin-bottom:10px;color:var(--accent)">Finanzbildung für die neue Welt</h2>
-      <p style="font-size:1.3rem;font-weight:600;color:var(--accent-2);margin-bottom:25px">Dein Geld. Deine Zukunft. Deine Souveränität.</p>
-      <div id="ctaEmail"></div>
-      <p style="margin-top:20px;font-size:1rem;color:var(--muted)">Oder kopiere die Adresse direkt:</p>
-      <p id="ctaCopy" style="font-size:1.2rem;font-weight:600;color:var(--accent)"></p>
-      <button id="copyBtn" style="display:none;margin-top:8px;padding:10px 16px;background:var(--accent);color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:600">📋 E‑Mail kopieren</button>
-      <p style="margin-top:25px;font-size:1rem;color:var(--text)">👉 Über diese E‑Mail erhältst du direkten Kontakt zu einem menschlichen Mentor.</p>
-      <p style="margin-top:15px;font-size:1.2rem;font-weight:700;color:var(--accent-2)">✅ Von deinem Mentor erhältst du außerdem deine Zugangsdaten zum Grundkurs.</p>
-    </div>
-  </div>
-</section>
-
-<section id="kino">
-  <div class="wrap">
-    <div class="card" style="text-align:left">
-      <h2>Kino</h2>
-      <div id="kinoFrame"></div>
-    </div>
-  </div>
-</section>
-</main>
-
-<footer>
-  <p>© 2025 Finanzielle Souveränitäts Akademie</p>
-  <p><em>„Wissen ist Macht – angewandtes Wissen ist Freiheit.“</em></p>
-</footer>
-
-<audio id="bgMusic" preload="none" loop>
-  <source src="terra-mater-inspiring-cinematic-epic-272565.mp3" type="audio/mpeg">
-</audio>
-<button id="musikBtn">🎵 Musik starten</button>
-
+</div>
+<img src="mentor-icon.png" alt="mentor" style="display:none" />
 <script>
-  // Utils
-  function getParam(name){ return new URLSearchParams(location.search).get(name); }
-  async function loadJSON(url){ try{ const r=await fetch(url,{cache:'no-store'}); return await r.json(); }catch(e){ return null; } }
 
-  // Musikbutton
-  const musikBtn=document.getElementById('musikBtn');
-  const bgMusic=document.getElementById('bgMusic');
-  musikBtn.addEventListener('click',()=>{
-    if(bgMusic.paused){ bgMusic.play().then(()=>musikBtn.textContent="🎵 Musik stoppen").catch(()=>alert("⚠️ Autoplay blockiert – bitte manuell starten.")); }
-    else{ bgMusic.pause(); musikBtn.textContent="🎵 Musik starten"; }
-  });
-
-  // Akkordeon
-  document.querySelectorAll('.accordion-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{btn.parentElement.classList.toggle('active');});
-  });
-
-  // Begrüßung
-  const welcomeBox=document.getElementById('welcomeBox');
-  const laterBtn=document.getElementById('laterBtn');
-  const goBtn=document.getElementById('goBtn');
-  laterBtn.addEventListener('click',()=>{welcomeBox.style.display='none';});
-  goBtn.addEventListener('click',()=>{
-    const mail=document.getElementById('emailInput').value.trim();
-    if(!mail){alert("Bitte E‑Mail eintragen!");return;}
-    document.body.innerHTML=document.body.innerHTML.replace(/EMAIL_PLACEHOLDER/g,mail);
-    welcomeBox.style.display='none';
-  });
-
-  // Daten laden & rendern
-  (async()=>{
-    const id=getParam('id') || 'FSA-2025-10-07-0001';
-    const settings = await loadJSON('settings.json') || {mode:'video', musicEnabled:true, kinoEnabled:true};
-    const emails   = await loadJSON('emails.json')   || {emails:[]};
-    const entry = (emails.emails||emails).find(e=>e.id===id);
-
-    const banner = document.getElementById('approvalBanner');
-    const emailBox = document.getElementById('emailBox');
-    const ctaEmail = document.getElementById('ctaEmail');
-    const ctaCopy  = document.getElementById('ctaCopy');
-    const copyBtn  = document.getElementById('copyBtn');
-
-    if(!entry){
-      banner.style.display='block';
-      emailBox.textContent = "❌ Für diese ID wurde noch keine E‑Mail hinterlegt.";
-    }else if(entry && !entry.approved){
-      banner.style.display='block';
-      emailBox.innerHTML = "⏳ E‑Mail eingetragen: <strong>"+(entry.email||'—')+"</strong><br><span class='hint'>Freigabe nach Qualitätsprüfung.</span>";
-      ctaEmail.innerHTML = "";
+async function loadJSON(url){ const r = await fetch(url, {cache:'no-store'}); return r.json(); }
+function byId(id){ return document.getElementById(id); }
+async function setupBackground(){
+  try{
+    const s = await loadJSON('settings.json');
+    if(s.mode === 'slideshow'){
+      const cfg = await loadJSON('slideshow.json'); const el=document.querySelector('.bg'); let i=0;
+      function show(){ el.style.backgroundImage=`url('${cfg.images[i%cfg.images.length]}')`; i++; }
+      show(); setInterval(show, cfg.interval||6000);
     }else{
-      banner.style.display='none';
-      const btn = "<a href='mailto:"+entry.email+"' class='btn full'>🚀 Jetzt kostenlos starten – "+entry.email+"</a>";
-      ctaEmail.innerHTML = btn;
-      ctaCopy.textContent = entry.email;
-      copyBtn.style.display='inline-block';
-      copyBtn.onclick = ()=> navigator.clipboard.writeText(entry.email).then(()=>alert('📋 E‑Mail kopiert: '+entry.email));
+      const rot = await loadJSON('rotator.json');
+      const iframe = document.createElement('iframe');
+      iframe.src = rot.videos[0] || ''; iframe.allow = 'autoplay; encrypted-media';
+      iframe.style = 'position:fixed;inset:0;width:100%;height:100%;z-index:-1;border:0;opacity:.35;';
+      document.body.appendChild(iframe);
     }
+  }catch(e){ console.warn(e); }
+}
+let audio, isPlaying=false;
+async function setupMusic(){
+  const btn = document.getElementById('musicBtn');
+  const cfg = await loadJSON('music.json');
+  audio = new Audio(cfg.tracks[0]?.url || ''); audio.loop=true; audio.volume=.25;
+  btn.onclick = async ()=>{
+     if(!audio.src) return;
+     if(!isPlaying){ try{ await audio.play(); isPlaying=true; btn.innerText='Musik stoppen'; }catch(e){ alert('Autoplay blockiert – bitte einmal tippen.'); } }
+     else{ audio.pause(); isPlaying=false; btn.innerText='Musik starten'; }
+  };
+}
+async function setupTicker(){
+  const q = await loadJSON('quotes.json'); const inner = document.querySelector('.ticker .inner'); if(!inner) return;
+  const items = q.items || []; inner.innerHTML = [...items, ...items].map(t=>`<div class="item">✨ ${t}</div>`).join('');
+}
+function tipIcon(){ return '<img src="mentor-icon.png" alt="Mentor">'; }
+document.addEventListener('DOMContentLoaded', ()=>{ setupBackground(); setupMusic(); setupTicker(); });
 
-    // Kino: Video oder Slideshow
-    const kinoFrame = document.getElementById('kinoFrame');
-    if(settings.kinoEnabled!==false){
-      if(settings.mode==='slideshow'){
-        const show = await loadJSON('slideshow.json');
-        if(show && show.images && show.images.length){
-          let i=0; const img=document.createElement('img'); img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover'; kinoFrame.appendChild(img);
-          function next(){ img.src=show.images[i]; i=(i+1)%show.images.length; }
-          next(); setInterval(next,(show.interval||15)*1000);
-        } else { kinoFrame.innerHTML='<div style="padding:16px;color:#aaa">Keine Slideshow konfiguriert.</div>'; }
-      } else {
-        const rot = await loadJSON('rotator.json');
-        const first = rot && rot.videos && rot.videos[0] ? rot.videos[0] : "https://www.youtube.com/embed/miWBKSszEIw?autoplay=1&mute=1&loop=1&playlist=miWBKSszEIw";
-        kinoFrame.innerHTML = "<div id='kinoFrame' style='position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#0b0b0f'><iframe src='"+first+"' allow='autoplay; fullscreen' style='position:absolute;inset:0;width:100%;height:100%;border:0'></iframe></div>";
-      }
-    }
-
-    if(settings.musicEnabled===false){ musikBtn.style.display='none'; }
-  })();
-</script>
-</body>
-</html>
+async function activate(){
+  const fn = byId('fname').value.trim(), ln = byId('lname').value.trim(), em = byId('email').value.trim();
+  if(!em){ alert('Bitte E‑Mail eingeben.'); return; }
+  document.getElementById('popup').style.display='none';
+  const line = byId('partnerLine'); line.textContent = 'Für den User von ' + (fn?fn+' ':'') + (ln||'') + ' • ' + em; line.style.display = 'inline-block';
+}
+(async ()=>{
+  try{ const data = await loadJSON('emails.json'); const p=(data.partners||[]).find(x=>x.approved);
+    if(p){ const line=byId('partnerLine'); line.textContent='Für den User von '+(p.firstname||'')+' '+(p.lastname||'')+' • '+p.email; line.style.display='inline-block'; }
+  }catch(e){}
+  const s = await loadJSON('settings.json'); const slot = document.getElementById('kinoSlot');
+  if(s.kino?.mode === 'slideshow'){ const ks=await loadJSON('kino-slides.json'); let i=0; const img=document.createElement('img'); img.className='slide'; slot.appendChild(img);
+    function show(){ img.src=ks.images[i%ks.images.length]; i++; } show(); setInterval(show, ks.interval||8000);
+  }else{ const rot=await loadJSON('rotator.json'); const ifr=document.createElement('iframe'); ifr.allow='autoplay; encrypted-media'; ifr.src=rot.videos[0]||''; slot.appendChild(ifr); }
+  const url = location.href; document.getElementById('tg').href = 'https://t.me/share/url?url='+encodeURIComponent(url);
+  document.getElementById('wa').href = 'https://api.whatsapp.com/send?text='+encodeURIComponent(url);
+  document.getElementById('fb').href = 'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(url);
+})();
+</script></body></html>

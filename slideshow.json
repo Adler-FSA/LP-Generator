@@ -1,7 +1,7 @@
 {
-  "interval": 15,
   "images": [
-    "https://images.unsplash.com/photo-1469474968028-56623f02e42e?q=80&w=1600&auto=format",
-    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format"
-  ]
+    "https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=1200&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1473186578172-c141e6798cf4?q=80&w=1200&auto=format&fit=crop"
+  ],
+  "interval": 6000
 }

@@ -1,5 +1,12 @@
 {
   "tracks": [
-    "terra-mater-inspiring-cinematic-epic-272565.mp3"
+    {
+      "title": "Calm Focus",
+      "url": "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Scott_Holmes_Music/Happy_Music/Scott_Holmes_Music_-_01_-_Upbeat_Party.mp3"
+    },
+    {
+      "title": "Hopeful Journey",
+      "url": "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Scott_Holmes_Music/Epic_Themes_2/Scott_Holmes_Music_-_04_-_Hopeful_Journey.mp3"
+    }
   ]
 }
