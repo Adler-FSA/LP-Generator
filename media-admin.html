@@ -1,43 +1,53 @@
-<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Media-Admin – Rota-Style</title><style>
-:root{--ink:#e6f1ff; --bg:#0b1020; --mut:#9fb0c6; --card:#101826; --glow:#f2c94c;}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-.wrap{max-width:1200px;margin:0 auto;padding:18px}
-.glow{box-shadow:0 0 0 2px rgba(242,201,76,.12), 0 20px 60px rgba(0,0,0,.45);}
-.card{background:rgba(16,24,38,.76);backdrop-filter:blur(6px);border:1px solid #1e293b;border-radius:18px;padding:18px}
-.btn{display:inline-flex;align-items:center;gap:8px;background:#eab308;color:#111827;border:none;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer}
-.btn.secondary{background:#1f2a44;color:#dbe6ff}
-.badge{display:inline-block;background:#13223a;padding:6px 10px;border-radius:999px;margin-right:8px}
-.nav{position:sticky;top:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:10;padding:10px 12px;display:flex;gap:12px;justify-content:center}
-.nav a{color:#fff;text-decoration:none;background:#141c2b;padding:10px 14px;border-radius:999px;border:1px solid #27344c}
-.nav a:hover{background:#1a2438}
-h1,h2,h3{margin:10px 0}
-.center{display:flex;justify-content:center}
-.music-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:20}
-.ticker{margin:18px auto;overflow:hidden;border-radius:16px;border:1px solid #1e293b;background:rgba(16,24,38,.76)}
-.ticker .inner{display:flex;gap:5vw; padding:12px 0; animation:mar 40s linear infinite}
-.ticker .item{white-space:nowrap; font-size:clamp(16px, 2.6vw, 22px)}
-@keyframes mar{from{transform:translateX(0)} to{transform:translateX(-50%)}}
-.mtip{display:flex;align-items:flex-start;gap:10px;margin:10px 0;color:#dbeafe}
-.mtip img{width:28px;height:28px}
-.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
-@media (max-width:900px){.hero{grid-template-columns:1fr}}
-
-.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px} .tab{padding:8px 12px;border-radius:999px;border:1px solid #2a3a56;background:#121b2c;color:#dbe6ff;cursor:pointer} .tab.active{background:#1b2841}
-pre{white-space:pre-wrap}
-</style></head><body><div class="wrap">
-<h2>🎛️ Media‑Admin (Rota‑Style)</h2>
-<div class="tabs"><div class="tab active" data-v="video">🎥 Video</div><div class="tab" data-v="music">🎵 Musik</div><div class="tab" data-v="bgslides">🖼️ Hintergrund‑Slides</div><div class="tab" data-v="kinoslides">🎞️ Kino‑Slides</div><div class="tab" data-v="settings">⚙️ Settings</div></div>
-<div id="pane" class="card glow"></div></div>
-<script>
-async function get(u){ return (await fetch(u,{cache:'no-store'})).json(); }
-const pane=document.getElementById('pane');
-async function show(which){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.v===which));
-  if(which==='video'){ const x=await get('rotator.json'); pane.innerHTML='<h3>Video Rotator</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
-  if(which==='music'){ const x=await get('music.json'); pane.innerHTML='<h3>Musik</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
-  if(which==='bgslides'){ const x=await get('slideshow.json'); pane.innerHTML='<h3>Hintergrund Slides</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
-  if(which==='kinoslides'){ const x=await get('kino-slides.json'); pane.innerHTML='<h3>Kino Slides</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
-  if(which==='settings'){ const x=await get('settings.json'); pane.innerHTML='<h3>Settings</h3><pre>'+JSON.stringify(x,null,2)+'</pre>'; }
+<!doctype html><html lang="de"><meta charset="utf-8">
+<title>Media‑Admin</title>
+<style>
+:root{
+  --bg:#0b1420;--panel:#111b2a;--panel2:#0e1a27;--ink:#eaf2ff;--mut:#9fb2cc;
+  --brand:#ffd34d;--accent:#22d3ee;--glow:rgba(255,211,77,.25);
+  --line:#283445;
+  --good:#22c55e;--bad:#ef4444;
 }
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v)); show('video');
-</script></body></html>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+a{color:var(--accent);text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 16px 80px}
+.nav{position:sticky;top:0;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);z-index:20;border-bottom:1px solid var(--line)}
+.nav .row{max-width:1100px;margin:0 auto;display:flex;gap:10px;padding:10px 12px;align-items:center}
+.badge{padding:9px 14px;border-radius:14px;background:#0b1320;border:1px solid var(--line);color:#d6e2f3;font-weight:600}
+#musicToggle{margin-left:auto;border-radius:10px;border:1px solid var(--line);background:var(--panel);padding:8px 12px;cursor:pointer}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border-radius:18px;border:1px solid var(--line);padding:18px;position:relative;box-shadow:0 0 0 0 var(--glow)}
+.card.glow{box-shadow:0 0 0 1px var(--glow),0 0 60px 0 var(--glow)}
+h1,h2,h3{margin:0 0 12px}
+h1{font-size:40px}
+h2{font-size:22px}
+.mono{font-family:ui-monospace,Consolas,Menlo,monospace}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#000;border:0;border-radius:20px;padding:10px 16px;font-weight:700;cursor:pointer}
+.btn.small{padding:6px 10px;border-radius:12px}
+.input, .inputLarge{width:100%;padding:12px 14px;border-radius:12px;background:#0b1320;border:1px solid var(--line);color:var(--ink)}
+.inputLarge{padding:14px 16px;font-size:18px}
+.quote{font-style:italic;color:var(--mut)}
+.kinoFrame{aspect-ratio:16/9;background:#000;border-radius:16px;border:1px solid var(--line);overflow:hidden}
+.ticker{margin:12px 0;background:#0b1320;border:1px solid var(--line);border-radius:16px;padding:10px 12px;position:relative;box-shadow:0 0 60px 0 var(--glow)}
+.ticker .track{white-space:nowrap; animation:slide 28s linear infinite}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.mentor{display:flex;align-items:center;gap:12px}
+.mentor img{width:36px;height:36px}
+.note{color:var(--mut);font-size:14px}
+.share{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.iconbtn{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line);background:#0b1320;padding:10px 14px;border-radius:12px;color:#d6e2f3}
+footer{margin-top:40px;color:var(--mut);font-size:12px}
+@media(max-width:900px){.grid{grid-template-columns:1fr} h1{font-size:32px}}
+</style>
+<div class="nav"><div class="row"><div class="badge">Media‑Admin</div></div></div>
+<div class="wrap">
+  <h1>Rota‑Style: Video / Musik / Slideshow</h1>
+  <div class="card glow"><ul>
+    <li><b>settings.json</b> → mode: "video" | "slideshow"</li>
+    <li><b>rotator.json</b> → YouTube/Vimeo Embeds + Titel</li>
+    <li><b>slideshow.json</b> → Bilder (Hintergrund)</li>
+    <li><b>slideshow_kino.json</b> → Bilder für Kino</li>
+    <li><b>music.json</b> → Tracks + autoplay</li>
+    <li><b>quotes.json</b> → 15 Zitate</li>
+  </ul></div>
+</div>

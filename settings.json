@@ -1,16 +1,3 @@
 {
-  "version": "2.4.5",
-  "mode": "video",
-  "theme": {
-    "glowColor": "#f2c94c",
-    "bgOverlay": "rgba(0,0,0,0.35)"
-  },
-  "kino": {
-    "mode": "video",
-    "ticker": [
-      "📅 Heute: Adler‑Doku – Flug in 1000fps",
-      "🗓️ Morgen: KI & Finanzen – Einstieg leicht gemacht",
-      "🎯 Freitag: Grundlagen – Deine ersten Schritte"
-    ]
-  }
+  "mode": "video"
 }

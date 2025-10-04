@@ -1,12 +1,9 @@
 {
+  "autoplay": false,
   "tracks": [
     {
-      "title": "Calm Focus",
-      "url": "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Scott_Holmes_Music/Happy_Music/Scott_Holmes_Music_-_01_-_Upbeat_Party.mp3"
-    },
-    {
-      "title": "Hopeful Journey",
-      "url": "https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Scott_Holmes_Music/Epic_Themes_2/Scott_Holmes_Music_-_04_-_Hopeful_Journey.mp3"
+      "title": "Akademie Theme",
+      "url": "https://cdn.pixabay.com/download/audio/2023/10/24/audio_ae9c.mp3?filename=calm-ambient-19085.mp3"
     }
   ]
 }
