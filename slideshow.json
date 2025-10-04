@@ -1,6 +1,10 @@
 {
+  "enabled": true,
+  "interval": 15000,
   "images": [
-    "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1600&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1521295121783-8a321d551ad2?q=80&w=1600&auto=format&fit=crop"
-  ]
+    "slide1.jpg",
+    "slide2.jpg",
+    "slide3.jpg"
+  ],
+  "music": "terra-mater-inspiring-cinematic-epic-272565.mp3"
 }

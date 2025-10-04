@@ -1,125 +1,25 @@
-<!doctype html><html lang="de"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LP‑Admin – Freigaben</title>
-<style>
-:root{
-  --bg:#0b1526; --panel:#0e1b30; --ink:#e6eefc; --mut:#9fb3c8; --accent:#ffd34d; --glow:#ffde72;
-  --brand:#16e2b5; --danger:#ec5d57; --pending:#ffc657; --ok:#4cd964;
-  --card:#0f1f38; --stroke:#163252; --shadow:0 12px 40px rgba(0,0,0,.35);
-}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(1200px 500px at 50% -10%,rgba(251,223,95,.07),transparent 40%),var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-h1,h2,h3{margin:0 0 12px}
-a{color:#79b8ff}
-.small{font-size:.9rem;color:var(--mut)}
-.nav{position:sticky;top:0;z-index:50;display:flex;gap:12px;padding:14px 16px;background:linear-gradient(#0b1526c8,#0b152660)}
-.nav .pill{padding:10px 18px;border-radius:32px;background:#122541;border:1px solid #19345a;box-shadow:inset 0 0 0 1px #0b203a, var(--shadow);cursor:pointer}
-.nav .pill.active{outline:2px solid #244c80}
-.btn{display:inline-flex;align-items:center;gap:10px;border:none;cursor:pointer;padding:12px 18px;border-radius:12px;background:#1a355d;color:var(--ink);border:1px solid #244c80;box-shadow:var(--shadow);transition:.15s}
-.btn:hover{transform:translateY(-1px);}
-.btn.gold{background:linear-gradient(#ffd34d,#f3b847); color:#231b00}
-.wrap{max-width:1140px;margin:0 auto;padding:28px 18px}
-.card{background:linear-gradient(180deg,#0f1f38b8,#0d1a30ee);border:1px solid #1c3b62;border-radius:16px;box-shadow:0 0 0 1px #122a47, 0 20px 60px rgba(0,0,0,.35);padding:18px;margin:16px 0;position:relative}
-.glow{box-shadow:0 0 0 1px #1c3b62, 0 0 30px 2px rgba(255,211,77,.15), 0 20px 60px rgba(0,0,0,.45)}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:900px){.row{grid-template-columns:1fr}}
-.badge{display:inline-flex;align-items:center;gap:8px;border-radius:36px;border:1px solid #213e62;background:#0f213beb;padding:8px 12px;box-shadow:var(--shadow)}
-.status{display:flex;gap:10px;align-items:center}
-.dot{width:10px;height:10px;border-radius:50%}
-.dot.red{background:var(--danger)} .dot.yellow{background:var(--pending)} .dot.green{background:var(--ok)}
-.input{display:flex;gap:12px;flex-wrap:wrap}
-.input input,.input select{flex:1 1 220px;background:#0b1a31;border:1px solid #1b3458;color:var(--ink);padding:12px 14px;border-radius:10px}
-.ticker{overflow:hidden;white-space:nowrap;border-radius:12px;border:1px solid #1c3b62;background:#0d1a30;box-shadow:0 0 0 1px #1c3b62, 0 0 28px rgba(255,211,77,.12)}
-.ticker .inner{display:inline-block;padding-block:10px; animation:scroll 35s linear infinite}
-.ticker .item{display:inline-flex;align-items:center;gap:10px;margin-right:36px;padding:6px 14px;background:#0f1f38;border:1px solid #1a355d;border-radius:999px}
-@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.video{aspect-ratio:16/9;width:100%;border:0;border-radius:12px}
-.footer{opacity:.7;margin:24px 0;text-align:center}
-.icon{width:22px;height:22px;border-radius:6px;background:linear-gradient(180deg,#e5c66b,#b9891f);display:inline-grid;place-items:center;color:#000}
-.share{display:flex;flex-wrap:wrap;gap:12px}
-.share a{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;border:1px solid #284a7b;background:#0f2140;text-decoration:none;color:var(--ink)}
-.audio-toggle{position:fixed;left:12px;top:12px;z-index:100; background:#0f2140;border:1px solid #244c80;border-radius:999px;padding:8px 14px}
-.heroTitle{font-size:44px;line-height:1.15}
-.heroKicker{font-size:22px;color:var(--brand);font-weight:800}
-</style></head><body>
-<div class="wrap">
-  <h1>LP‑Admin – Qualitätsprüfung & E‑Mail‑Freigabe</h1>
-  <div class="card glow">
-    <p class="small">Demo‑Ansicht: Zeigt, wie die Freigabe mit <code>emails.json</code> gedacht ist.</p>
-    <pre class="small">{
-  "id": "FSA-2025-10-07-0001",
-  "email": "partner1@mail.com",
-  "name": "Alex Adler",
-  "approved": true
-}</pre>
-  </div>
-  <div class="card"><h3>Aktuelle Einträge (nur Ansicht)</h3>
-    <ul id="list"></ul>
-  </div>
-</div>
-<script>
-
-async function fetchJSON(url){ const r=await fetch(url); return r.json(); }
-function el(sel,root=document){ return root.querySelector(sel); }
-function setStatus(status){
-  const red=el('.dot.red'), y=el('.dot.yellow'), g=el('.dot.green'); red.style.opacity=.25; y.style.opacity=.25; g.style.opacity=.25;
-  if(status==='red') red.style.opacity=1; if(status==='yellow') y.style.opacity=1; if(status==='green') g.style.opacity=1;
-}
-async function initTicker(){
-  const data = await fetchJSON('quotes.json').catch(()=>({items:[]}));
-  const inner = el('.ticker .inner'); if(!inner) return;
-  const items = (data.items||[]).map(t=>`<span class="item">✨ ${t}</span>`).join('');
-  inner.innerHTML = items + items;
-}
-async function initHero(){
-  const s = await fetchJSON('settings.json').catch(()=>({}));
-  setStatus(s.approval==='approved'?'green':(s.approval==='pending'?'yellow':'red'));
-  if(s.music && s.music.autoplay){ tryStartMusic(); }
-}
-let audio, playlist=[], current=0;
-async function tryStartMusic(){
-  if(audio) return;
-  try{
-    const m = await fetchJSON('music.json');
-    playlist = m.tracks||[];
-    if(playlist.length){
-      audio = new Audio(playlist[0].url);
-      audio.loop = true;
-      audio.volume = 0.5;
-      await audio.play().catch(() => {});
-    }
-  }catch(e){}
-}
-function toggleMusic(){
-  if(!audio){ tryStartMusic(); return; }
-  if(audio.paused) audio.play(); else audio.pause();
-}
-async function initKino(){
-  const k = await fetchJSON('kino.json').catch(()=>({}));
-  const iframe = el('#kinoFrame');
-  if(k.video && iframe){ iframe.src = k.video; }
-  const badge = el('#kinoBadge'); if(k.current) badge.textContent = 'Jetzt im Kino: '+k.current;
-}
-async function copyEmail(){
-  const emailEl = document.getElementById('partnerEmail');
-  if(emailEl){
-    const email = emailEl.textContent;
-    try{ await navigator.clipboard.writeText(email); alert('E-Mail kopiert: '+email); }catch(e){}
-  }
-}
-document.addEventListener('DOMContentLoaded',()=>{
-  initTicker(); initHero(); initKino();
-  const mt = document.getElementById('musicToggle'); if(mt) mt.addEventListener('click',toggleMusic);
-  const cb = document.getElementById('copyBtn'); if(cb) cb.addEventListener('click',copyEmail);
-});
-
-fetch('emails.json').then(r=>r.json()).then(d=>{ 
-  const ul=document.getElementById('list'); 
-  (d.partners||[]).forEach(p=>{ 
-    const li=document.createElement('li'); 
-    li.textContent = (p.approved?'✅':'⏳') + ' ' + (p.name||'') + ' – ' + p.email; 
-    ul.append(li); 
-  }); 
-});
-</script>
-</body></html>
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>LP-Admin – Qualität & E-Mail-Freigabe</title><style>
+:root{--bg:#0b1220;--ink:#dbeafe;--mut:#94a3b8;--card1:#0f1b2d;--card2:#0c1727;--border:#1e2b44;--accent:#facc15;--accent2:#22d3ee;--glow:#f59e0b33}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:radial-gradient(1200px 600px at 50% -100px,#13233b,transparent),var(--bg)}
+h1,h2,h3{margin:0 0 12px 0}small,.mut{color:var(--mut)}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+.container{max-width:1200px;margin:0 auto;padding:18px}
+.nav{position:sticky;top:0;background:#0b1220cc;backdrop-filter:blur(6px);z-index:50}.nav .row{display:flex;gap:10px;align-items:center;justify-content:center;padding:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:#102034;color:#cbd5e1;border:1px solid var(--border);border-radius:28px;text-decoration:none;cursor:pointer;transition:.2s box-shadow,.2s transform}
+.btn:is(:hover,:focus){box-shadow:0 0 0 3px var(--border),0 0 20px #0ea5e933}.btn.primary{background:var(--accent);color:#111827;border-color:var(--accent)}.btn.ghost{background:#0b1220;border-color:var(--border)}
+.card{background:linear-gradient(180deg,var(--card1),var(--card2));border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 1rem 3rem #0005,0 0 0 1px #111 inset,0 0 60px var(--glow)}
+.grid{display:grid;gap:18px}.cols-2{grid-template-columns:1fr 1fr}.heroTitle{font-weight:800;font-size:52px;line-height:1.1}.heroTitle span{display:block;color:var(--accent2)}
+.field{background:#0a1527;border:1px solid #23324f;color:#e2e8f0;border-radius:8px;padding:12px 14px;width:100%}.row{display:flex;gap:12px;align-items:center}.row .col{flex:1}
+.karte{padding:16px;border-radius:12px;background:#0d1a2f;border:1px solid #1f2b47;position:relative}
+.ampel{display:flex;gap:8px;align-items:center}.ampel .lamp{width:12px;height:12px;border-radius:999px;box-shadow:0 0 0 2px #1f2b47 inset}.lamp.red{background:#ef4444}.lamp.yellow{background:#f59e0b}.lamp.green{background:#22c55e}
+.ticker{overflow:hidden;border-radius:12px;border:1px solid var(--border);background:#0d1a2f;white-space:nowrap}.ticker .inner{display:inline-block;animation:t 35s linear infinite;padding:14px 0}
+@keyframes t{from{transform:translateX(0)}to{transform:translateX(-50%)}}.ticker .item{display:inline-flex;align-items:center;gap:8px;margin:0 36px;padding:8px 16px;border:1px solid #263552;background:#0a1524;border-radius:999px}
+.kinoWrap{position:relative}.kinoTag{position:absolute;top:-14px;left:14px}.musicToggle{position:fixed;left:8px;top:8px;z-index:60}
+.share{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}.footer{color:#94a3b8;text-align:center;padding:18px;font-size:12px}
+@media (max-width:900px){.cols-2{grid-template-columns:1fr}.heroTitle{font-size:38px}}
+ table{width:100%;border-collapse:collapse} th,td{padding:10px;border-bottom:1px solid #1e2b44}</style></head><body>
+<nav class="nav"><div class="row"><a class="btn" href="index.html">Übersicht</a></div></nav>
+<section class="container"><div class="card"><h3>Hinweis</h3><p>Dieses Admin-Demo zeigt die Freigabe-Logik: <code>data/emails.json</code> enthält Partner, deren Status (<em>approved</em>) die LP personalisiert.</p></div>
+<div class="card"><h3>Aktuelle Einträge</h3><table id="tbl"><thead><tr><th>ID</th><th>Name</th><th>E-Mail</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>
+<script>async function load(){const r=await fetch('data/emails.json');const d=await r.json();const tb=document.querySelector('#tbl tbody');d.partners.forEach(p=>{const tr=document.createElement('tr');tr.innerHTML="<td class='mono'>"+p.id+"</td><td>"+p.firstName+" "+p.lastName+"</td><td>"+p.email+"</td><td>"+(p.approved?"✅ freigegeben":"⏳ pending")+"</td>";tb.appendChild(tr);});}load();</script></body></html>

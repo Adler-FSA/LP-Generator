@@ -1,6 +1,5 @@
 {
-  "videos": [
-    "https://www.youtube.com/embed/8vL7YkQG7SU?rel=0",
-    "https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
-  ]
+  "rotationEnabled": true,
+  "preferredSource": "YouTube",
+  "skipSuspicious": true
 }
