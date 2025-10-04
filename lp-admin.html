@@ -1,4 +1,33 @@
-<!doctype html><meta charset='utf-8'><link rel='stylesheet' href='assets/base.css'>
-<div class='wrap panel'><h1>LP‑Admin <span class='tag'>Demo</span></h1><p class='small'>Diese Ansicht liest <code>data/emails.json</code> und zeigt Partner‑Status (red/yellow/green) an.</p>
-<table style='width:100%;border-collapse:collapse'><thead><tr><th>ID</th><th>Vorname</th><th>Nachname</th><th>E‑Mail</th><th>Status</th></tr></thead><tbody id='rows'></tbody></table></div>
-<script>fetch('data/emails.json').then(r=>r.json()).then(list=>{const tb=document.getElementById('rows');tb.innerHTML=list.map((e,i)=>`<tr><td>${i+1}</td><td>${e.vorname||''}</td><td>${e.nachname||''}</td><td>${e.email||''}</td><td>${e.status||'pending'}</td></tr>`).join('');});</script>
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>LP-Admin (Demo)</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+  <div class="panel" style="margin-top:30px">
+    <div class="title">LP-Admin <span class="badge">Demo</span></div>
+    <div class="small" style="margin:.6rem 0">
+      Diese Ansicht liest <code>data/emails.json</code> und zeigt den Status (red/yellow/green) an.
+    </div>
+    <div class="card">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr><th align="left">ID</th><th align="left">Vorname</th><th align="left">Nachname</th><th align="left">E-Mail</th><th align="left">Status</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+<script>
+async function load(){
+  const r = await fetch('data/emails.json',{cache:'no-store'});
+  const j = await r.json();
+  const tb = document.getElementById('rows');
+  tb.innerHTML = (j.partners||[]).map(p=>`<tr>
+    <td>${p.id||''}</td><td>${p.first||''}</td><td>${p.last||''}</td><td>${p.email||''}</td><td>${p.status||''}</td>
+  </tr>`).join('');
+}
+load();
+</script>
+</body>
+</html>
