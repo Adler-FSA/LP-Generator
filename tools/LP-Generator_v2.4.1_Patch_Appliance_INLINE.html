@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LP-Generator v2.4.1 – Patch-Appliance (INLINE-Vorschau)</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#0f172a;--ink:#e2e8f0;--muted:#94a3b8;--ok:#10b981;--warn:#f59e0b;--err:#ef4444;--border:#1f2937;}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+  h1{font-size:1.2rem;margin:0 0 16px}
+  .row{display:flex;gap:16px;align-items:stretch;flex-wrap:wrap}
+  .col{flex:1 1 480px;min-width:280px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px}
+  label{display:block;margin:6px 0 4px;color:var(--muted);font-size:.9rem}
+  input[type=text]{width:100%;padding:10px;border-radius:8px;border:1px solid #1f2937;background:#0b1626;color:#e5e7eb}
+  textarea{width:100%;min-height:280px;padding:10px;border-radius:8px;border:1px solid #1f2937;background:#0b1626;color:#e5e7eb;font-family:ui-monospace,Menlo,Consolas,monospace}
+  .btn{display:inline-block;padding:10px 14px;border-radius:999px;border:1px solid #0ea5e9;background:#0ea5e9;color:#001018;font-weight:700;cursor:pointer}
+  .btn.ghost{background:transparent;color:#e5e7eb;border-color:#334155}
+  .btn.ok{background:linear-gradient(180deg,#34d399,#10b981);border-color:#065f46;color:#031;}
+  .btn.warn{background:linear-gradient(180deg,#fbbf24,#f59e0b);border-color:#7c2d12;color:#201000}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .stack{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .status{margin-left:8px;font-size:.9rem}
+  .badge{display:inline-block;padding:3px 8px;border-radius:8px;background:#111827;border:1px solid #1f2937;font-size:.8rem}
+  iframe{width:100%;height:520px;border-radius:12px;border:1px solid var(--border);background:#000}
+  .small{font-size:.85rem;color:#94a3b8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>LP-Generator v2.4.1 – Patch-Appliance (Inline-Vorschau, kein Pop-up)</h1>
+
+  <!-- 1) Quelle laden -->
+  <div class="col">
+    <label for="url">Live-Quelle (aus deinem Repo)</label>
+    <div class="stack">
+      <input id="url" type="text" value="/Lp-Generator/lp-template.html" spellcheck="false">
+      <button class="btn" id="btnLoad">Quelle laden</button>
+      <span class="status" id="msg"></span>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div class="col" style="flex:1 1 460px">
+        <label>Quelle (nur Ansicht)</label>
+        <textarea id="src" readonly placeholder="— noch nichts geladen —"></textarea>
+        <div class="stack" style="margin-top:8px">
+          <button class="btn ghost" id="btnCopySrc">Linken Inhalt übernehmen → rechts</button>
+        </div>
+      </div>
+      <div class="col" style="flex:1 1 460px">
+        <label>Arbeitskopie (hier wird gepatcht)</label>
+        <textarea id="work" placeholder="— hier landet die Quelle —"></textarea>
+        <div class="stack" style="margin-top:8px">
+          <button class="btn ok" id="btnPreview">Vorschau im Fenster</button>
+          <label class="small"><input type="checkbox" id="allowJS"> Skripte erlauben (unsicher)</label>
+          <button class="btn ghost" id="btnSave">Als Datei speichern</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2) Patches -->
+  <div class="col" style="margin-top:16px">
+    <h2 style="margin:0 0 8px;font-size:1.05rem;color:#cbd5e1">2) Patches anwenden</h2>
+    <div class="stack" style="margin-bottom:8px">
+      <button class="btn warn" id="btnPatch2">Patch 2 anwenden (NAV ohne „Kino“ + Onboarding)</button>
+      <button class="btn warn" id="btnPatch1">Patch 1 anwenden (Modal: Vorname & Nachname vor E-Mail)</button>
+    </div>
+    <label for="json">Patch-Text einfügen (JSON-Regeln)</label>
+    <textarea id="json" placeholder='[
+  {"name":"Mein Patch","rules":[{"type":"replace","find":"ALT","replacement":"NEU"}]}
+]'></textarea>
+    <div class="stack" style="margin-top:8px">
+      <button class="btn" id="btnApplyJson">Patch-Text anwenden</button>
+      <button class="btn ghost" id="btnClearJson">Feld leeren</button>
+    </div>
+    <div class="small" style="margin-top:8px">
+      Unterstützte Regeltypen: <code>replace</code>, <code>regexReplace</code>, <code>appendBeforeBodyEnd</code>.  
+      Die Arbeitskopie rechts kannst du jederzeit manuell editieren.
+    </div>
+  </div>
+
+  <!-- 3) Inline-Vorschau -->
+  <div class="col" style="margin-top:16px">
+    <h2 style="margin:0 0 8px;font-size:1.05rem;color:#cbd5e1">3) Vorschau (Inline)</h2>
+    <iframe id="pv" sandbox="" title="Preview"></iframe>
+  </div>
+</div>
+
+<script>
+const $ = sel => document.querySelector(sel);
+const msg = (t,kind='') => { const el=$("#msg"); el.textContent=t; el.style.color = kind==='err'?'#ef4444':kind==='ok'?'#10b981':'#e5e7eb'; };
+
+async function loadUrl(){
+  const url = $("#url").value.trim();
+  if(!url){ msg("Keine URL.","err"); return; }
+  try{
+    const res = await fetch(url,{cache:'no-store'});
+    if(!res.ok) throw new Error(res.status+" "+res.statusText);
+    const txt = await res.text();
+    $("#src").value = txt;
+    msg("Quelle geladen. Jetzt links → rechts übernehmen.");
+  }catch(e){
+    msg("Fehler beim Laden: "+e.message,'err');
+  }
+}
+
+function copyLeftToRight(){
+  const s = $("#src").value;
+  if(!s){ msg("Links ist leer.","err"); return; }
+  $("#work").value = s;
+  msg("Arbeitskopie befüllt.","ok");
+}
+
+function download(name, text){
+  const blob = new Blob([text],{type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function showPreview(){
+  const html = $("#work").value || "<!doctype html><meta charset='utf-8'><title>leer</title><body style='font:16px/1.4 system-ui;background:#000;color:#fff'><p>Kein Inhalt.</p>";
+  const allow = $("#allowJS").checked;
+  const ifr = $("#pv");
+  // sandbox steuern
+  if(allow){
+    // eigene Blob-URL, damit Skripte laufen dürfen
+    const blob = new Blob([html],{type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    ifr.setAttribute('sandbox','allow-forms allow-scripts allow-same-origin');
+    ifr.src = url;
+  }else{
+    ifr.setAttribute('sandbox',''); // keine Skripte
+    ifr.removeAttribute('src');
+    ifr.srcdoc = html;
+  }
+  // Scroll zur Vorschau
+  setTimeout(()=>{ ifr.scrollIntoView({behavior:'smooth',block:'start'}); }, 50);
+}
+
+function applyJSON(){
+  let text = $("#work").value;
+  if(!text){ msg("Arbeitskopie ist leer.","err"); return; }
+  let spec;
+  try{
+    spec = JSON.parse($("#json").value || "[]");
+  }catch(e){
+    msg("JSON fehlerhaft: "+e.message,'err'); return;
+  }
+  const entries = Array.isArray(spec)?spec:[spec];
+  let changes = 0;
+
+  const applyRule = (t, rule) => {
+    if(rule.type === 'replace'){
+      if(typeof rule.find!=='string') return t;
+      const before = t;
+      t = t.split(rule.find).join(rule.replacement ?? '');
+      if(t!==before) changes++;
+      return t;
+    }
+    if(rule.type === 'regexReplace'){
+      try{
+        const re = new RegExp(rule.pattern, rule.flags||'g');
+        const before = t;
+        t = t.replace(re, rule.replacement ?? '');
+        if(t!==before) changes++;
+      }catch(_){}
+      return t;
+    }
+    if(rule.type === 'appendBeforeBodyEnd'){
+      const idx = t.lastIndexOf("</body>");
+      const add = rule.snippet || '';
+      if(idx>-1){ t = t.slice(0,idx)+add+t.slice(idx); changes++; }
+      return t;
+    }
+    return t;
+  };
+
+  entries.forEach(p=>{
+    const rules = Array.isArray(p.rules)?p.rules:[];
+    rules.forEach(r=>{ text = applyRule(text, r); });
+  });
+
+  $("#work").value = text;
+  msg("Patch-Text angewendet. Änderungen: "+changes, changes?'ok':'');
+}
+
+function patch2(){
+  // NAV ohne „Kino“ + Onboarding. Sucht nach id="lp-nav" und ersetzt Linkliste.
+  let html = $("#work").value;
+  if(!html){ msg("Arbeitskopie ist leer.","err"); return; }
+  const navStart = html.indexOf('<div id="lp-nav"');
+  if(navStart === -1){ msg('NAV (#lp-nav) nicht gefunden.','err'); return; }
+
+  // sehr einfache Ersetzung der Buttons (Beispiel aus deinen Screens)
+  html = html.replace(
+    /<div id="lp-nav"[\\s\\S]*?<\\/div>\\s*<\\/div>\\s*<!-- NAV_BUTTONS[^>]*-->/i,
+    `<div id="lp-nav"><div class="wrap">
+      <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/startseite" aria-label="Startseite">Startseite</a>
+      <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/campus" aria-label="Campus">Campus</a>
+      <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/grundkurs" aria-label="Grundkurs">Grundkurs</a>
+      <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/onboarding" aria-label="Onboarding">Onboarding</a>
+      <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/krypto-glossar" aria-label="Krypto-Glossar">Krypto-Glossar</a>
+    </div></div><!-- NAV_BUTTONS -->`
+  );
+
+  $("#work").value = html;
+  msg('Patch 2 angewendet.','ok');
+}
+
+function patch1(){
+  // Modal: Vorname & Nachname vor E-Mail (vereinfachter Insert vor </body>)
+  let html = $("#work").value;
+  if(!html){ msg("Arbeitskopie ist leer.","err"); return; }
+  const modalSnippet = `
+<!-- MODAL: Namen vor E-Mail -->
+<script>
+(function(){
+  function run(){
+    var email=document.querySelector('input[type="email"]');
+    if(!email) return;
+    var form=email.form||email.closest('form'); if(!form) return;
+    function mk(label, name){
+      var el=document.createElement('input');
+      el.type='text'; el.name=name; el.placeholder=label; el.setAttribute('aria-label',label);
+      el.required=true; el.style.display='block'; el.style.margin='8px 0';
+      return el;
+    }
+    var first=mk('Vorname','given-name'), last=mk('Nachname','family-name');
+    email.parentNode.insertBefore(last,email);
+    email.parentNode.insertBefore(first,email);
+  }
+  if(document.readyState!=='loading') run();
+  else document.addEventListener('DOMContentLoaded',run);
+})();
+</script>`;
+  const idx = html.lastIndexOf("</body>");
+  if(idx===-1){ msg("Kein </body> gefunden.",'err'); return; }
+  html = html.slice(0,idx)+modalSnippet+html.slice(idx);
+  $("#work").value = html;
+  msg('Patch 1 angewendet.','ok');
+}
+
+$("#btnLoad").onclick = loadUrl;
+$("#btnCopySrc").onclick = copyLeftToRight;
+$("#btnPreview").onclick = showPreview;
+$("#btnSave").onclick = ()=>download((document.querySelector('#url').value.split('/').pop()||'lp-template')+'_patched.html',$("#work").value||'');
+$("#btnApplyJson").onclick = applyJSON;
+$("#btnClearJson").onclick = ()=>{$("#json").value='';};
+$("#btnPatch2").onclick = patch2;
+$("#btnPatch1").onclick = patch1;
+
+// vorbefüllen: sofort Quelle versuchen
+setTimeout(loadUrl, 200);
+</script>
+</body>
+</html>
