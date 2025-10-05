@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LP-Generator v2.4.1 – Patch-Appliance (nur Patch 1 & 2)</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#0f172a;--muted:#94a3b8;--ok:#10b981;--warn:#f59e0b;--err:#ef4444}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:#e5e7eb;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  header{position:sticky;top:0;z-index:9;background:rgba(0,0,0,.5);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.08)}
+  .wrap{max-width:1200px;margin:0 auto;padding:14px 16px}
+  h1{margin:0;font-size:20px}
+  main{max-width:1200px;margin:20px auto;padding:0 16px}
+  .row{display:grid;gap:16px;grid-template-columns:1fr}
+  .card{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:14px}
+  .card .wrap{padding:16px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 16px;border-radius:10px;
+       background:#111827;border:1px solid rgba(255,255,255,.12);cursor:pointer;font-weight:700}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.ok{background:linear-gradient(180deg,#065f46,#064e3b)}
+  .btn.warn{background:linear-gradient(180deg,#7c2d12,#7a1d0c)}
+  .btn.soft{background:#0b1220}
+  input[type="text"]{width:100%;padding:12px;border-radius:10px;background:#0b1220;color:#e5e7eb;
+     border:1px solid rgba(255,255,255,.12)}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{display:inline-block;padding:8px 12px;border-radius:999px;background:#0b1220;border:1px solid rgba(255,255,255,.12)}
+  .status{margin-top:10px;font-size:14px}
+  .status.ok{color:var(--ok)} .status.warn{color:var(--warn)} .status.err{color:var(--err)}
+  iframe{width:100%;min-height:420px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:#000}
+  .grid{display:grid;gap:16px}
+  @media(min-width:900px){ .row{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>LP-Generator v2.4.1 – Patch-Appliance <small style="opacity:.7;font-weight:400">(nur Patch 1 & 2)</small></h1>
+</div></header>
+
+<main class="grid">
+
+  <!-- 1) Quelle laden -->
+  <section class="card">
+    <div class="wrap">
+      <h2 style="margin-top:0">1) Live-Quelle laden</h2>
+      <div class="toolbar" style="margin-bottom:10px">
+        <span class="pill">Quelle: <code id="srcUrl">…</code></span>
+        <button id="btnLoad" class="btn">Quelle laden</button>
+        <button id="btnPreviewOriginal" class="btn soft" title="Original anzeigen">Original anzeigen</button>
+      </div>
+      <div id="statusLoad" class="status">Noch nichts geladen.</div>
+    </div>
+  </section>
+
+  <!-- 2) Patches -->
+  <section class="card">
+    <div class="wrap">
+      <h2 style="margin-top:0">2) Patches anwenden</h2>
+      <div class="toolbar" style="margin-bottom:10px">
+        <button id="btnPatch2" class="btn">Patch 2 anwenden (NAV ohne „Kino“ + Onboarding)</button>
+        <button id="btnPatch1" class="btn">Patch 1 anwenden (Modal: Vorname & Nachname vor E-Mail)</button>
+      </div>
+      <div id="statusPatch" class="status">Noch keine Patches angewendet.</div>
+    </div>
+  </section>
+
+  <!-- 3) Vorschau + Download -->
+  <section class="card">
+    <div class="wrap">
+      <h2 style="margin-top:0">3) Vorschau &amp; Export</h2>
+      <div class="toolbar" style="margin-bottom:10px">
+        <button id="btnPreview" class="btn soft">Patched Vorschau anzeigen</button>
+        <button id="btnDownload" class="btn ok">Als Datei speichern (lp-template_patched.html)</button>
+      </div>
+      <iframe id="frame" title="Vorschau"></iframe>
+      <div id="statusSave" class="status"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  const state = { original:'', patched:'', dom:null };
+
+  // Pfad zur Live-Datei automatisch bestimmen (gleiche Domain, Repo-Wurzel)
+  const parts = location.pathname.split('/'); // ["","Lp-Generator","tools","..."]
+  const repoRoot = '/' + (parts[1]||'Lp-Generator'); // "/Lp-Generator"
+  const SOURCE_URL = repoRoot + '/lp-template.html';
+  document.getElementById('srcUrl').textContent = SOURCE_URL;
+
+  const $ = sel => document.querySelector(sel);
+  const set = (id, txt, cls='')=>{
+    const el = document.getElementById(id);
+    el.className = 'status ' + cls;
+    el.textContent = txt;
+  };
+
+  // Laden
+  $('#btnLoad').onclick = async ()=>{
+    set('statusLoad','Lade Quelle …','');
+    try{
+      const res = await fetch(SOURCE_URL + '?t=' + Date.now(), {cache:'no-store'});
+      if(!res.ok) throw new Error(res.status+' '+res.statusText);
+      state.original = await res.text();
+      state.dom = new DOMParser().parseFromString(state.original, 'text/html');
+      state.patched = ''; // reset
+      set('statusLoad','Quelle geladen. Jetzt Patch 2 und Patch 1 anwenden.','ok');
+    }catch(e){
+      set('statusLoad','Konnte Quelle nicht laden: '+e.message,'err');
+    }
+  };
+
+  // Original-Vorschau
+  $('#btnPreviewOriginal').onclick = ()=>{
+    if(!state.original){ set('statusLoad','Erst „Quelle laden“.','warn'); return; }
+    $('#frame').srcdoc = state.original;
+  };
+
+  // Patch 2: NAV ohne „Kino“, mit Onboarding
+  $('#btnPatch2').onclick = ()=>{
+    if(!state.dom){ set('statusPatch','Erst „Quelle laden“.','warn'); return; }
+    try{
+      const d = state.dom;
+      // 1) NAV finden
+      const nav = d.getElementById('lp-nav');
+      if(!nav){ set('statusPatch','NAV (#lp-nav) nicht gefunden.','err'); return; }
+
+      // 2) Style für NAV in <head> einfügen (idempotent)
+      if(!d.getElementById('patch-nav-style')){
+        const st = d.createElement('style');
+        st.id = 'patch-nav-style';
+        st.textContent = `
+#lp-nav { padding:24px 0; background:#000; }
+#lp-nav .wrap{ max-width:1100px; margin:0 auto; display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+#lp-nav .pill-btn{ text-decoration:none; font-weight:700; color:#f8fafc; padding:12px 18px; border-radius:999px; display:inline-block;
+  background:linear-gradient(180deg,#1a1f2a,#0b0f14); border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 8px 22px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+  backdrop-filter:saturate(120%); transition:transform .12s ease, box-shadow .2s ease; }
+#lp-nav .pill-btn:hover{ transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08); }
+#lp-nav .pill-btn:active{ transform:translateY(0); }
+@media (max-width:640px){ #lp-nav .pill-btn{ padding:12px 16px; font-size:.95rem; } }`;
+        d.head.appendChild(st);
+      }
+
+      // 3) Buttons neu setzen
+      nav.innerHTML = `
+        <div class="wrap">
+          <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/startseite" aria-label="Startseite">Startseite</a>
+          <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/campus" aria-label="Campus">Campus</a>
+          <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/grundkurs" aria-label="Grundkurs">Grundkurs</a>
+          <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/onboarding" aria-label="Onboarding">Onboarding</a>
+          <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/krypto-glossar" aria-label="Krypto-Glossar">Krypto-Glossar</a>
+          <!-- Kino entfernt -->
+        </div>`;
+
+      state.patched = d.documentElement.outerHTML;
+      set('statusPatch','Patch 2 angewendet. Jetzt Patch 1 ausführen.','ok');
+    }catch(e){
+      set('statusPatch','Fehler bei Patch 2: '+e.message,'err');
+    }
+  };
+
+  // Patch 1: Modal Vorname & Nachname vor E-Mail
+  $('#btnPatch1').onclick = ()=>{
+    if(!state.dom){ set('statusPatch','Erst „Quelle laden“.','warn'); return; }
+    try{
+      const d = state.dom;
+      if(!d.querySelector('script[data-patch="modal-names"]')){
+        const s = d.createElement('script');
+        s.dataset.patch = 'modal-names';
+        s.textContent = `(function(){try{
+  var email = document.querySelector('#email, input[type="email"]'); if(!email) return;
+  var form = email.closest('form') || email.parentElement;
+  function mk(label,id,name){ var i=document.createElement('input'); i.type='text'; i.placeholder=label; i.id=id; i.name=name; i.required=true; i.className=email.className||''; i.style.marginBottom='10px'; return i; }
+  var vor = mk('Vorname','given-name','given-name');
+  var nach = mk('Nachname','family-name','family-name');
+  form.insertBefore(nach,email); form.insertBefore(vor,nach);
+}catch(e){}})();`;
+        d.body.appendChild(s);
+      }
+      state.patched = d.documentElement.outerHTML;
+      set('statusPatch','Patch 1 angewendet. Du kannst jetzt Vorschau öffnen oder speichern.','ok');
+    }catch(e){
+      set('statusPatch','Fehler bei Patch 1: '+e.message,'err');
+    }
+  };
+
+  // Vorschau
+  $('#btnPreview').onclick = ()=>{
+    const html = state.patched || state.original;
+    if(!html){ set('statusSave','Noch nichts geladen.','warn'); return; }
+    $('#frame').srcdoc = html;
+  };
+
+  // Download
+  $('#btnDownload').onclick = ()=>{
+    const html = state.patched || state.original;
+    if(!html){ set('statusSave','Bitte erst laden & patchen.','warn'); return; }
+    const blob = new Blob([html],{type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'lp-template_patched.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    set('statusSave','Datei gespeichert: lp-template_patched.html','ok');
+  };
+})();
+</script>
+</body>
+</html>
