@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LP-Generator v2.4.1 – Zwei-Fenster-Werkstatt (Root-Quelle → Patchen → Kopieren)</title>
+<style>
+:root{--bg:#0b0f14;--panel:#0f172a;--mut:#c7d2e1;--ok:#8bffb0;--warn:#ffd27a;--err:#ff9ea8;--border:rgba(255,255,255,.12)}
+*{box-sizing:border-box} body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#e5ecf6;margin:0}
+header{position:sticky;top:0;background:linear-gradient(180deg,#0f172a,#0b1220);border-bottom:1px solid var(--border);z-index:9}
+header .bar{max-width:1200px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.wrap{max-width:1200px;margin:16px auto;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:0 18px 52px rgba(0,0,0,.35)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+button{padding:10px 14px;border-radius:10px;border:0;font-weight:800;cursor:pointer}
+.primary{background:linear-gradient(180deg,#f6d284,#e2b441);color:#1f2a36}
+.ghost{background:transparent;border:1px solid var(--border);color:#e5ecf6}
+input[type=text],input[type=url]{padding:10px;background:#0b1626;border:1px solid #1f2a44;border-radius:10px;color:#e5ecf6;min-width:280px}
+textarea{width:100%;min-height:480px;padding:12px;background:#0b1626;border:1px solid #1f2a44;border-radius:10px;color:#dbeafe}
+pre{white-space:pre;overflow:auto;min-height:480px;padding:12px;background:#0b1626;border:1px solid #1f2a44;border-radius:10px;color:#cfe3ff}
+#split{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:1080px){#split{grid-template-columns:1fr}}
+.badge{font-size:.75rem;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+.confirm{background:#0f2a19;border:1px solid rgba(100,255,140,.35);color:#bfffd1;padding:8px 10px;border-radius:10px}
+.errorbox{background:#2a1010;border:1px solid rgba(255,100,120,.35);color:#ffd1d6;padding:8px 10px;border-radius:10px}
+h1{font-size:1.2rem;margin:0 0 6px;color:#ffe099} h2{font-size:1.05rem;margin:0 0 8px;color:#e9eef9}
+iframe{width:100%;height:360px;border:1px solid var(--border);border-radius:10px;background:#000}
+.small{font-size:.9rem;color:#93a2c8}
+hr{border:0;border-top:1px solid var(--border);margin:10px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div><strong>LP-Generator v2.4.1 – Zwei-Fenster-Werkstatt</strong></div>
+    <div class="row">
+      <label>Speichername: <input id="saveName" type="text" value="lp-template_patched.html"></label>
+      <label class="small"><input id="addTs" type="checkbox" checked> Zeitstempel anhängen</label>
+      <button class="ghost" id="btnSave">Als Datei speichern</button>
+      <button class="ghost" id="btnCopyAll">Alles markieren</button>
+      <button class="ghost" id="btnOpenTab">In neuem Tab öffnen</button>
+    </div>
+  </div>
+</header>
+
+<section class="wrap">
+  <h1>1) Root-Quelle laden</h1>
+  <div class="row">
+    <label for="srcUrl">Quelle (URL):</label>
+    <input id="srcUrl" type="url">
+    <button class="primary" id="btnLoad">Quelle laden</button>
+    <span id="status" class="small"></span>
+  </div>
+  <div id="split">
+    <div>
+      <h2>Quelle (nur Ansicht)</h2>
+      <pre id="srcView">— noch nichts geladen —</pre>
+      <div class="row">
+        <button class="ghost" id="btnTake">Aus Quelle übernehmen → rechts</button>
+        <button class="ghost" id="btnRefresh">Aktualisieren</button>
+      </div>
+    </div>
+    <div>
+      <h2>Bearbeitung (editierbar)</h2>
+      <textarea id="edit">— hier landet die Quelle —</textarea>
+      <div class="row">
+        <button class="ghost" id="btnPaste">Aus Zwischenablage einfügen</button>
+        <button class="ghost" id="btnReset">Bearbeitung = Quelle (neu übernehmen)</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h1>2) Patches anwenden</h1>
+  <div class="row">
+    <button class="primary" id="btnPatch2">Patch 2: NAV ohne „Kino“, mit Onboarding</button>
+    <button class="ghost" id="btnPatch1">Patch 1: Modal Vorname/Nachname (WERKSZUSTAND)</button>
+    <span id="applyInfo" class="small"></span>
+  </div>
+  <div class="row small">Hinweis: Falls ein Marker im Template fehlt, meldet die Werkstatt „Marker nicht gefunden“. In dem Fall bitte im Template den Bereich
+    <code><!-- ======= … ======= --></code> prüfen. Notfalls Patch-Code manuell an passender Stelle einfügen.</div>
+  <hr>
+  <h2>Vorschau</h2>
+  <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+</section>
+
+<footer class="wrap small" style="text-align:center">iPad/Firefox-freundlich · Nur lokal im Browser · Keine Server-Uploads</footer>
+
+<script>
+(function(){
+  // ---------- Anker/Marker der v2.4.1
+  const TARGETS = {
+    NAV: "<!-- ======= NAV ======= -->",
+    WELCOME: "<!-- ======= WERKSZUSTAND / E-MAIL-EINGABE ======= -->"
+  };
+
+  // ---------- Patch 2: NAV
+  const PATCH2 = `<!-- ===== NAV_BUTTONS · v2.4.1-REV-B ===== -->
+<style>
+  #lp-nav { padding:24px 0; background:#000; }
+  #lp-nav .wrap { max-width:1100px; margin:0 auto; display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+  .pill-btn{
+    text-decoration:none; font-weight:700; color:#f8fafc;
+    padding:12px 18px; border-radius:999px; display:inline-block;
+    background:linear-gradient(180deg,#1a1f2a,#0b0f14);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 8px 22px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    backdrop-filter:saturate(120%);
+    transition:transform .12s ease, box-shadow .2s ease;
+  }
+  .pill-btn:hover{ transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08); }
+  .pill-btn:active{ transform:translateY(0); }
+  @media (max-width:640px){ .pill-btn{ padding:12px 16px; font-size:.95rem; } }
+</style>
+
+<div id="lp-nav">
+  <div class="wrap">
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/startseite" aria-label="Startseite">Startseite</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/campus" aria-label="Campus">Campus</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/grundkurs" aria-label="Grundkurs">Grundkurs</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/onboarding" aria-label="Onboarding">Onboarding</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/krypto-glossar" aria-label="Krypto-Glossar">Krypto-Glossar</a>
+    <!-- 'Kino' entfernt -->
+  </div>
+</div>
+<!-- ===== /NAV_BUTTONS · v2.4.1-REV-B ===== -->`;
+
+  // ---------- Patch 1: Modal – Vorname/Nachname
+  const PATCH1 = `<script data-fsa-patch="modal-names">
+(function(){
+  function run(){
+    var scopes=["#welcome-overlay","#fsa-welcome","#welcome","#modal-welcome",".welcome-modal"];
+    var root=null; for(var i=0;i<scopes.length;i++){ var r=document.querySelector(scopes[i]); if(r){ root=r; break; } }
+    var email=(root?root.querySelector('input[type="email"]'):document.querySelector('input[type="email"]')); if(!email) return;
+    var form=email.form||email.closest('form'); if(!form) return;
+    if(form.querySelector('input[name="vorname"]')||form.querySelector('input[name="nachname"]')) return;
+
+    function make(placeholder,name,ac){
+      var el=email.cloneNode(false); el.type='text'; el.name=name;
+      el.id=(email.id?email.id.replace(/email/i,''):'fsa-')+name;
+      el.placeholder=placeholder; el.setAttribute('aria-label',placeholder);
+      el.autocomplete=ac; el.required=true; el.value='';
+      el.removeAttribute('pattern'); el.removeAttribute('inputmode'); return el;
+    }
+    var vor=make('Vorname','vorname','given-name');
+    var nach=make('Nachname','nachname','family-name');
+    email.parentNode.insertBefore(vor,email);
+    email.parentNode.insertBefore(nach,email);
+  }
+  if(document.readyState!=='loading') run(); else document.addEventListener('DOMContentLoaded',run);
+})();
+</script>`;
+
+  // ---------- Helfer
+  const $=s=>document.querySelector(s);
+  const srcUrl = $('#srcUrl'), srcView = $('#srcView'), edit = $('#edit'), status = $('#status');
+  const prev = $('#preview'); let sourceText='', workingText='';
+
+  function pad(n){return (n<10?'0':'')+n;}
+  function ts(){const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'_'+pad(d.getHours())+pad(d.getMinutes());}
+  function finalName(){
+    let name=$('#saveName').value.trim()||'lp-template_patched.html';
+    if(!/\.html?$/i.test(name)) name+='.html';
+    if($('#addTs').checked){ const p=name.split('.'); const ext=p.pop(); name=p.join('.')+'_'+ts()+'.'+ext; }
+    return name;
+  }
+  function setOk(msg){ status.innerHTML='<span class="confirm">'+msg+'</span>'; }
+  function setErr(msg){ status.innerHTML='<span class="errorbox">'+msg+'</span>'; }
+
+  function regexEndFor(marker){
+    // Ende = nächste große Überschrift/Block
+    return /(<!--\s*=+[^-]*=+\s*-->)|(<footer\b)|(<section\b)|(<main\b)|(<div id="lp-nav">)|(<script\b)|(<style\b)/g;
+  }
+  function replaceSection(html, marker, replacement){
+    const start = html.indexOf(marker);
+    if(start===-1) return {html, changed:false};
+    const after = start+marker.length;
+    const re = regexEndFor(marker); re.lastIndex=after;
+    const m = re.exec(html); const end = m? m.index : html.length;
+    const newHtml = html.slice(0,after)+'\n<!-- [PATCHED v2.4.1] -->\n'+replacement+'\n'+html.slice(end);
+    return {html:newHtml, changed:true};
+  }
+
+  function updatePreview(){
+    workingText = edit.value;
+    const blob = new Blob([workingText],{type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    prev.src = url;
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }
+
+  // ---------- Quelle laden
+  async function loadSource(){
+    try{
+      const url = (srcUrl.value||'').trim();
+      if(!url) return setErr('Bitte eine URL angeben.');
+      const bust = url + (url.includes('?')?'&':'?') + 'cb=' + Date.now();
+      const res = await fetch(bust, {cache:'no-store'});
+      if(!res.ok) return setErr('Fehler: '+res.status+' '+res.statusText);
+      sourceText = await res.text();
+      srcView.textContent = sourceText;
+      setOk('Quelle geladen.');
+    }catch(e){ setErr('Abruf fehlgeschlagen: '+(e.message||e)); }
+  }
+
+  $('#btnLoad').onclick = loadSource;
+  $('#btnRefresh').onclick = loadSource;
+  $('#btnTake').onclick = ()=>{ edit.value = sourceText || ''; updatePreview(); setOk('Quelle nach rechts übernommen.'); };
+  $('#btnReset').onclick = ()=>{ edit.value = sourceText || ''; updatePreview(); setOk('Bearbeitung auf Quelle zurückgesetzt.'); };
+  $('#btnPaste').onclick = async ()=>{
+    try{ const t = await navigator.clipboard.readText(); edit.value=t; updatePreview(); setOk('Aus Zwischenablage eingefügt.'); }
+    catch(e){ setErr('Zwischenablage nicht erlaubt – bitte manuell einfügen.'); }
+  };
+
+  // ---------- Patches
+  $('#btnPatch2').onclick = ()=>{
+    const res = replaceSection(edit.value, TARGETS.NAV, PATCH2);
+    if(res.changed){ edit.value = res.html; updatePreview(); setOk('Patch 2 (NAV) angewendet.'); }
+    else { setErr('Marker nicht gefunden: NAV'); }
+  };
+  $('#btnPatch1').onclick = ()=>{
+    const res = replaceSection(edit.value, TARGETS.WELCOME, PATCH1);
+    if(res.changed){ edit.value = res.html; updatePreview(); setOk('Patch 1 (Modal) angewendet.'); }
+    else { setErr('Marker nicht gefunden: WERKSZUSTAND / E-MAIL-EINGABE'); }
+  };
+
+  // ---------- Outputs
+  $('#btnCopyAll').onclick = ()=>{
+    edit.select(); document.execCommand('copy');
+    setOk('Bearbeiteter Code markiert (und i. d. R. kopiert).');
+  };
+  $('#btnOpenTab').onclick = ()=>{ const w = window.open('data:text/html;charset=utf-8,'+encodeURIComponent(edit.value),'_blank'); if(!w) setErr('Popup durch Browser blockiert.'); };
+  $('#btnSave').onclick = ()=>{
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([edit.value],{type:'text/html'})); a.download=finalName();
+    document.body.appendChild(a); a.click(); a.remove(); setOk('Datei gespeichert.');
+  };
+
+  // ---------- Default-URL setzen
+  srcUrl.value = location.origin + '/Lp-Generator/lp-template.html';
+})();
+</script>
+</body>
+</html>
