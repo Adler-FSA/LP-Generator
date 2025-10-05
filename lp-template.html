@@ -1,423 +1,337 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>LP-Template · Dein Geld. Deine Freiheit.</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finanzielle Souveränität – Master Template 02 (v2.4.1)</title>
+
+<!-- ============== FONTS (optional) ============== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+
+<!-- ============== BASE STYLES ============== -->
 <style>
   :root{
-    --bg:#0e1621;
-    --panel:#122033;
-    --panel-2:#0f1c2b;
-    --text:#dbe7ff;
-    --muted:#9fb3d9;
-    --brand:#21e6b6;
-    --brand-2:#ffd166;
-    --accent:#5ec2ff;
-    --danger:#ff5c7a;
-    --ok:#37fba1;
-    --warn:#ffd166;
-    --shadow:0 20px 60px rgba(0,0,0,.5);
-    --glow:0 0 0 0 rgba(0,0,0,0);
-    --radius:16px;
+    --bg:#000000;
+    --text:#f2f2f2;
+    --muted:#b6c0cf;
+    --accent:#d4af37;      /* Gold */
+    --accent-2:#21e6b6;    /* Türkis */
+    --soft:#0f1523;
+    --card: rgba(15,15,25,.65);
+    --border: rgba(255,255,255,.14);
+    --shadow: 0 25px 55px rgba(0,0,0,.6);
+    --radius: 16px;
+    --maxw: 1200px;
   }
+
+  /* reset */
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{
-    margin:0;background:radial-gradient(1200px 600px at 50% 0%, #132235 0%, #0b1420 60%, #08101a 100%) fixed;
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Inter, Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
-    color:var(--text); line-height:1.55;
+  body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:var(--text);background:var(--bg);line-height:1.55}
+
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{font-family:Montserrat,Inter,system-ui,sans-serif;line-height:1.2;margin:0 0 .35em}
+
+  /* ======= Header / Menü ======= */
+  header{
+    position:fixed;inset:0 0 auto 0;height:64px;display:flex;align-items:center;justify-content:center;
+    background:rgba(0,0,0,.55);backdrop-filter: blur(8px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+    z-index:1000;
+  }
+  header nav{display:flex;gap:22px;align-items:center}
+  header a{
+    color:#fff;font-weight:700;letter-spacing:.2px;
+    padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.06);
+    box-shadow:0 0 14px rgba(255,255,255,.12);
+  }
+  header a:hover{color:var(--accent);box-shadow:0 0 18px rgba(212,175,55,.7)}
+  .spacer{flex:1}
+
+  /* ======= Video Hintergrund ======= */
+  .bg-video{position:fixed;inset:0;z-index:-2;background:#000}
+  .bg-video iframe,.bg-video video{width:100%;height:100%;border:0;display:block;object-fit:cover}
+
+  /* ======= Layout ======= */
+  main{padding-top:84px}
+  section{padding:90px 0;position:relative}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .grid{display:grid;gap:28px}
+  .grid.cols-2{grid-template-columns:2fr 1.2fr} /* 3/4-Anmutung (gewichteter Hero-Teil) */
+  @media (max-width:980px){ .grid.cols-2{grid-template-columns:1fr} }
+
+  .card{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:28px;box-shadow:var(--shadow);backdrop-filter: blur(10px);
+    animation:float 9s ease-in-out infinite, pulseBorder 8s ease-in-out infinite;
   }
 
-  /* Top Nav */
-  .nav {
-    position:sticky; top:0; z-index:50;
-    display:flex; gap:.5rem; align-items:center;
-    padding:.75rem 1rem; backdrop-filter:saturate(150%) blur(6px);
-    background:linear-gradient(180deg, rgba(3,8,14,.85), rgba(3,8,14,.55));
-    border-bottom:1px solid rgba(255,255,255,.04);
+  @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+  @keyframes pulseBorder{
+    0%{box-shadow:0 0 12px rgba(212,175,55,.25),0 0 20px rgba(255,255,255,.08);border-color:rgba(212,175,55,.18)}
+    50%{box-shadow:0 0 36px rgba(212,175,55,.8),0 0 60px rgba(255,255,255,.5);border-color:rgba(212,175,55,.7)}
+    100%{box-shadow:0 0 12px rgba(212,175,55,.25),0 0 20px rgba(255,255,255,.08);border-color:rgba(212,175,55,.18)}
   }
-  .brand-dot{width:8px;height:8px;border-radius:50%;background:var(--brand);box-shadow:0 0 10px var(--brand)}
-  .nav .spacer{flex:1}
-  .chip{
-    border:none; padding:.6rem 1rem; border-radius:999px;
-    background:rgba(255,255,255,.06); color:#e7f0ff; cursor:pointer;
-    font-weight:600; letter-spacing:.2px;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
-  }
-  .chip:hover{background:rgba(255,255,255,.1)}
-  .chip--music{position:relative;padding-left:2.2rem}
-  .chip--music::before{content:"♪";position:absolute;left:.9rem;top:.5rem;opacity:.85}
 
-  /* Hero */
-  .hero{max-width:1100px;margin:64px auto 24px; padding:0 18px; text-align:center}
-  .kicker{color:var(--muted);margin-bottom:16px}
-  .h1{font-size:clamp(38px,6vw,60px);font-weight:900;letter-spacing:.2px;margin:0}
-  .h1 .brand{color:var(--brand)}
-  .sub{color:var(--muted);max-width:820px;margin:14px auto 26px}
-  .cta{
-    display:inline-flex;align-items:center;gap:.6rem;background:var(--brand-2);color:#2a2000;
-    padding:.85rem 1.1rem;border-radius:14px;font-weight:800;cursor:pointer;
-    border:none;box-shadow:0 8px 30px rgba(255,209,102,.25), 0 0 18px rgba(255,209,102,.25);
-  }
-  .cta:hover{filter:brightness(1.03)}
-  .cta i{filter:drop-shadow(0 0 6px rgba(255,255,255,.35))}
-
-  /* Floating activation panel */
-  .panel{
-    max-width:1100px;margin:24px auto; padding:0 18px;
-  }
-  .box{
-    background:linear-gradient(180deg, rgba(24,38,58,.9), rgba(14,25,39,.92));
-    border:1px solid rgba(255,255,255,.06);
-    box-shadow:var(--shadow); border-radius:18px; padding:18px;
-  }
-  .box .title{
-    display:flex;align-items:center;gap:.6rem;font-weight:800;margin-bottom:10px;color:#cfe3ff
-  }
-  .ampel{margin-left:auto;display:flex;gap:.5rem}
-  .dot{width:10px;height:10px;border-radius:999px;opacity:.35}
-  .dot.red{background:#ff6b6b;box-shadow:0 0 14px rgba(255,90,90,.55)}
-  .dot.yellow{background:#ffd166;box-shadow:0 0 14px rgba(255,209,102,.55)}
-  .dot.green{background:#37fba1;box-shadow:0 0 14px rgba(55,251,161,.55)}
-  .grid{display:grid;grid-template-columns:1fr 1fr; gap:12px}
-  @media (max-width:860px){ .grid{grid-template-columns:1fr} }
-  .input, select.input{
-    width:100%; background:#0e1b2a; border:1px solid rgba(255,255,255,.08);
-    color:var(--text); padding:.85rem .9rem; border-radius:12px; outline:none;
-  }
-  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  /* ======= Buttons ======= */
   .btn{
-    border:none;border-radius:12px;padding:.75rem 1rem;font-weight:800;cursor:pointer
+    display:inline-block;margin-top:18px;background:var(--accent);color:#000;
+    padding:14px 22px;border-radius:999px;font-weight:800;text-decoration:none;box-shadow:0 8px 24px rgba(0,0,0,.45)
   }
-  .btn.primary{background:var(--brand-2);color:#2a2000}
-  .btn.ghost{background:rgba(255,255,255,.06);color:#e7f0ff}
-  .btn.copy{background:rgba(94,194,255,.15);color:#cfeaff}
-  .note{margin-top:10px;color:#a9c4ee;font-size:.95rem}
-  .small{font-size:.9rem;color:#a8b9d8}
-  .reopen{display:none;position:fixed;right:14px;bottom:14px;z-index:60}
+  .btn:hover{background:#f1d97b}
+  .btn.full{display:block;width:100%;text-align:center}
 
-  /* Mentor */
-  .section{max-width:1100px;margin:26px auto;padding:0 18px}
-  .card{background:linear-gradient(180deg, rgba(19,33,52,.8), rgba(10,23,38,.92));border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
-  .card h3{margin:.2rem 0 6px}
-  .quote{color:#9fb3d9;font-style:italic}
+  /* ======= Begrüßungs-/E-Mail-Overlay (Werkszustand) ======= */
+  #welcomeBox{
+    position:fixed;inset:0;background:rgba(0,0,0,.55);
+    display:flex;align-items:center;justify-content:center;z-index:1200;
+  }
+  #welcomeInner{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:30px;max-width:520px;width:min(92%,520px);backdrop-filter: blur(10px);
+    text-align:center;box-shadow:var(--shadow);animation:pulseBorder 8s ease-in-out infinite
+  }
+  #welcomeInner h3{margin:0 0 8px;color:var(--accent)}
+  #welcomeInner p{margin:0 0 14px;color:#e8f0ff}
+  #welcomeInner input{padding:12px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);width:100%;margin-top:10px;font-size:1rem;background:#0b1220;color:#e7f1ff}
+  #welcomeInner .row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;justify-content:center}
+  #welcomeInner button{
+    padding:10px 16px;border:none;border-radius:10px;cursor:pointer;font-weight:800
+  }
+  #goBtn{background:var(--accent);color:#1a1300}
+  #laterBtn{background:rgba(255,255,255,.08);color:#fff}
 
-  /* Reise (Accordion) */
-  .acc{display:grid;gap:12px}
-  .acc-item{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;overflow:hidden}
-  .acc-head{display:flex;gap:.6rem;align-items:center;cursor:pointer;padding:14px 16px;font-weight:800}
-  .acc-head:hover{background:rgba(255,255,255,.04)}
-  .acc-body{max-height:0;overflow:hidden;transition:max-height .5s ease, padding .5s ease; padding:0 16px}
-  .acc-item.open .acc-body{max-height:220px;padding:12px 16px 16px}
-  .wow{animation:fadeUp .6s ease both}
-  @keyframes fadeUp{from{opacity:0; transform:translate3d(0,12px,0)}to{opacity:1;transform:none}}
+  /* ======= Musik Toggle ======= */
+  #musikBtn{
+    position:fixed;bottom:18px;right:18px;z-index:900;
+    padding:10px 16px;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.25);
+    border-radius:999px;font-size:.95rem;cursor:pointer;box-shadow:var(--shadow)
+  }
+  #musikBtn:hover{color:var(--accent)}
 
-  /* Kino */
-  .video-wrap{position:relative;padding-top:56.25%;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.06);box-shadow:var(--shadow)}
-  .video-wrap iframe{position:absolute;inset:0;width:100%;height:100%}
+  /* ======= Abschnitt: Hero ======= */
+  .hero-title h1{font-size:clamp(38px,6vw,64px);color:var(--accent);margin-bottom:.15em}
+  .hero-title .b{color:var(--accent-2)}
+  .hero-lead{color:#e9f2ff;margin-bottom:14px}
+  .hero-list{margin:0;padding-left:18px}
+  .hero-list li{margin:.35em 0}
 
-  /* Share */
-  .share{display:flex;gap:10px;flex-wrap:wrap}
-  .share .btn{background:rgba(255,255,255,.06)}
-  footer{color:#91a6c6; font-size:.9rem; text-align:center; padding:24px 14px 48px}
+  /* ======= Akkordeon (Reise) ======= */
+  .accordion{display:grid;gap:10px;margin-top:10px}
+  .acc-item{border:1px solid rgba(255,255,255,.18);border-radius:12px;overflow:hidden;background:rgba(255,255,255,.04)}
+  .acc-head{padding:14px 16px;cursor:pointer;font-weight:800;color:var(--accent)}
+  .acc-head:hover{background:rgba(255,255,255,.06)}
+  .acc-body{max-height:0;overflow:hidden;transition:max-height .45s ease, padding .45s ease;padding:0 16px;color:#e8f0ff}
+  .acc-item.active .acc-body{max-height:220px;padding:12px 16px 16px}
 
+  /* ======= Kino ======= */
+  .kino-frame{border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)}
+  .kino-aspect{position:relative;padding-top:56.25%}
+  .kino-aspect iframe,.kino-aspect .ph{position:absolute;inset:0;width:100%;height:100%}
+
+  /* ======= Footer ======= */
+  footer{padding:22px 12px;color:#a9b6cf;text-align:center;border-top:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.45)}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<div class="nav">
-  <button id="musicBtn" class="chip chip--music" title="Musik an/aus">Musik</button>
-  <div class="spacer"></div>
-  <button class="chip" data-scroll="#home">Startseite</button>
-  <button class="chip" data-scroll="#reise">Reise</button>
-  <button class="chip" data-scroll="#kino">Kino</button>
-  <button class="chip" data-scroll="#share">Teilen</button>
+<!-- ======= NAV ======= -->
+<header>
+  <nav class="wrap" style="display:flex;align-items:center;gap:14px">
+    <a href="#hero" target="_self">Startseite</a>
+    <a href="#mentor" target="_self">Campus</a>
+    <a href="#reise" target="_self">Grundkurs</a>
+    <a href="#cta" target="_self">Onboarding</a>
+    <a href="#cta" target="_self">Krypto-Glossar Pro</a>
+    <div class="spacer"></div>
+    <a href="#kino" target="_self">Kino</a>
+  </nav>
+</header>
+
+<!-- ======= HINTERGRUND-VIDEO (Hero) ======= -->
+<div class="bg-video" aria-hidden="true">
+  <!-- Variante 1: YouTube-Embed für volle Kompatibilität -->
+  <iframe src="https://www.youtube.com/embed/miWBKSszEIw?autoplay=1&mute=1&loop=1&playlist=miWBKSszEIw&controls=0&modestbranding=1&showinfo=0"
+          title="Adler Hero" allow="autoplay; fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  <!-- Alternative (falls bevorzugt):
+  <video autoplay muted loop playsinline>
+    <source src="PATH/zu/deinem/adler.mp4" type="video/mp4">
+  </video>
+  -->
 </div>
 
-<!-- HERO -->
-<section id="home" class="hero">
-  <p class="kicker">Finanzielle Souveränität Akademie</p>
-  <h1 class="h1">Dein Geld.<br><span class="brand">Deine Freiheit.</span></h1>
-  <p class="sub">Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst.</p>
-  <button id="ctaPlay" class="cta"><i>💡</i> Einladung anhören</button>
-</section>
-
-<!-- FLOATING ACTIVATION -->
-<section class="panel">
-  <div id="activateBox" class="box wow">
-    <div class="title">
-      <span>Status • Ampel</span>
-      <div class="ampel">
-        <span id="dotR" class="dot red" title="nicht eingetragen"></span>
-        <span id="dotY" class="dot yellow" title="pending"></span>
-        <span id="dotG" class="dot green" title="personalisert"></span>
-      </div>
-    </div>
-    <div class="grid">
-      <input id="inVor" class="input" placeholder="Vorname" autocomplete="off">
-      <input id="inNach" class="input" placeholder="Nachname" autocomplete="off">
-      <input id="inMail" class="input" placeholder="E-Mail" autocomplete="off" inputmode="email">
-      <select id="inVoice" class="input" aria-label="Einladungsstimme">
-        <option value="male" selected>Einladungsstimme: männlich</option>
-        <option value="female">Einladungsstimme: weiblich</option>
-      </select>
-    </div>
+<!-- ======= WERKSZUSTAND / E-MAIL-EINGABE ======= -->
+<div id="welcomeBox">
+  <div id="welcomeInner">
+    <h3>👋 Willkommen zur Finanzielle Souveränität Akademie</h3>
+    <p>Trage deine <strong>seriöse E-Mail</strong> ein, um deine persönliche Landingpage zu aktivieren.</p>
+    <input type="email" id="emailInput" placeholder="Deine E-Mail">
     <div class="row">
-      <button id="btnActivate" class="btn primary">🚀 Aktivieren & Freischalten</button>
-      <button id="btnLater" class="btn ghost">⏳ Später</button>
-      <button id="btnCopy" class="btn copy">📋 E-Mail kopieren</button>
+      <button id="goBtn">Freischalten</button>
+      <button id="laterBtn">Später ansehen</button>
     </div>
-    <div class="note small">Für dich freigeschaltet von <strong>Alex Adler</strong> — <span id="ownerMail">adler.partner@example.com</span></div>
-    <div id="statusMsg" class="note" style="display:none"></div>
+    <p style="margin-top:10px;color:#a9b6cf;font-size:.95rem">Deine E-Mail wird nur zur Kontaktaufnahme mit deinem Mentor genutzt.</p>
   </div>
-  <button id="btnReopen" class="chip reopen">Aktivierung öffnen</button>
-</section>
+</div>
 
-<!-- MENTOR -->
-<section class="section">
-  <div class="card wow">
-    <h3>🧠 Dein digitaler Mentor</h3>
-    <p>Ich bin dein digitaler Mentor. Dein menschlicher <strong>Co-Mentor</strong> meldet sich per E-Mail, sobald deine Seite freigeschaltet ist.</p>
-  </div>
-</section>
+<!-- ======= MUSIK ======= -->
+<audio id="bgMusic" autoplay loop>
+  <!-- Passe die Quelle an dein Repo an (hier Beispiel aus FSA-Admin) -->
+  <source src="https://adler-fsa.github.io/FSA-Admin/media/terra-mater-inspiring-cinematic-epic-272565.mp3" type="audio/mpeg">
+</audio>
+<button id="musikBtn" title="Musik an/aus">🎵 Musik stoppen</button>
 
-<!-- ZITAT -->
-<section class="section">
-  <div class="card wow">
-    <p class="quote">„Eine Investition in Wissen bringt die besten Zinsen.“ — Franklin</p>
-  </div>
-</section>
+<!-- ======= INHALT ======= -->
+<main>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="wrap grid cols-2">
+      <div class="card hero-title">
+        <h1>Dein Geld.<br><span class="b">Deine Freiheit.</span></h1>
+        <p class="hero-lead">Die Welt verändert sich: Inflation, KI, Blockchain. Hier lernst du, wie du souverän wirst – Schritt für Schritt.</p>
+        <ul class="hero-list">
+          <li>💰 Vermögen schützen & verstehen</li>
+          <li>🔑 Zugang zur Krypto-Welt</li>
+          <li>🤖 Einkommen mit KI</li>
+          <li>🧭 Klarheit statt Chaos</li>
+        </ul>
+        <a class="btn" href="#cta">Jetzt starten</a>
+      </div>
 
-<!-- REISE -->
-<section id="reise" class="section">
-  <div class="card wow">
-    <h3>🛤️ Deine Reise zur finanziellen Souveränität</h3>
-    <p class="small">Klicke auf die Titel, um mehr zu sehen.</p>
-    <div class="acc" id="acc">
-      <!-- Items -->
-      <div class="acc-item">
-        <div class="acc-head">🚫 Nie mehr Fremdbestimmung</div>
-        <div class="acc-body">Wir zeigen dir, wie du Wissen & Systeme nutzt, damit du selbstbestimmt handeln kannst.</div>
-      </div>
-      <div class="acc-item">
-        <div class="acc-head">💌 Wer es wirklich will, folgt der Einladung</div>
-        <div class="acc-body">Trage deine echte E-Mail ein und starte mit deinem Mentor in deinen Grundkurs.</div>
-      </div>
-      <div class="acc-item">
-        <div class="acc-head">🌍 Zugang zur Krypto-Welt</div>
-        <div class="acc-body">Sicher & Schritt für Schritt – vom Wallet bis zu ersten Use-Cases.</div>
-      </div>
-      <div class="acc-item">
-        <div class="acc-head">🤖 Einkommen mit KI</div>
-        <div class="acc-body">Automatisiere Aufgaben, skaliere Output und baue dir smarte Einkommensquellen.</div>
-      </div>
-      <div class="acc-item">
-        <div class="acc-head">🧭 Klarheit statt Chaos</div>
-        <div class="acc-body">Klare Roadmap, klare Regeln, klare Prioritäten – damit du dranbleibst.</div>
-      </div>
-      <div class="acc-item">
-        <div class="acc-head">🎓 Deshalb gibt es die Akademie</div>
-        <div class="acc-body">Lernen, Community, Mentoren – alles an einem Ort. Dein Start: der kostenlose Grundkurs.</div>
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card" style="font-style:italic;text-align:center">„Eine Investition in Wissen bringt die besten Zinsen.“ – Franklin</div>
+        <div class="card">
+          <h2 style="color:var(--accent)">Was dich erwartet</h2>
+          <p>Ein klarer Pfad zu finanzieller Souveränität. Klar. Verständlich. Umsetzbar.</p>
+          <p style="color:var(--muted)">Der Grundkurs zeigt dir die ersten Schritte, damit du sofort ins Tun kommst.</p>
+        </div>
+        <div class="card" style="font-style:italic;text-align:center">„Das Wichtigste ist, in dich selbst zu investieren.“ – Buffett</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- KINO -->
-<section id="kino" class="section">
-  <div class="card wow">
-    <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px">
-      <h3 style="margin:0">🎬 Jetzt im Kino</h3>
-      <span class="small">Format: YouTube (nocookie)</span>
+  <!-- MENTOR -->
+  <section id="mentor">
+    <div class="wrap">
+      <div class="card" style="text-align:center">
+        <h2 style="color:var(--accent)">🧠 Dein Digitaler Mentor</h2>
+        <p>Ich begleite dich Schritt für Schritt. Du bekommst klare Aufgaben, Tools und Entscheidungen, die dich weiterbringen – ohne Überforderung.</p>
+      </div>
     </div>
-    <div class="video-wrap">
-      <iframe
-        src="https://www.youtube-nocookie.com/embed/lc2C8vP2tGU?rel=0&autohide=1&modestbranding=1"
-        title="Eagle Flight"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </section>
+
+  <!-- REISE (AKKORDEON) -->
+  <section id="reise">
+    <div class="wrap">
+      <div class="card">
+        <h2 style="color:var(--accent)">Deine Reise zur finanziellen Souveränität</h2>
+        <p style="color:var(--muted);margin:.2rem 0 1rem">👉 Klicke auf die Titel, um mehr zu erfahren</p>
+        <div class="accordion" id="acc">
+          <div class="acc-item">
+            <div class="acc-head">🚀 Nie mehr Fremdbestimmung</div>
+            <div class="acc-body"><p>Starte deinen eigenen Weg. Wer losgeht, entdeckt Chancen in Blockchain, KI und Krypto.</p></div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head">🎆 Wer es wirklich will, folgt der Einladung</div>
+            <div class="acc-body"><p>Viele Menschen gehen diesen Weg. Die Community wächst täglich – werde Teil davon.</p></div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head">🧠 Tausende entdecken die Krypto-Welt</div>
+            <div class="acc-body"><p>Die Zukunft ist digital. Lerne die Grundlagen, sicher und strukturiert.</p></div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head">😨 Angst entsteht aus Unwissenheit</div>
+            <div class="acc-body"><p>Wissen schafft Sicherheit. Genau deshalb gibt es diesen Kurs.</p></div>
+          </div>
+          <div class="acc-item">
+            <div class="acc-head">📚 Deshalb gibt es die Akademie</div>
+            <div class="acc-body"><p>Du bekommst Klarheit, Praxiswissen und Tools für deine Freiheit.</p></div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- SHARE -->
-<section id="share" class="section">
-  <div class="card wow">
-    <h3>🔗 Teile diese Seite</h3>
-    <p class="small">Empfehle die Akademie in deiner Community.</p>
-    <div class="share">
-      <button class="btn" data-share="tg">Telegram</button>
-      <button class="btn" data-share="wa">WhatsApp</button>
-      <button class="btn" data-share="fb">Facebook</button>
-      <button class="btn" data-share="ig">Instagram</button>
-      <button class="btn" data-share="tt">TikTok</button>
+  <!-- CTA -->
+  <section id="cta">
+    <div class="wrap">
+      <div class="card" style="text-align:center;padding:44px;max-width:820px;margin:0 auto">
+        <h2 style="font-size:2rem;margin-bottom:10px;color:var(--accent)">Finanzbildung für die neue Welt</h2>
+        <p style="font-size:1.2rem;font-weight:700;color:var(--accent-2);margin-bottom:18px">Dein Geld. Deine Zukunft. Deine Souveränität.</p>
+        <a href="mailto:EMAIL_PLACEHOLDER" class="btn full">🚀 Jetzt kostenlos starten – EMAIL_PLACEHOLDER</a>
+        <p style="margin-top:16px;font-size:.95rem;color:var(--muted)">Oder kopiere die Adresse direkt:</p>
+        <p style="font-size:1.1rem;font-weight:700;color:var(--accent)">EMAIL_PLACEHOLDER</p>
+        <button onclick="navigator.clipboard.writeText('EMAIL_PLACEHOLDER').then(()=>alert('📋 E-Mail kopiert: EMAIL_PLACEHOLDER'))"
+                style="margin-top:8px;padding:10px 16px;background:var(--accent);color:#000;border:none;border-radius:8px;cursor:pointer;font-weight:800">
+          📋 E-Mail kopieren
+        </button>
+        <p style="margin-top:16px;color:#e8f0ff">👉 Über diese E-Mail erhältst du direkten Kontakt zu einem menschlichen Mentor.</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<footer>LP-Generator v3.2.0 · Master-Template (Memo 01/02 + Änderungen aus 03/04/05) · JSON-frei</footer>
+  <!-- KINO -->
+  <section id="kino">
+    <div class="wrap">
+      <div class="card kino-frame">
+        <div class="kino-aspect">
+          <!-- Platzhalter – später via Admin/Rotator ersetzt -->
+          <div class="ph" style="display:grid;place-items:center;background:#0a1120;color:#d1dcf4">
+            <div style="text-align:center">
+              <div style="font-size:42px">🎬</div>
+              <p style="margin:.5rem 0 0">Kino-Platzhalter – Inhalte folgen</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
-<!-- AUDIO (Hintergrundmusik, versucht Autoplay) -->
-<audio id="bgm" src="data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" loop></audio>
-<!-- Hinweis: Oben ist ein winziger stiller Platzhalter. Er wird sofort ersetzt, wenn Autoplay erlaubt ist. -->
+<footer>
+  <p>© 2025 Finanzielle Souveränitäts Akademie — Master Template 02 (v2.4.1)</p>
+  <p><em>„Wissen ist Macht – angewandtes Wissen ist Freiheit.“</em></p>
+</footer>
 
+<!-- ============== SCRIPTS ============== -->
 <script>
-/* ===== Helpers ===== */
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
-const byId = id => document.getElementById(id);
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-/* ===== Smooth scroll for nav ===== */
-$$('.nav .chip[data-scroll]').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    document.querySelector(b.dataset.scroll)?.scrollIntoView({behavior:'smooth', block:'start'});
+  // Musikbutton
+  const musikBtn = document.getElementById('musikBtn');
+  const bgMusic  = document.getElementById('bgMusic');
+  musikBtn.addEventListener('click',()=>{
+    if(bgMusic.paused){ bgMusic.play(); musikBtn.textContent="🎵 Musik stoppen"; }
+    else{ bgMusic.pause(); musikBtn.textContent="🎵 Musik starten"; }
   });
-});
 
-/* ===== Music auto start with graceful fallback ===== */
-const musicBtn = byId('musicBtn');
-const bgm = byId('bgm');
-let musicWanted = true;
-let musicOn = false;
-bgm.volume = .55;
-
-async function tryStartMusic(){
-  try{
-    // Replace silent placeholder with a gentle pad (small base64 keeps it single-file)
-    if(bgm.src.startsWith('data:audio/mp3;base64,')) {
-      bgm.src = 'data:audio/mp3;base64,//uQZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQAA...';
-      // (gekürzt: kleiner eingebetteter Loop; bei Bedarf eigene MP3-URL eintragen)
-    }
-    await bgm.play();
-    musicOn = true;
-    musicBtn.textContent = 'Musik · an';
-  }catch(e){
-    musicOn = false;
-    musicBtn.textContent = 'Musik';
-    // Browser blockiert Autoplay – Button bleibt sichtbar
-  }
-}
-tryStartMusic();
-musicBtn.addEventListener('click', async ()=>{
-  if(!musicOn){ await tryStartMusic(); } else { bgm.pause(); musicOn=false; musicBtn.textContent='Musik · aus';}
-});
-
-/* ===== CTA: Einladung anhören (Web Speech) + Ducking ===== */
-const ctaPlay = byId('ctaPlay');
-let speaking = false;
-function speak(text, voicePref='male'){
-  if(!('speechSynthesis' in window)) { alert('Sprachsynthese wird nicht unterstützt.'); return; }
-  const u = new SpeechSynthesisUtterance(text);
-  // Stimme wählen (einfacher Heuristik-Versuch)
-  const voices = speechSynthesis.getVoices();
-  const pick = voices.find(v=>voicePref==='male' ? /de|German/i.test(v.lang) && /male|mann|männ/i.test(v.name) : /de|German/i.test(v.lang) && /female|frau|weib/i.test(v.name))
-             || voices.find(v=>/de|German/i.test(v.lang)) || voices[0];
-  if(pick) u.voice = pick;
-  u.rate = .98; u.pitch = voicePref==='male' ? .95 : 1.05; u.volume = 1;
-
-  u.onstart = ()=>{ speaking=true; fadeMusicTo(.18, 450); };
-  u.onend   = ()=>{ speaking=false; fadeMusicTo(.55, 600); };
-  speechSynthesis.speak(u);
-}
-function fadeMusicTo(target, ms=400){
-  if(!bgm) return;
-  const steps = 24; const start = bgm.volume; const dt = (target-start)/steps; let i=0;
-  const t = setInterval(()=>{ i++; bgm.volume = Math.max(0, Math.min(1, start + dt*i)); if(i>=steps) clearInterval(t); }, ms/steps);
-}
-const inviteText = `Hallo neugieriger Adler! Schön, dass du vorbeischaust. 
-Ich lade dich ein, die Reise zu dir selbst zu beginnen. 
-Ich bin dein Weggefährte und stand einmal vor genau derselben Frage wie du jetzt. 
-Finanzielle Souveränität ist das Leben, das du dir wünschst. 
-Überwinde deine Ängste, starte jetzt und erhebe dich zu neuen Perspektiven. 
-Wir sind viele – und wir lernen alle, souverän zu leben.`;
-
-ctaPlay.addEventListener('click', ()=>{
-  const pref = byId('inVoice').value || 'male';
-  speak(inviteText, pref);
-});
-
-/* ===== Aktivierungs-Panel (Werkszustand -> Pending -> Grün) ===== */
-const dotR=byId('dotR'), dotY=byId('dotY'), dotG=byId('dotG');
-function setAmpel(state){ // 'red' | 'yellow' | 'green'
-  [dotR,dotY,dotG].forEach(d=>d.style.opacity=.15);
-  if(state==='red')   dotR.style.opacity=1;
-  if(state==='yellow')dotY.style.opacity=1;
-  if(state==='green') dotG.style.opacity=1;
-}
-setAmpel('red');
-
-const btnActivate = byId('btnActivate');
-const btnLater = byId('btnLater');
-const btnCopy = byId('btnCopy');
-const statusMsg = byId('statusMsg');
-const box = byId('activateBox');
-const reopen = byId('btnReopen');
-
-btnActivate.addEventListener('click', async ()=>{
-  const v = byId('inVor').value.trim();
-  const n = byId('inNach').value.trim();
-  const m = byId('inMail').value.trim();
-  if(!v || !n || !m || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m)){
-    statusMsg.style.display='block';
-    statusMsg.textContent='Bitte Vorname, Nachname und eine gültige E-Mail eingeben.';
-    statusMsg.style.color = '#ffd166';
-    return;
-  }
-  setAmpel('yellow');
-  statusMsg.style.display='block';
-  statusMsg.style.color='#a9c4ee';
-  statusMsg.textContent='✓ Gesendet. Admin prüft und bestätigt (Demo: Token-Flow).';
-  // (In der Final-Version übernimmt das Admin-Panel die Freigabe → danach grün)
-});
-
-btnLater.addEventListener('click', ()=>{
-  box.style.display='none';
-  reopen.style.display='inline-flex';
-});
-reopen.addEventListener('click', ()=>{
-  box.style.display='';
-  reopen.style.display='none';
-});
-
-btnCopy.addEventListener('click', async ()=>{
-  const m = byId('inMail').value.trim();
-  if(!m) return;
-  try{ await navigator.clipboard.writeText(m); btnCopy.textContent='✓ Kopiert'; setTimeout(()=>btnCopy.textContent='📋 E-Mail kopieren',1200);}catch{ }
-});
-
-/* ===== Accordion logic ===== */
-$$('.acc-head').forEach(h=>{
-  h.addEventListener('click', ()=>{
-    const item = h.parentElement;
-    item.classList.toggle('open');
+  // Akkordeon
+  document.querySelectorAll('.acc-head').forEach(btn=>{
+    btn.addEventListener('click',()=>{ btn.parentElement.classList.toggle('active'); });
   });
-});
 
-/* ===== Share buttons (very simple deep-links) ===== */
-const shareTitle = encodeURIComponent('Finanzielle Souveränität Akademie');
-const shareUrl = encodeURIComponent(location.href);
-const shareText = encodeURIComponent('Dein Geld. Deine Freiheit. Komm mit auf die Reise – sichere dir den Grundkurs: ');
-const shareMap = {
-  tg: `https://t.me/share/url?url=${shareUrl}&text=${shareText}`,
-  wa: `https://api.whatsapp.com/send?text=${shareText}${shareUrl}`,
-  fb: `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`,
-  ig: `https://www.instagram.com/`, // Instagram unterstützt kein klassisches Web-Share
-  tt: `https://www.tiktok.com/`     // Platzhalter
-};
-$$('.share .btn').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    const k=b.dataset.share; const u=shareMap[k]; if(u) window.open(u,'_blank','noopener');
+  // Werkszustand / Begrüßungsbox (E-Mail)
+  const welcomeBox = document.getElementById('welcomeBox');
+  const laterBtn   = document.getElementById('laterBtn');
+  const goBtn      = document.getElementById('goBtn');
+
+  laterBtn.addEventListener('click',()=>{ welcomeBox.style.display='none'; });
+
+  goBtn.addEventListener('click',()=>{
+    const mail = document.getElementById('emailInput').value.trim();
+    if(!mail){ alert("Bitte eine gültige E-Mail eintragen!"); return; }
+    // Nur Seite personalisieren (kein LocalStorage, keine URL-Parameter)
+    document.body.innerHTML = document.body.innerHTML.replace(/EMAIL_PLACEHOLDER/g, mail);
+    welcomeBox.style.display='none';
   });
-});
 
-/* ===== Reveal WOW on scroll ===== */
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('wow'); io.unobserve(e.target);} });
-},{threshold:.15});
-$$('.card, .box').forEach(el=>io.observe(el));
+  // Sanftes Scrollen für Menü
+  document.querySelectorAll('header nav a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const id = a.getAttribute('href');
+      const el = document.querySelector(id);
+      if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth',block:'start'}); }
+    });
+  });
 </script>
 </body>
 </html>
