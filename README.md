@@ -1,20 +1,20 @@
-# LP‑Generator v2.0.0 (Final)
+# LP‑Generator – v2.4.1 Patch‑Tool (Nur 2 Änderungen)
 
-Akquise‑Motor gemäß Memo 01/02: **Eine LP = eine ID = eine E‑Mail**.  
-Steuerung via JSON (Hintertüren), keine Tokens in URL, kein LocalStorage.
+Dieses ZIP enthält ein **einfaches Browser‑Tool**, das deine bestehende `lp-template.html` öffnet und **nur** die zwei gewünschten Änderungen automatisch einbaut:
 
-## Dateien
-- `lp-template.html` – Master‑LP; liest E‑Mail anhand `?id=...` aus `emails.json`, zeigt Status (⏳/✅), Kino (Video/Slideshow), Musik‑Button.
-- `lp-admin.html` – Demo‑Admin (Anzeige); echte Commits via GitHub Contents API möglich.
-- `media-admin.html` – Hinweise zur Medien‑Steuerung.
-- JSON: `settings.json`, `emails.json`, `rotator.json`, `slideshow.json`, `music.json`, `quotes.json`, `reise.json`
-- `index.html` – Übersicht aller Links.
+1) **Patch 1 – Willkommens‑Modal:** Fügt **Vorname** & **Nachname** **vor** das bestehende E‑Mail‑Feld ein (ohne Optik zu verändern).
+2) **Patch 2 – NAV Buttons:** Ersetzt den bisherigen NAV‑Block durch **Startseite · Campus · Grundkurs · Onboarding · Krypto‑Glossar** (**ohne „Kino“**).
 
-## Beispielaufrufe
-- LP (freigegeben): `/lp-template.html?id=FSA-2025-10-07-0001`
-- LP (wartend): `/lp-template.html?id=FSA-2025-10-07-0002`
+## So geht’s (ohne Programmierkenntnisse)
+1. Lade **`LP-Generator_v2.4.1_Patcher.html`** in deinem Browser (Doppelklick).
+2. Klicke auf **„Datei wählen“** und wähle DEINE **Original‑Datei** `lp-template.html` (v2.4.1).
+3. Klicke **„Patch anwenden“**.
+4. Der Browser lädt dir die **neue Datei** `lp-template_patched.html` herunter.
+5. Ersetze in deinem Repo die alte Datei durch `lp-template_patched.html` (oder benenne sie zu `lp-template.html` um).
 
-## Wichtige Regeln
-- **Keine E‑Mail in URL.** Nur ID.
-- **FSA‑Admin** prüft und setzt `approved:true` in `emails.json`.
-- Änderungen an Content/Medien nur über JSON nötig.
+> Das Tool ändert **nichts anderes** und ist **idempotent** (du kannst es nicht doppelt anwenden – es überspringt bereits eingebaute Patches).
+
+## Enthalten
+- `LP-Generator_v2.4.1_Patcher.html` – Ein‑Klick‑Patcher
+- `snippets/patch1_modal_names.js` – Referenzsnippet
+- `snippets/patch2_nav_block.html` – Referenzsnippet

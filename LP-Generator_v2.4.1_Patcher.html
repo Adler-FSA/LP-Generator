@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LP‑Generator v2.4.1 – Patcher (Nur Patch 1 & 2)</title>
+<style>
+  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b0f14;color:#e5ecf6;margin:0}
+  .wrap{max-width:900px;margin:40px auto;padding:24px;background:#0f172a;border:1px solid rgba(255,255,255,.12);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  h1{font-size:1.4rem;margin:0 0 12px;color:#ffe099}
+  p{line-height:1.55;color:#c7d2e1}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0}
+  input[type=file]{padding:10px;background:#0b1626;border:1px solid #1f2a44;border-radius:10px;color:#e5ecf6}
+  button{padding:12px 16px;border-radius:10px;border:0;font-weight:800;cursor:pointer}
+  .primary{background:linear-gradient(180deg,#f6d284,#e2b441);color:#1f2a36}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,.16);color:#e5ecf6}
+  pre{background:#0b1626;border:1px solid #1f2a44;border-radius:10px;padding:12px;overflow:auto;max-height:300px;color:#dbeafe}
+  .ok{color:#8bffb0}
+  .warn{color:#ffd27a}
+  .err{color:#ff9ea8}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>LP‑Generator v2.4.1 – Patcher (nur Patch 1 & 2)</h1>
+    <p>Dieses Tool nimmt **nur** zwei Änderungen vor: <b>Patch 1</b> (Vorname & Nachname vor E‑Mail im Willkommens‑Modal) und <b>Patch 2</b> (NAV‑Buttons ohne „Kino“ inkl. Onboarding). Nichts anderes.</p>
+    
+    <div class="row">
+      <input id="file" type="file" accept=".html,.htm" />
+      <button class="primary" id="apply">Patch anwenden</button>
+      <button class="ghost" id="show">Geänderte Stellen anzeigen</button>
+    </div>
+    <div id="log"></div>
+    <pre id="diff" style="display:none"></pre>
+  </div>
+
+<script>
+(function(){
+  const NEW_NAV = `<!-- ===== NAV_BUTTONS · v2.4.1-REV-B ===== -->
+<style>
+  #lp-nav { padding:24px 0; background:#000; }
+  #lp-nav .wrap {
+    max-width:1100px; margin:0 auto;
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+  }
+  .pill-btn{
+    text-decoration:none; font-weight:700; color:#f8fafc;
+    padding:12px 18px; border-radius:999px; display:inline-block;
+    background:linear-gradient(180deg,#1a1f2a,#0b0f14);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 8px 22px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    backdrop-filter:saturate(120%);
+    transition:transform .12s ease, box-shadow .2s ease;
+  }
+  .pill-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 12px 28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .pill-btn:active{ transform:translateY(0); }
+  @media (max-width:640px){
+    .pill-btn{ padding:12px 16px; font-size:.95rem; }
+  }
+</style>
+
+<div id="lp-nav">
+  <div class="wrap">
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/startseite" aria-label="Startseite">Startseite</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/campus" aria-label="Campus">Campus</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/grundkurs" aria-label="Grundkurs">Grundkurs</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/onboarding" aria-label="Onboarding">Onboarding</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/krypto-glossar" aria-label="Krypto-Glossar">Krypto-Glossar</a>
+    <!-- Hinweis: 'Kino' wurde wie gewünscht entfernt -->
+  </div>
+</div>
+<!-- ===== /NAV_BUTTONS · v2.4.1-REV-B ===== -->`;
+  const PATCH1_MARK = '<!-- PATCH 1: Modal name fields inserter v2.4.1 -->';
+  function log(html){ document.getElementById('log').innerHTML = html; }
+  function esc(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+  function applyPatches(html){
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    let changes = [];
+
+    // === Patch 2: NAV ersetzen ===
+    // 1) Ziel: vorhandenes #lp-nav finden
+    let nav = doc.querySelector('#lp-nav');
+    let insertedNav = false;
+
+    if(nav){
+      // evtl. zugehöriges Style-Tag entfernen, wenn es nur #lp-nav/.pill-btn enthält
+      const styles = Array.from(doc.querySelectorAll('style'));
+      for (const s of styles){
+        const t = s.textContent || '';
+        if (t.includes('#lp-nav') && t.includes('.pill-btn') && t.length < 4000){
+          s.remove();
+          changes.push('Patch 2: altes NAV-Style entfernt');
+        }
+      }
+      // Ersetze das HTML des Nav-Containers durch das neue
+      const temp = doc.createElement('div');
+      temp.innerHTML = NEW_NAV.trim();
+      const newStyle = temp.querySelector('style');
+      const newNav = temp.querySelector('#lp-nav');
+      // Füge zuerst das Style-Tag vor dem alten Nav ein
+      if(newStyle) nav.parentNode.insertBefore(newStyle, nav);
+      // Ersetze das Nav
+      nav.replaceWith(newNav);
+      changes.push('Patch 2: #lp-nav ersetzt');
+      insertedNav = true;
+    } else {
+      // Kein #lp-nav gefunden → nichts tun (streng minimal-invasiv)
+      changes.push('Patch 2: Kein #lp-nav gefunden – unverändert gelassen');
+    }
+
+    // === Patch 1: JS-Snippet vor </body> anhängen (idempotent) ===
+    const already = (doc.documentElement.outerHTML.includes(PATCH1_MARK) ||
+                     doc.querySelector('script[data-fsa-patch="modal-names"]'));
+    if(!already){
+      const script = doc.createElement('script');
+      script.setAttribute('data-fsa-patch','modal-names');
+      script.textContent = `
+${PATCH1_MARK}
+(function () {
+  function run() {
+    var scopes = ['#welcome-overlay', '#fsa-welcome', '#welcome', '#modal-welcome', '.welcome-modal'];
+    var root = null;
+    for (var i=0;i<scopes.length;i++){ var r=document.querySelector(scopes[i]); if(r){ root=r; break; } }
+    var email = (root ? root.querySelector('input[type="email"]') : document.querySelector('input[type="email"]'));
+    if (!email) return; // nichts zu tun
+    var form = email.form || email.closest('form');
+    if (!form) return;
+    if (form.querySelector('input[name="vorname"]') || form.querySelector('input[name="nachname"]')) return; // schon da
+
+    function makeNameInput(placeholder, name, ac) {
+      var el = email.cloneNode(false);
+      el.type = 'text';
+      el.name = name;
+      el.id = (email.id ? email.id.replace(/email/i,'') : 'fsa-') + name;
+      el.placeholder = placeholder;
+      el.setAttribute('aria-label', placeholder);
+      el.autocomplete = ac;
+      el.required = true;
+      el.value = '';
+      el.removeAttribute('pattern');
+      el.removeAttribute('inputmode');
+      return el;
+    }
+    var vor = makeNameInput('Vorname', 'vorname', 'given-name');
+    var nach = makeNameInput('Nachname', 'nachname', 'family-name');
+    email.parentNode.insertBefore(vor, email);
+    email.parentNode.insertBefore(nach, email);
+  }
+  if (document.readyState !== 'loading') run();
+  else document.addEventListener('DOMContentLoaded', run);
+})();`;
+      doc.body.appendChild(script);
+      changes.push('Patch 1: Modal-Name‑Felder JS eingefügt');
+    } else {
+      changes.push('Patch 1: Bereits vorhanden – übersprungen');
+    }
+
+    const out = '<!doctype html>\n' + doc.documentElement.outerHTML;
+    return {html: out, changes};
+  }
+
+  const fileInput = document.getElementById('file');
+  const btnApply = document.getElementById('apply');
+  const btnShow = document.getElementById('show');
+  const diffBox = document.getElementById('diff');
+
+  btnApply.onclick = async () => {
+    const f = fileInput.files && fileInput.files[0];
+    if(!f){ alert('Bitte wähle deine Original‑Datei lp-template.html aus.'); return; }
+    const text = await f.text();
+    const res = applyPatches(text);
+    const blob = new Blob([res.html], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'lp-template_patched.html';
+    a.click();
+    log('<p class="ok">Fertig ✅ – Die Datei <b>lp-template_patched.html</b> wurde geladen.<br>Änderungen: <br>• ' + res.changes.join('<br>• ') + '</p>');
+    diffBox.style.display='none';
+  };
+
+  btnShow.onclick = async () => {
+    const f = fileInput.files && fileInput.files[0];
+    if(!f){ alert('Bitte wähle zuerst deine Original‑Datei.'); return; }
+    const text = await f.text();
+    const res = applyPatches(text);
+    const changes = res.changes.map(c=>'• '+c).join('\\n');
+    diffBox.textContent = 'Änderungsübersicht:\\n' + changes + '\\n\\n(Hinweis: Dies ist kein Zeilen‑Diff, da die DOM‑Operationen positionsgenau arbeiten.)';
+    diffBox.style.display='block';
+  };
+
+  // Inject NEW_NAV template
+  document.currentScript.textContent = document.currentScript.textContent.replace('<!-- ===== NAV_BUTTONS · v2.4.1-REV-B ===== -->
+<style>
+  #lp-nav { padding:24px 0; background:#000; }
+  #lp-nav .wrap {
+    max-width:1100px; margin:0 auto;
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+  }
+  .pill-btn{
+    text-decoration:none; font-weight:700; color:#f8fafc;
+    padding:12px 18px; border-radius:999px; display:inline-block;
+    background:linear-gradient(180deg,#1a1f2a,#0b0f14);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 8px 22px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    backdrop-filter:saturate(120%);
+    transition:transform .12s ease, box-shadow .2s ease;
+  }
+  .pill-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 12px 28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .pill-btn:active{ transform:translateY(0); }
+  @media (max-width:640px){
+    .pill-btn{ padding:12px 16px; font-size:.95rem; }
+  }
+</style>
+
+<div id="lp-nav">
+  <div class="wrap">
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/startseite" aria-label="Startseite">Startseite</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/campus" aria-label="Campus">Campus</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/grundkurs" aria-label="Grundkurs">Grundkurs</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/onboarding" aria-label="Onboarding">Onboarding</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/krypto-glossar" aria-label="Krypto-Glossar">Krypto-Glossar</a>
+    <!-- Hinweis: 'Kino' wurde wie gewünscht entfernt -->
+  </div>
+</div>
+<!-- ===== /NAV_BUTTONS · v2.4.1-REV-B ===== -->', NEW_NAV.replace(/`/g,'\\`'));
+})();
+</script>
+</body>
+</html>
