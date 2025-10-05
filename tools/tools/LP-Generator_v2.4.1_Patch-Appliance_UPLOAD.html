@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>LP-Generator v2.4.1 – Patch-Appliance (Upload + Presets)</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#0f172a;--ink:#e5e7eb;--muted:#94a3b8;--ok:#10b981;--warn:#f59e0b;--err:#ef4444}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+  h1{font-size:1.2rem;margin:0 0 14px}
+  .muted{color:var(--muted);font-size:.95rem}
+  section{background:var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin:12px 0}
+  label{display:block;margin:8px 0 6px;font-weight:700}
+  input[type=text]{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #1f2937;background:#0b1220;color:#e5e7eb}
+  textarea{width:100%;min-height:130px;padding:10px 12px;border-radius:8px;border:1px solid #1f2937;background:#0b1220;color:#e5e7eb;white-space:pre;overflow:auto}
+  .row{display:grid;gap:16px}
+  @media(min-width:900px){.row{grid-template-columns:1fr 1fr}}
+  .btn{display:inline-block;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
+       background:linear-gradient(180deg,#1a1f2a,#0b0f14);color:#f8fafc;font-weight:700;cursor:pointer;margin:6px 6px 6px 0;text-decoration:none}
+  .btn.ok{background:linear-gradient(180deg,#065f46,#064e3b);border-color:#064e3b}
+  .btn.warn{background:linear-gradient(180deg,#92400e,#7c2d12);border-color:#7c2d12}
+  .badge{display:inline-block;padding:3px 8px;border-radius:8px;background:#111827;border:1px solid #1f2937;font-size:.85rem;color:#e5e7eb}
+  .stack{display:flex;flex-wrap:wrap;gap:8px}
+  pre.code{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:10px;max-height:360px;overflow:auto}
+  .status{margin-left:8px;font-weight:700}
+  .oktxt{color:#10b981}.warntxt{color:#f59e0b}.errtxt{color:#ef4444}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>LP-Generator v2.4.1 – Patch-Appliance (nur Patch 1 & 2 + Upload)</h1>
+
+  <section>
+    <div class="stack">
+      <div class="badge">Speichername:</div>
+      <input id="saveName" type="text" value="lp-template_patched.html" style="max-width:340px"/>
+      <label style="display:inline-flex;align-items:center;gap:8px;margin:0 0 0 12px">
+        <input id="ts" type="checkbox" checked/> <span class="muted">Zeitstempel anhängen</span>
+      </label>
+      <span id="msg" class="status muted"></span>
+    </div>
+  </section>
+
+  <section>
+    <h3>1) Live-Quelle laden</h3>
+    <div class="stack">
+      <input id="srcUrl" type="text" value="/Lp-Generator/lp-template.html" style="max-width:520px"/>
+      <button class="btn" onclick="loadUrl()">Quelle laden</button>
+      <button class="btn" onclick="openOriginal()">Original anzeigen</button>
+    </div>
+    <p class="muted">Wenn das Laden blockiert ist (iPad/Firefox), kopiere den HTML-Inhalt manuell unten links hinein.</p>
+    <div class="row">
+      <div>
+        <label>Quelle (nur Ansicht / optional manuell einfügen)</label>
+        <textarea id="srcView" placeholder="— leer —"></textarea>
+        <button class="btn" onclick="takeLeft()">Linken Inhalt übernehmen</button>
+      </div>
+      <div>
+        <label>Arbeitskopie (hier wird gepatcht)</label>
+        <textarea id="work"></textarea>
+        <div class="stack">
+          <button class="btn ok" onclick="preview()">Vorschau öffnen</button>
+          <button class="btn ok" onclick="saveOut()">Als Datei speichern</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h3>2) Patches anwenden</h3>
+    <div class="stack" style="margin-bottom:6px">
+      <button class="btn" onclick="applyPreset(2)">Patch 2 anwenden (NAV ohne „Kino“ + Onboarding)</button>
+      <button class="btn" onclick="applyPreset(1)">Patch 1 anwenden (Modal: Vorname & Nachname vor E-Mail)</button>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Patch-Datei hochladen (.json / .txt)</label>
+        <input id="patchFile" type="file" accept=".json,.txt" onchange="loadPatchFile(this)"/>
+        <div class="muted" id="patchInfo">Noch keine Patch-Datei geladen.</div>
+      </div>
+      <div>
+        <label>Patch-Text einfügen (JSON Regeln)</label>
+        <textarea id="patchText" placeholder='[ {"name":"Mein Patch","rules":[{"type":"replace","find":"ALT","replacement":"NEU"}]} ]'></textarea>
+        <div class="stack">
+          <button class="btn" onclick="applyFromText()">Patch-Text anwenden</button>
+          <button class="btn ghost" onclick="document.getElementById(`patchText`).value=``, setMsg(`Eingabefeld geleert.`, `warn`)">Feld leeren</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h3>3) Hinweise</h3>
+    <ul class="muted">
+      <li>Arbeitet nur mit Dateien aus <code>adler-fsa.github.io/Lp-Generator/…</code> (gleiches Projekt/Domain).</li>
+      <li>Patch-Regeltypen: <code>replace</code>, <code>regexReplace</code>, <code>replaceBetween</code>, <code>insertBefore</code>, <code>insertAfter</code>, <code>appendBeforeBodyEnd</code>.</li>
+      <li>Du kannst jederzeit die Arbeitskopie im rechten Feld manuell anpassen und speichern.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+/* ===========================
+   Mini Patch-Engine (Deutsch)
+   ===========================
+
+Patch-JSON (Beispiel):
+[
+  {
+    "name": "Patch 2: NAV …",
+    "rules": [
+      {"type":"replaceBetween","start":"<!-- ===== NAV_BUTTONS","end":"<!-- ===== /NAV_BUTTONS","replacement":"…"},
+      {"type":"regexReplace","pattern":"<a[^>]*>\\s*Kino\\s*</a>","flags":"gi","replacement":""}
+    ]
+  }
+]
+*/
+
+let original = "", work = "", loadedPatchSet = null;
+
+function setMsg(txt, kind){
+  const el = document.getElementById('msg');
+  el.textContent = txt || '';
+  el.className = 'status ' + (kind==='ok'?'oktxt':kind==='warn'?'warntxt':kind==='err'?'errtxt':'muted');
+}
+
+async function loadUrl(){
+  const url = document.getElementById('srcUrl').value.trim();
+  try{
+    const r = await fetch(url, {cache:'no-store'});
+    if(!r.ok){ throw new Error('HTTP '+r.status); }
+    const t = await r.text();
+    original = t; work = t;
+    document.getElementById('srcView').value = t;
+    document.getElementById('work').value = t;
+    setMsg('Quelle geladen: '+url, 'ok');
+  }catch(e){
+    setMsg('Konnte Quelle nicht laden: '+e.message, 'err');
+  }
+}
+
+function openOriginal(){
+  const url = document.getElementById('srcUrl').value.trim();
+  window.open(url, '_blank');
+}
+
+function takeLeft(){
+  const t = document.getElementById('srcView').value;
+  if(!t){ setMsg('Links ist nichts eingefügt.', 'warn'); return; }
+  original = t; work = t;
+  document.getElementById('work').value = t;
+  setMsg('Linken Inhalt übernommen.', 'ok');
+}
+
+function saveOut(){
+  let name = document.getElementById('saveName').value.trim() || 'lp-template_patched.html';
+  if(document.getElementById('ts').checked){
+    const d = new Date();
+    const ts = `_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+    const dot = name.lastIndexOf('.');
+    if(dot>0){ name = name.slice(0,dot)+ts+name.slice(dot); } else { name += ts; }
+  }
+  const blob = new Blob([document.getElementById('work').value], {type:'text/html'});
+  const a = Object.assign(document.createElement('a'), {href:URL.createObjectURL(blob), download:name});
+  document.body.appendChild(a); a.click(); a.remove();
+  setMsg('Datei gespeichert: '+name, 'ok');
+}
+
+function preview(){
+  const html = document.getElementById('work').value;
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+function loadPatchFile(inp){
+  const f = inp.files && inp.files[0];
+  if(!f){ setMsg('Keine Patch-Datei gewählt.', 'warn'); return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const txt = String(reader.result||'').trim();
+      let json = JSON.parse(txt);
+      if(!Array.isArray(json)) throw new Error('Erwarte Array von Patch-Sets');
+      loadedPatchSet = json;
+      document.getElementById('patchInfo').textContent = 'Patch-Datei geladen: '+f.name+' • Sets: '+json.length;
+      setMsg('Patch-Datei geladen.', 'ok');
+    }catch(e){
+      setMsg('Patch-Datei konnte nicht gelesen werden: '+e.message, 'err');
+    }
+  };
+  reader.onerror = () => setMsg('Dateilesefehler.', 'err');
+  reader.readAsText(f, 'utf-8');
+}
+
+function applyFromText(){
+  const raw = document.getElementById('patchText').value.trim();
+  if(!raw){ setMsg('Kein Patch-Text vorhanden.', 'warn'); return; }
+  try{
+    const json = JSON.parse(raw);
+    if(Array.isArray(json)){ applyPatchSet(json); }
+    else{ throw new Error('Erwarte Array von Patch-Sets'); }
+  }catch(e){
+    setMsg('Patch-Text fehlerhaft: '+e.message, 'err');
+  }
+}
+
+function applyPatchSet(setArr){
+  if(!setArr || !Array.isArray(setArr)){ setMsg('Ungültiger Patch-Satz.', 'err'); return; }
+  let html = document.getElementById('work').value;
+  let changes = 0;
+  const has = (s)=> html.indexOf(s) !== -1;
+
+  for(const set of setArr){
+    const rules = set.rules || [];
+    for(const r of rules){
+      try{
+        if(r.type === 'replace'){
+          const before = html;
+          html = html.split(r.find).join(r.replacement);
+          if(html!==before) changes++;
+        }else if(r.type === 'regexReplace'){
+          const re = new RegExp(r.pattern, r.flags||'');
+          const before = html;
+          html = html.replace(re, r.replacement);
+          if(html!==before) changes++;
+        }else if(r.type === 'replaceBetween'){
+          const s = r.start, e = r.end;
+          const i1 = html.indexOf(s);
+          const i2 = html.indexOf(e, i1>=0?i1:0);
+          if(i1>=0 && i2>=0){
+            const tail = html.slice(i2 + e.length);
+            html = html.slice(0, i1) + r.replacement + tail;
+            changes++;
+          }
+        }else if(r.type === 'insertBefore'){
+          const m = r.marker;
+          const i = html.indexOf(m);
+          if(i>=0){
+            html = html.slice(0,i) + r.text + m + html.slice(i+m.length);
+            changes++;
+          }
+        }else if(r.type === 'insertAfter'){
+          const m = r.marker;
+          const i = html.indexOf(m);
+          if(i>=0){
+            html = html.slice(0, i+m.length) + r.text + html.slice(i+m.length);
+            changes++;
+          }
+        }else if(r.type === 'appendBeforeBodyEnd'){
+          const sig = r.signature || '';
+          const already = sig && has(sig);
+          if(!already){
+            const re = /<\/body>/i;
+            if(re.test(html)){
+              html = html.replace(re, (r.text||'') + "\n</body>");
+              changes++;
+            }
+          }
+        }
+      }catch(ex){
+        console.warn('Regelfehler', ex);
+      }
+    }
+  }
+  document.getElementById('work').value = html;
+  setMsg('Patches angewendet. Änderungen: '+changes, changes? 'ok':'warn');
+}
+
+/* ===========================
+   Eingebaute Presets (Patch 1 & 2)
+   =========================== */
+
+function applyPreset(n){
+  if(!document.getElementById('work').value){ setMsg('Keine Arbeitskopie vorhanden. Bitte Quelle laden oder links einfügen.', 'warn'); return; }
+
+  if(n===2){
+    const navBlock = `
+<!-- ===== NAV_BUTTONS · v2.4.1-REV-B ===== -->
+<style>
+  #lp-nav { padding:24px 0; background:#000; }
+  #lp-nav .wrap {
+    max-width:1100px; margin:0 auto;
+    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+  }
+  .pill-btn{
+    text-decoration:none; font-weight:700; color:#f8fafc;
+    padding:12px 18px; border-radius:999px; display:inline-block;
+    background:linear-gradient(180deg,#1a1f2a,#0b0f14);
+    border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 8px 22px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    backdrop-filter:saturate(120%);
+    transition:transform .12s ease, box-shadow .2s ease;
+  }
+  .pill-btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 12px 28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .pill-btn:active{ transform:translateY(0); }
+  @media (max-width:640px){
+    .pill-btn{ padding:12px 16px; font-size:.95rem; }
+  }
+</style>
+<div id="lp-nav">
+  <div class="wrap">
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/startseite" aria-label="Startseite">Startseite</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/campus" aria-label="Campus">Campus</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/grundkurs" aria-label="Grundkurs">Grundkurs</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/onboarding" aria-label="Onboarding">Onboarding</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/krypto-glossar" aria-label="Krypto-Glossar">Krypto-Glossar</a>
+    <!-- ‚Kino‘ entfernt -->
+  </div>
+</div>
+<!-- ===== /NAV_BUTTONS · v2.4.1-REV-B ===== -->
+`.trim();
+
+    const set = [
+      { name:'Patch 2 NAV',
+        rules:[
+          { type:'replaceBetween',
+            start:'<!-- ===== NAV_BUTTONS',
+            end:'<!-- ===== /NAV_BUTTONS',
+            replacement: navBlock
+          },
+          { type:'regexReplace',
+            pattern:'<a[^>]*>\\s*Kino\\s*</a>',
+            flags:'gi',
+            replacement:''
+          }
+        ]
+      }
+    ];
+    applyPatchSet(set);
+  }
+
+  if(n===1){
+    // Script-Variante: fügt Vorname/Nachname sauber ins Modal ein (falls noch nicht vorhanden)
+    const scriptSnippet = `
+<script data-fsa-patch="modal-vornach">
+(function(){
+  function run(){
+    var scopes = ['#welcome-overlay','#fsa-welcome','#welcome','#modal-welcome','.welcome-modal'];
+    var root=null; for(var i=0;i<scopes.length;i++){ var r=document.querySelector(scopes[i]); if(r){ root=r; break; } }
+    if(!root) return;
+    var email=root.querySelector('input[type="email"]')||document.querySelector('input[type="email"]');
+    if(!email) return;
+    var form=email.form||email.closest('form'); if(!form) return;
+
+    function cloneLabel(text,forId){
+      var l=document.createElement('label'); l.setAttribute('for',forId); l.textContent=text; return l;
+    }
+    function makeNameInput(id,placeholder,name,auto=false){
+      var el=document.createElement('input'); el.type='text'; el.name=name; el.id=id;
+      el.placeholder=placeholder; el.setAttribute('aria-label',placeholder);
+      el.required=true; el.autocomplete=(auto?'given-name':'family-name');
+      return el;
+    }
+
+    // nicht doppelt
+    if(form.querySelector('[name="vorname"]')||form.querySelector('[name="nachname"]')) return;
+
+    var vor = makeNameInput('vorname','Vorname','vorname',true);
+    var nach = makeNameInput('nachname','Nachname','nachname',false);
+
+    email.parentNode.insertBefore(cloneLabel('Vorname','vorname'), email);
+    email.parentNode.insertBefore(vor, email);
+    email.parentNode.insertBefore(cloneLabel('Nachname','nachname'), email);
+    email.parentNode.insertBefore(nach, email);
+  }
+
+  if(document.readyState!=='loading') run();
+  document.addEventListener('DOMContentLoaded', run);
+})();
+</script>
+`.trim();
+
+    const set = [
+      { name:'Patch 1 Modal-Namen',
+        rules:[
+          { type:'appendBeforeBodyEnd', text: scriptSnippet, signature:'data-fsa-patch="modal-vornach"'}
+        ]
+      }
+    ];
+    applyPatchSet(set);
+  }
+}
+
+/* ====== Helfer zum Status ====== */
+document.addEventListener('DOMContentLoaded', ()=>{
+  setMsg('Bereit. Quelle laden oder links einfügen, dann Patch anwenden.', 'muted');
+});
+</script>
+</body>
+</html>
