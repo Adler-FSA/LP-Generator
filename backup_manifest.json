@@ -1,0 +1,44 @@
+{
+  "name": "LP-Generator_Backup_2025-10-05_03-02-19",
+  "created_at_berlin": "05.10.2025 03:02:19",
+  "includes_subfolders": true,
+  "only_html_files": true,
+  "files": [
+    {
+      "path": "lp-generator/index.html",
+      "bytes": 1176
+    },
+    {
+      "path": "lp-generator/layouts/nutzen-layout-001.html",
+      "bytes": 1134
+    },
+    {
+      "path": "lp-generator/admin/media-admin.html",
+      "bytes": 1159
+    },
+    {
+      "path": "lp-generator/admin/email-schnellwechsel.html",
+      "bytes": 1110
+    },
+    {
+      "path": "lp-generator/admin/unikat-url-generator.html",
+      "bytes": 1097
+    },
+    {
+      "path": "lp-generator/tools/tt-adler-final.html",
+      "bytes": 1124
+    },
+    {
+      "path": "lp-generator/tools/krypto-glossar-button.html",
+      "bytes": 1105
+    },
+    {
+      "path": "lp-generator/modules/brainbooster-krypto-kompass.html",
+      "bytes": 1097
+    },
+    {
+      "path": "lp-generator/modules/footer-hinweise-adler-optik.html",
+      "bytes": 1110
+    }
+  ]
+}
