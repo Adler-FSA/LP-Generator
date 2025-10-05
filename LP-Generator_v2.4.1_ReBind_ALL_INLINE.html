@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>LP-Generator_v2.4.1_ReBind_ALL_INLINE.html</title>
+</head>
+<body style="font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#eaf2ff;">
+  <div style="max-width:980px;margin:24px auto;padding:16px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:linear-gradient(135deg,#0f172a,#1e293b)">
+    <h1 style="margin:0 0 8px;">ReBind ALL_INLINE (Notfall)</h1>
+    <p style="margin:0 0 12px;opacity:.8">Alle Patches inline – falls Modulpfade nicht erreichbar sind.</p>
+    <div id="app-root"></div>
+  </div>
+  <script>
+(function(){
+  function init(){
+    try{
+      var btns = document.querySelectorAll('button, [role="button"], .btn, .fsa-btn');
+      var panel = document.createElement('div');
+      panel.setAttribute('id','fsa-debug-overlay');
+      Object.assign(panel.style,{
+        position:'fixed',bottom:'12px',right:'12px',background:'rgba(15,23,42,.95)',
+        color:'#fff',padding:'10px 14px',borderRadius:'8px',fontSize:'13px',
+        zIndex:'2147483647',maxWidth:'260px',lineHeight:'1.4',boxShadow:'0 0 20px rgba(0,0,0,.5)'
+      });
+      panel.innerHTML = '<b>🧩 Button-Debug aktiv</b><br><small>Event-Binding Monitor</small>';
+      document.body.appendChild(panel);
+
+      if(!btns.length){
+        console.log('🧩[DEBUG] Keine Buttons gefunden.');
+        return;
+      }
+      btns.forEach(function(b,i){
+        var id = b.id || '(kein ID)';
+        var tag = (b.tagName||'').toLowerCase();
+        var onclickInline = !!b.getAttribute('onclick');
+        var text = (b.innerText||'').trim();
+        console.log('🧩[DEBUG]', '#'+(i+1), tag, id, { onclickInline: onclickInline, text: text });
+      });
+      console.log('🧩[DEBUG] Scan abgeschlossen. Klick auf Buttons sollte Events zeigen.');
+    }catch(e){
+      console.warn('🧩[DEBUG] Overlay Fehler:', e);
+    }
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  }else{ init(); }
+})();
+  </script>
+  <script>
+(function(){
+  var SELECTOR = 'button, [role="button"], .btn, .fsa-btn';
+  function log(){ try{ console.log.apply(console, ['🧩[REBIND]'].concat([].slice.call(arguments))); }catch(_){} }
+
+  function markAndBind(el){
+    if(!el || (el.dataset && el.dataset.fsaBound === '1')) return;
+    if(!el.dataset) el.dataset = {};
+    el.dataset.fsaBound = '1';
+    el.addEventListener('click', function(ev){
+      var label = (el.innerText||'').trim() || el.id || '(unbenannt)';
+      log('✅ Click erkannt:', label);
+      try{
+        var evt = new CustomEvent('fsa:button-click', { detail:{ element: el, label: label }, bubbles: true });
+        el.dispatchEvent(evt);
+      }catch(e){/* noop */}
+    }, { passive: true });
+  }
+
+  function rebindAll(){
+    try{
+      var nodes = document.querySelectorAll(SELECTOR);
+      nodes.forEach(markAndBind);
+      log('🔄 Re-Bind durchgeführt:', nodes.length, 'Buttons');
+    }catch(e){
+      log('❌ Re-Bind Fehler:', e);
+    }
+  }
+
+  function setupDelegation(){
+    if(window.__fsaDelegation) return;
+    window.__fsaDelegation = true;
+    document.addEventListener('click', function(e){
+      var el = e.target;
+      while(el && el !== document){
+        if(el.matches && el.matches(SELECTOR)){
+          if(!(el.dataset && el.dataset.fsaBound === '1')){
+            markAndBind(el);
+          }
+          break;
+        }
+        el = el.parentElement;
+      }
+    }, { passive: true, capture: true });
+    log('🧭 Event-Delegation aktiv.');
+  }
+
+  function init(){
+    rebindAll();
+    setupDelegation();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  }else{ init(); }
+
+  window.addEventListener('focus', rebindAll);
+  document.addEventListener('readystatechange', function(){
+    if(document.readyState === 'complete'){ rebindAll(); }
+  });
+
+  window.FSARebind = {
+    rebind: rebindAll,
+    version: '2.4.2',
+    selector: SELECTOR
+  };
+})();
+  </script>
+  <script>
+(function(){
+  function log(){ try{ console.log.apply(console, ['🧩[OBS]'].concat([].slice.call(arguments))); }catch(_){} }
+  function onMutations(mutations){
+    var needs = false;
+    for(var i=0; i<mutations.length; i++){
+      var m = mutations[i];
+      if(m.addedNodes && m.addedNodes.length){
+        needs = true; break;
+      }
+    }
+    if(needs && window.FSARebind && typeof window.FSARebind.rebind === 'function'){
+      window.FSARebind.rebind();
+    }
+  }
+  try{
+    var mo = new MutationObserver(onMutations);
+    mo.observe(document.documentElement || document.body, { childList:true, subtree:true });
+    log('👀 Mutation-Observer aktiv.');
+  }catch(e){
+    log('❌ Observer Fehler:', e);
+  }
+})();
+  </script>
+</body>
+</html>
