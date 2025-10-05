@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LP‑Generator v2.4.1 – Quick‑Insert + Presets + Live‑Preview (AUTOCLEAR • FIX3 • Auto‑Aktivieren)</title>
+<style>
+  :root{--bg:#0b0f14;--panel:#0f172a;--mut:#c7d2e1;--ok:#8bffb0;--warn:#ffd27a;--err:#ff9ea8;--border:rgba(255,255,255,.12)}
+  *{box-sizing:border-box} body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:#e5ecf6;margin:0}
+  header{position:sticky;top:0;background:linear-gradient(180deg,#0f172a,#0b1220);border-bottom:1px solid var(--border);z-index:10}
+  header .bar{display:flex;gap:10px;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;padding:10px 14px;flex-wrap:wrap}
+  .wrap{max-width:1200px;margin:16px auto;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+  button{padding:10px 14px;border-radius:10px;border:0;font-weight:800;cursor:pointer}
+  .primary{background:linear-gradient(180deg,#f6d284,#e2b441);color:#1f2a36}
+  .ghost{background:transparent;border:1px solid var(--border);color:#e5ecf6}
+  input[type=file], select, textarea, input[type=text]{padding:10px;background:#0b1626;border:1px solid #1f2a44;border-radius:10px;color:#e5ecf6}
+  textarea{border-radius:10px;padding:12px;color:#dbeafe;width:100%}
+  h1{font-size:1.25rem;margin:0 0 8px;color:#ffe099} h2{font-size:1.05rem;margin:6px 0 10px;color:#e9eef9}
+  .pill{padding:4px 10px;border:1px solid var(--border);border-radius:999px;background:#0b1626}
+  #split{display:grid;grid-template-columns:1fr 1fr;gap:12px} @media (max-width:1100px){#split{grid-template-columns:1fr}}
+  pre{white-space:pre;overflow:auto;background:#0b1626;border:1px solid #1f2a44;border-radius:10px;padding:12px;color:#cfe3ff;max-height:520px}
+  iframe{width:100%;height:520px;border:1px solid var(--border);border-radius:10px;background:#000}
+  .panel{border:1px solid var(--border);border-radius:10px;padding:12px;background:#0b1524}
+  .badge{font-size:.75rem;padding:2px 8px;border-radius:999px;border:1px solid var(--border);color:#fff}
+  .confirm{background:#0f2a19;border:1px solid rgba(100,255,140,.35);color:#bfffd1;padding:8px 10px;border-radius:10px}
+  .errorbox{background:#2a1010;border:1px solid rgba(255,100,120,.35);color:#ffd1d6;padding:8px 10px;border-radius:10px}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <div><strong>LP‑Generator v2.4.1 – Quick‑Insert + Presets + Live‑Preview</strong></div>
+    <div class="row">
+      <label>Dateiname: <input id="saveName" type="text" value="lp-template_patched.html" size="28"></label>
+      <label><input type="checkbox" id="addTs" checked> Zeitstempel anhängen <span class="pill">_YYYY-MM-DD_HHMM</span></label>
+      <button class="ghost" id="btnSave">Als Datei speichern</button>
+      <button class="ghost" id="btnOpen">In neuem Tab öffnen</button>
+      <button class="ghost" id="btnShow">HTML anzeigen</button>
+      <button class="ghost" id="btnReset">Zur Originaldatei zurück</button>
+    </div>
+  </div>
+</header>
+
+<section class="wrap">
+  <h1>1) Datei laden</h1>
+  <div class="row">
+    <input id="file" type="file" accept=".html,.htm">
+    <button class="primary" id="btnActivate">Datei aktivieren</button>
+    <span id="fileInfo" class="pill">Keine Datei gewählt</span>
+  </div>
+  <div id="status"></div>
+</section>
+
+<section class="wrap">
+  <h1>2) Quick‑Insert oder Preset</h1>
+  <div class="row">
+    <label>Bereich</label>
+    <select id="picker">
+      <option value="">— Bereich wählen —</option>
+      <option value="fonts">FONTS (optional)</option>
+      <option value="base">BASE STYLES</option>
+      <option value="headercss">Header / Menü (CSS)</option>
+      <option value="videobgcss">Video Hintergrund (CSS)</option>
+      <option value="layoutcss">Layout (CSS)</option>
+      <option value="buttonscss">Buttons (CSS)</option>
+      <option value="welcomecss">Begrüßungs-/E-Mail-Overlay (CSS)</option>
+      <option value="musiccss">Musik Toggle (CSS)</option>
+      <option value="herocss">Abschnitt: Hero (CSS)</option>
+      <option value="akkcss">Akkordeon (Reise) (CSS)</option>
+      <option value="kinocss">Kino (CSS)</option>
+      <option value="footercss">Footer (CSS)</option>
+      <option value="nav">NAV (HTML)</option>
+      <option value="hero">HINTERGRUND-VIDEO (Hero)</option>
+      <option value="welcome">WERKSZUSTAND / E-MAIL-EINGABE</option>
+      <option value="music">MUSIK</option>
+      <option value="content">INHALT</option>
+      <option value="mentor">MENTOR</option>
+      <option value="reise">REISE (AKKORDEON)</option>
+      <option value="cta">CTA</option>
+      <option value="kino">KINO (HTML)</option>
+      <option value="footer">FOOTER (HTML)</option>
+      <option value="scripts">SCRIPTS</option>
+    </select>
+    <span class="pill" id="markerState">Marker: unbekannt</span>
+  </div>
+  <div class="row">
+    <label>Preset</label>
+    <select id="preset">
+      <option value="">— Preset wählen —</option>
+      <option value="p1">Patch 1: Modal Vorname/Nachname (WERKSZUSTAND)</option>
+      <option value="p2">Patch 2: NAV ohne „Kino“, mit Onboarding</option>
+    </select>
+    <button class="ghost" id="usePreset">Preset übernehmen</button>
+    <button class="ghost" id="applyPreset">Preset anwenden + Vorschau</button>
+  </div>
+  <textarea id="quick" rows="12" placeholder="Patch‑Code hier einfügen …"></textarea>
+  <div class="row">
+    <button class="primary" id="applyOne">Einfügen & Vorschau (nur dieser Bereich)</button>
+    <button class="ghost" id="fillCard">Nur in Karte übernehmen</button>
+    <label><input type="checkbox" id="autoClear" checked> Nach Anwenden: Patch‑Textfelder automatisch leeren</label>
+  </div>
+
+  <div class="panel">
+    <h2>Manuelle Feinanpassung (optional)</h2>
+    <div id="cards"></div>
+    <div class="row"><button class="ghost" id="btnApplyAll">Alle aktivierten Patches anwenden + Vorschau</button></div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h1>3) Ergebnis – Code & Live‑Preview</h1>
+  <div id="split">
+    <div><h2>Render‑Vorschau</h2><iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe></div>
+    <div><h2>HTML‑Code</h2><div class="row"><button class="ghost" id="btnCopy">Alles markieren</button></div><pre id="codeView"></pre></div>
+  </div>
+</section>
+
+<footer style="max-width:1200px;margin:10px auto 40px;color:#99a6bd;text-align:center">iPad/Firefox‑freundlich • Lokal im Browser • Keine Server‑Uploads</footer>
+
+<script>
+(function(){
+  // ------- Anchors in v2.4.1
+  const TARGETS=[
+    {label:"FONTS (optional)", key:"fonts", marker:"<!-- ============== FONTS (optional) ============== -->"},
+    {label:"BASE STYLES", key:"base", marker:"<!-- ============== BASE STYLES ============== -->"},
+    {label:"Header / Menü (CSS)", key:"headercss", marker:"/* ======= Header / Menü */"},
+    {label:"Video Hintergrund (CSS)", key:"videobgcss", marker:"/* ======= Video Hintergrund ======= */"},
+    {label:"Layout (CSS)", key:"layoutcss", marker:"/* ======= Layout ======="},
+    {label:"Buttons (CSS)", key:"buttonscss", marker:"/* ======= Buttons ======= */"},
+    {label:"Begrüßungs-/E-Mail-Overlay (CSS)", key:"welcomecss", marker:"/* ======= Begrüßungs-/E-Mail-Overlay (Werkszustand) ======= */"},
+    {label:"Musik Toggle (CSS)", key:"musiccss", marker:"/* ======= Musik Toggle ======= */"},
+    {label:"Abschnitt: Hero (CSS)", key:"herocss", marker:"/* ======= Abschnitt: Hero ======= */"},
+    {label:"Akkordeon (Reise) (CSS)", key:"akkcss", marker:"/* ======= Akkordeon (Reise) ======= */"},
+    {label:"Kino (CSS)", key:"kinocss", marker:"/* ======= Kino ======= */"},
+    {label:"Footer (CSS)", key:"footercss", marker:"/* ======= Footer ======= */"},
+    {label:"NAV (HTML)", key:"nav", marker:"<!-- ======= NAV ======= -->"},
+    {label:"HINTERGRUND-VIDEO (Hero)", key:"hero", marker:"<!-- ======= HINTERGRUND-VIDEO (Hero) ======= -->"},
+    {label:"WERKSZUSTAND / E-MAIL-EINGABE", key:"welcome", marker:"<!-- ======= WERKSZUSTAND / E-MAIL-EINGABE ======= -->"},
+    {label:"MUSIK", key:"music", marker:"<!-- ======= MUSIK ======= -->"},
+    {label:"INHALT", key:"content", marker:"<!-- ======= INHALT ======= -->"},
+    {label:"MENTOR", key:"mentor", marker:"<!-- MENTOR -->"},
+    {label:"REISE (AKKORDEON)", key:"reise", marker:"<!-- REISE (AKKORDEON) -->"},
+    {label:"CTA", key:"cta", marker:"<!-- CTA -->"},
+    {label:"KINO (HTML)", key:"kino", marker:"<!-- KINO -->"},
+    {label:"FOOTER (HTML)", key:"footer", marker:"<footer"},
+    {label:"SCRIPTS", key:"scripts", marker:"<!-- ============== SCRIPTS ============== -->"}
+  ];
+  const MAP=Object.fromEntries(TARGETS.map(t=>[t.key,t]));
+
+  // ------- Presets
+  const PRESETS={
+    p1:{ name:"Patch 1: Modal Vorname/Nachname", target:"welcome", content:(
+`<script data-fsa-patch="modal-names">
+(function(){
+  function run(){
+    var scopes=["#welcome-overlay","#fsa-welcome","#welcome","#modal-welcome",".welcome-modal"];
+    var root=null; for(var i=0;i<scopes.length;i++){ var r=document.querySelector(scopes[i]); if(r){ root=r; break; } }
+    var email = (root?root.querySelector('input[type="email"]'):document.querySelector('input[type="email"]')); if(!email) return;
+    var form = email.form || email.closest('form'); if(!form) return;
+    if(form.querySelector('input[name="vorname"]') || form.querySelector('input[name="nachname"]')) return;
+    function makeNameInput(placeholder,name,ac){
+      var el=email.cloneNode(false); el.type='text'; el.name=name;
+      el.id=(email.id?email.id.replace(/email/i,''):'fsa-')+name;
+      el.placeholder=placeholder; el.setAttribute('aria-label',placeholder);
+      el.autocomplete=ac; el.required=true; el.value='';
+      el.removeAttribute('pattern'); el.removeAttribute('inputmode'); return el;
+    }
+    var vor=makeNameInput('Vorname','vorname','given-name');
+    var nach=makeNameInput('Nachname','nachname','family-name');
+    email.parentNode.insertBefore(vor,email);
+    email.parentNode.insertBefore(nach,email);
+  }
+  if(document.readyState!=='loading') run(); else document.addEventListener('DOMContentLoaded',run);
+})();
+</script>`)},
+    p2:{ name:"Patch 2: NAV ohne „Kino“, mit Onboarding", target:"nav", content:(
+`<!-- ===== NAV_BUTTONS · v2.4.1-REV-B ===== -->
+<style>
+  #lp-nav { padding:24px 0; background:#000; }
+  #lp-nav .wrap { max-width:1100px; margin:0 auto; display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+  .pill-btn{ text-decoration:none; font-weight:700; color:#f8fafc; padding:12px 18px; border-radius:999px; display:inline-block;
+    background:linear-gradient(180deg,#1a1f2a,#0b0f14); border:1px solid rgba(255,255,255,.08);
+    box-shadow:0 8px 22px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    backdrop-filter:saturate(120%); transition:transform .12s ease, box-shadow .2s ease; }
+  .pill-btn:hover{ transform:translateY(-1px); box-shadow:0 12px 28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08); }
+  .pill-btn:active{ transform:translateY(0); }
+  @media (max-width:640px){ .pill-btn{ padding:12px 16px; font-size:.95rem; } }
+</style>
+<div id="lp-nav">
+  <div class="wrap">
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/startseite" aria-label="Startseite">Startseite</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/campus" aria-label="Campus">Campus</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/grundkurs" aria-label="Grundkurs">Grundkurs</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/onboarding" aria-label="Onboarding">Onboarding</a>
+    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/krypto-glossar" aria-label="Krypto-Glossar">Krypto-Glossar</a>
+    <!-- 'Kino' entfernt -->
+  </div>
+</div>
+<!-- ===== /NAV_BUTTONS · v2.4.1-REV-B ===== -->`)}
+  };
+
+  // ------- Helpers
+  const $=s=>document.querySelector(s);
+  const byId=id=>document.getElementById(id);
+  const statusBox=byId('status'); const fileInfo=byId('fileInfo');
+  function setStatus(msg, cls){ statusBox.innerHTML='<div class="'+(cls==='ok'?'confirm':cls==='err'?'errorbox':'')+'">'+msg+'</div>'; }
+  function readFileAsText(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onerror=()=>rej('read'); r.onload=()=>res(r.result); r.readAsText(file,'utf-8'); }); }
+  function pad(n){return (n<10?'0':'')+n;} function ts(){const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'_'+pad(d.getHours())+pad(d.getMinutes());}
+  function finalName(){ let name=byId('saveName').value.trim()||'lp-template_patched.html'; if(!/\.html?$/i.test(name)) name+='.html'; if(byId('addTs').checked){const p=name.split('.');const ext=p.pop();name=p.join('.')+'_'+ts()+'.'+ext;} return name; }
+  function regexEndFor(marker){ return marker.startsWith('<!--') ? /(<!--\s*=+[^-]*=+\s*-->)|(<footer\b)|(<section\b)|(<main\b)|(<div id="lp-nav">)|(<script\b)/g : /(\/\*\s*=+[^*]*=+\s*\*\/)|(<\/style>)/g; }
+  function captureBlock(html, marker){ const start=html.indexOf(marker); if(start===-1) return ''; const after=start+marker.length; const re=regexEndFor(marker); re.lastIndex=after; const m=re.exec(html); const end=m?m.index:html.length; return html.slice(after,end).trim(); }
+  function replaceSection(html, marker, replacement){ const start=html.indexOf(marker); if(start===-1) return {html,changed:false}; const after=start+marker.length; const re=regexEndFor(marker); re.lastIndex=after; const m=re.exec(html); const end=m?m.index:html.length; return {html: html.slice(0,after)+'\n<!-- [PATCHED v2.4.1] -->\n'+replacement+'\n'+html.slice(end), changed:true}; }
+
+  // ------- State
+  let original=null, patched=null, pendingFile=null, blobURL=null;
+  const preview=byId('preview'), codeView=byId('codeView'), picker=byId('picker'), presetSel=byId('preset'), quick=byId('quick'), markerState=byId('markerState');
+  function updateMarker(){ const t=MAP[picker.value]; if(!original||!t){ markerState.textContent='Marker: unbekannt'; return; } markerState.textContent = original.indexOf(t.marker)!==-1 ? 'Marker: gefunden' : 'Marker: nicht gefunden'; }
+  function updatePreview(){ if(!patched) return; codeView.textContent=patched; if(blobURL) URL.revokeObjectURL(blobURL); blobURL=URL.createObjectURL(new Blob([patched],{type:'text/html'})); preview.src=blobURL; }
+
+  // ------- Activation (now auto on file pick)
+  async function doActivate(){
+    if(!pendingFile){ setStatus('Bitte zuerst eine Datei wählen.','err'); return; }
+    try{ original=await readFileAsText(pendingFile); patched=original; fileInfo.textContent=pendingFile.name+' ('+pendingFile.size+' Bytes)'; updateMarker(); updatePreview(); setStatus('✅ Datei aktiviert & geladen. Marker gescannt.','ok'); }
+    catch(e){ setStatus('Fehler beim Lesen der Datei.','err'); }
+  }
+  byId('file').addEventListener('change', e=>{
+    pendingFile=e.target.files?.[0]||null;
+    fileInfo.textContent=pendingFile? pendingFile.name+' (bereit zum Aktivieren)':'Keine Datei gewählt';
+    if(pendingFile){ doActivate(); } // AUTO-AKTIVIEREN
+  });
+  byId('btnActivate').addEventListener('click', doActivate);
+  picker.addEventListener('change', updateMarker);
+
+  // ------- Presets
+  byId('usePreset').addEventListener('click', ()=>{
+    const val=presetSel.value; if(!val||!PRESETS[val]){ setStatus('Bitte Preset wählen.','err'); return; }
+    const P=PRESETS[val]; picker.value=P.target; quick.value=P.content; updateMarker(); setStatus('Preset übernommen: '+P.name,'');
+  });
+  byId('applyPreset').addEventListener('click', ()=>{
+    if(!original){ setStatus('Bitte zuerst eine Datei aktivieren.','err'); return; }
+    const val=presetSel.value; if(!val||!PRESETS[val]){ setStatus('Bitte Preset wählen.','err'); return; }
+    const P=PRESETS[val], T=MAP[P.target]; const res=replaceSection(patched, T.marker, P.content);
+    if(res.changed){ patched=res.html; updatePreview(); setStatus('Preset angewendet: '+P.name,'ok'); if(byId('autoClear').checked) quick.value=''; }
+    else setStatus('Marker nicht gefunden: '+T.label+' – Bereich „SCRIPTS“ wählen und dort einfügen.','err');
+  });
+
+  // ------- Quick insert
+  byId('applyOne').addEventListener('click', ()=>{
+    if(!original){ setStatus('Bitte zuerst eine Datei aktivieren.','err'); return; }
+    const key=picker.value; if(!key){ setStatus('Bitte Bereich auswählen.','err'); return; }
+    const txt=(quick.value||'').trim(); if(!txt){ setStatus('Bitte Patch‑Code einfügen.','err'); return; }
+    const res=replaceSection(patched, MAP[key].marker, txt);
+    if(res.changed){ patched=res.html; updatePreview(); setStatus('Patch angewendet: '+MAP[key].label,'ok'); if(byId('autoClear').checked) quick.value=''; }
+    else setStatus('Marker nicht gefunden: '+MAP[key].label,'err');
+  });
+  byId('fillCard').addEventListener('click', ()=>{ const key=picker.value; if(!key){ setStatus('Bitte Bereich auswählen.','err'); return; } byId('txt_'+key).value=(quick.value||'').trim(); setStatus('Patch in Karte übernommen (noch nicht angewendet).',''); });
+
+  // ------- Cards
+  const cards=byId('cards');
+  for(const t of TARGETS){
+    const d=document.createElement('div'); d.className='panel'; d.id='card_'+t.key;
+    d.innerHTML=`<div class="row"><strong>${t.label}</strong> <span class="badge" id="badge_${t.key}">unbekannt</span></div>
+      <div class="row"><button class="ghost" id="btnPrev_${t.key}">Ist‑Inhalt (anzeigen)</button>
+      <button class="ghost" id="btnOne_${t.key}">Nur diesen Bereich anwenden + Vorschau</button></div>
+      <textarea id="txt_${t.key}" rows="6" placeholder="Neuer Inhalt für: ${t.label}"></textarea>`;
+    cards.appendChild(d);
+  }
+  function refreshBadges(){ if(!original) return; for(const t of TARGETS){ const b=byId('badge_'+t.key); if(b) { const found=original.indexOf(t.marker)!==-1; b.textContent=found?'Marker: gefunden':'Marker: nicht gefunden'; b.className='badge '+(found?'':'warn'); } } }
+  cards.addEventListener('click', e=>{
+    const id=e.target.id||'';
+    if(id.startsWith('btnPrev_')){ if(!original){ setStatus('Bitte zuerst eine Datei aktivieren.','err'); return; }
+      const k=id.replace('btnPrev_',''); byId('txt_'+k).value=captureBlock(original, MAP[k].marker)||'(kein Block gefunden)'; }
+    if(id.startsWith('btnOne_')){ if(!original){ setStatus('Bitte zuerst eine Datei aktivieren.','err'); return; }
+      const k=id.replace('btnOne_',''); const val=(byId('txt_'+k).value||'').trim(); if(!val){ setStatus('Textfeld ist leer.','err'); return; }
+      const res=replaceSection(patched, MAP[k].marker, val); if(res.changed){ patched=res.html; updatePreview(); setStatus('Angewendet: '+MAP[k].label,'ok'); if(byId('autoClear').checked) byId('txt_'+k).value=''; } else setStatus('Marker nicht gefunden: '+MAP[k].label,'err'); }
+  });
+
+  // ------- Apply all
+  byId('btnApplyAll').addEventListener('click', ()=>{
+    if(!original){ setStatus('Bitte zuerst eine Datei aktivieren.','err'); return; }
+    let html=patched, log=[];
+    for(const t of TARGETS){ const val=(byId('txt_'+t.key).value||'').trim(); if(val){ const r=replaceSection(html, t.marker, val); if(r.changed){ html=r.html; log.push('✔ '+t.label); if(byId('autoClear').checked) byId('txt_'+t.key).value=''; } } }
+    patched=html; updatePreview(); setStatus(log.length?('Alle Karten angewendet:<br>'+log.join('<br>')):'(Keine Karten aktiv).','ok');
+  });
+
+  // ------- Outputs
+  function ensurePatched(){ if(!patched){ setStatus('Noch nichts gepatcht – Quick‑Insert oder Preset ausführen.','err'); return false; } return true; }
+  byId('btnSave').addEventListener('click', ()=>{ if(!ensurePatched())return; const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([patched],{type:'text/html'})); a.download=finalName(); document.body.appendChild(a); a.click(); a.remove(); setStatus('Datei gespeichert.','ok'); });
+  byId('btnOpen').addEventListener('click', ()=>{ if(!ensurePatched())return; window.open('data:text/html;charset=utf-8,'+encodeURIComponent(patched),'_blank'); });
+  byId('btnShow').addEventListener('click', ()=>{ if(!ensurePatched())return; codeView.textContent=patched; });
+  byId('btnCopy').addEventListener('click', ()=>{ const sel=window.getSelection(); const range=document.createRange(); range.selectNodeContents(codeView); sel.removeAllRanges(); sel.addRange(range); });
+  byId('btnReset').addEventListener('click', ()=>{ if(!original){ setStatus('Noch keine Datei aktiv.','err'); return; } patched=original; updatePreview(); setStatus('Zur Originaldatei zurückgesetzt.','warn'); });
+
+  // After activation, update marker badges
+  byId('btnActivate').addEventListener('click', ()=> setTimeout(refreshBadges, 100));
+})();
+</script>
+</body>
+</html>
