@@ -471,28 +471,58 @@ window.addEventListener('load', ()=> edit.focus());
   };
 })();
 </script><!-- 🧭 Werkstatt Dashboard -->
+<!-- 🧩 Werkstatt Dashboard (v2.4.4 SAFE Style) -->
 <style>
-  #ws-dashboard {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    background: linear-gradient(90deg,#0f172a,#1e293b);
-    color: #e2e8f0;
-    font-family: system-ui,Segoe UI,Roboto,sans-serif;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 10px 14px;
-    box-shadow: 0 8px 20px rgba(0,0,0,.35);
-    z-index: 9999;
-    font-size: 13px;
-    line-height: 1.4;
-  }
-  #ws-dashboard b {color:#38bdf8;}
-  #ws-dashboard button {
-    background:#0ea5e9;color:#fff;border:none;
-    padding:4px 10px;border-radius:6px;
-    font-weight:600;font-size:12px;cursor:pointer;
-    margin-left:10px;
+#ws-dashboard {
+  position: fixed;
+  bottom: 12px;
+  right: 12px;
+  background: linear-gradient(135deg,#0f172a,#1e293b);
+  color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 12px 16px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+  font-family: system-ui, Segoe UI, Roboto, sans-serif;
+  font-size: 13.5px;
+  line-height: 1.4;
+  z-index: 9999;
+}
+
+#ws-dashboard button {
+  background: #38bdf8;
+  color: #0f172a;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-left: 10px;
+}
+
+#ws-dashboard button:hover {
+  background: #0ea5e9;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+#ws-dashboard b {
+  color: #22d3ee;
+}
+
+#ws-dashboard::before {
+  content: "🛠️";
+  margin-right: 6px;
+  opacity: 0.85;
+}
+</style>
+
+<div id="ws-dashboard">
+  <div>🧩 Module: <b id="ws-modules">ReBind, UI, Check, Console</b></div>
+  <div>🧭 Status: <b id="ws-state">Initialisiere…</b></div>
+  <button id="ws-restart">Neu-Scan</button>
+</div>
   }
   #ws-dashboard button:hover{background:#0284c7}
 </style>
