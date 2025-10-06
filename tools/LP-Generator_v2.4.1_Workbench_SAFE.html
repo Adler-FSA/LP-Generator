@@ -412,7 +412,34 @@ window.addEventListener('load', ()=> edit.focus());
     console.log('🪛 Werkstatt Auto-Init gestartet.');
     console.log('🌿 Werkstatt Auto-Init System v2.4.4 aktiviert.');
   });
-</script>
+</script><!-- 🧭 Werkstatt Statusanzeige -->
+<style>
+  #status-panel {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    background: linear-gradient(90deg,#0f172a,#1e293b);
+    color: #e2e8f0;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: system-ui,Segoe UI,Roboto,sans-serif;
+    font-size: 14px;
+    box-shadow: 0 0 15px rgba(0,0,0,.45);
+    z-index: 9999;
+  }
+  #status-dot {
+    display:inline-block;
+    width:10px;height:10px;
+    border-radius:50%;
+    background:#f87171;
+    margin-right:8px;
+  }
+</style>
+
+<div id="status-panel">
+  <span id="status-dot"></span>
+  <span id="status-text">Werkstatt: Initialisiere…</span>
+</div>
 </body><!-- 🧠 Werkstatt Dashboard Logik -->
 <script>
 (() => {
