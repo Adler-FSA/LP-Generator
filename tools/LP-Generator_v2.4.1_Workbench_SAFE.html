@@ -302,6 +302,14 @@ window.addEventListener('load', ()=> edit.focus());
 </script><!-- 🧩 ReBind Patch-Werkstatt v2.4.2 -->
 <script src="./patch-modules/debug-overlay.js"></script>
 <script src="./patch-modules/rebind-core.js"></script>
-<script src="./patch-modules/rebind-observer.js"></script><script src="./status-monitor.js"></script>
+<script src="./patch-modules/rebind-observer.js"></script><script src="./status-monitor.js"></script><!-- 🦅 Auto-Init Werkstatt System -->
+<script src="tools/auto-init/auto-init-rebind.js"></script>
+<script src="tools/auto-init/auto-ui.js"></script>
+<script src="tools/auto-init/auto-bind.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    console.log("🧩 Werkstatt Auto-Init gestartet…");
+  });
+</script>
 </body>
 </html>
