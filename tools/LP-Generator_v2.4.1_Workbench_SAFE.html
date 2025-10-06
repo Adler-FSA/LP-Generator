@@ -359,6 +359,48 @@ window.addEventListener('load', ()=> edit.focus());
 
   log('🧠 Werkstatt-Konsole aktiviert.');
 })();
+</script><!-- 🧩 Werkstatt-Statuspanel v2.4.4 -->
+<div id="werkstatt-status"
+     style="position:fixed;bottom:12px;right:12px;background:#0f172a;
+            color:#e2e8f0;font-family:system-ui,Segoe UI,Roboto,sans-serif;
+            border:1px solid #1e293b;border-radius:8px;
+            padding:10px 14px;box-shadow:0 4px 10px rgba(0,0,0,.35);
+            display:flex;align-items:center;gap:8px;z-index:99999;
+            font-size:.9rem;min-width:180px;">
+  <div id="status-dot"
+       style="width:12px;height:12px;border-radius:50%;
+              background:#f87171;box-shadow:0 0 6px #f87171;"></div>
+  <div id="status-text">Werkstatt: Initialisiere…</div>
+</div>
+
+<script>
+(() => {
+  const dot = document.getElementById('status-dot');
+  const txt = document.getElementById('status-text');
+
+  const update = (color, text) => {
+    dot.style.background = color;
+    dot.style.boxShadow = `0 0 6px ${color}`;
+    txt.textContent = `Werkstatt: ${text}`;
+  };
+
+  update('#f59e0b', 'Scan läuft…');
+
+  window.addEventListener('WerkstattReady', () => {
+    update('#10b981', 'Aktiv');
+  });
+
+  window.addEventListener('WerkstattError', () => {
+    update('#ef4444', 'Fehler');
+  });
+
+  // Timeout-Fallback falls kein Signal kommt
+  setTimeout(() => {
+    if (txt.textContent.includes('Scan'))
+      update('#94a3b8', 'keine Rückmeldung');
+  }, 7000);
+})();
 </script>
+<!-- 🧩 Ende Werkstatt-Statuspanel -->
 </body>
 </html>
