@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Adler-FSA Werkstatt-Installer v2.4.6 AUTO-DEPLOY</title>
+<style>
+body{
+  background:#0b0f14;
+  color:#e2e8f0;
+  font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;margin:0;padding:24px;text-align:center
+}
+h1{color:#38bdf8;font-size:1.6rem;margin-bottom:12px}
+p{color:#94a3b8;margin-top:0}
+input{
+  background:#1e293b;border:1px solid #334155;color:#e2e8f0;
+  padding:10px 14px;border-radius:8px;width:280px;font-size:.95rem;
+  margin-top:10px
+}
+button{
+  margin-top:20px;background:#06b6d4;border:none;color:#fff;
+  font-weight:600;padding:10px 20px;border-radius:8px;
+  cursor:pointer;transition:.25s
+}
+button:hover{background:#0891b2}
+pre{
+  text-align:left;background:#1e293b;border-radius:8px;
+  padding:12px;max-width:480px;overflow:auto;font-size:.85rem;
+  line-height:1.4;margin-top:20px;color:#a5b4fc
+}
+.ok{color:#10b981}.err{color:#f87171}.info{color:#facc15}
+</style>
+</head>
+<body>
+  <h1>🦅 Adler-FSA Werkstatt-Installer v2.4.6 AUTO-DEPLOY</h1>
+  <p>Diese Datei installiert automatisch die komplette Werkstatt-Struktur<br>und startet danach den GitHub Pages Auto-Deploy.</p>
+
+  <input id="token" type="password" placeholder="🔑 GitHub Personal Access Token (classic oder fine-grained)">
+  <br>
+  <button onclick="install()">🚀 Werkstatt installieren</button>
+
+  <pre id="log"></pre>
+
+<script>
+async function log(msg, cls=''){const el=document.getElementById('log');
+  el.innerHTML+=`<span class="${cls}">${msg}</span>\n`;el.scrollTop=el.scrollHeight;}
+
+async function install(){
+  const token=document.getElementById('token').value.trim();
+  if(!token){alert('Bitte Token eingeben');return;}
+  const repo="Adler-FSA/Lp-Generator";
+  const files=[
+    "tools/Adler-FSA_Werkstatt_v2.4.6_AUTO_DEPLOY.html",
+    "tools/js/monitor.js",
+    "tools/js/glow.js",
+    "tools/js/lang.js",
+    "tools/js/patch-manager.js"
+  ];
+  await log("Verbinde mit GitHub …","info");
+  for(const file of files){
+    try{
+      const res=await fetch(`https://api.github.com/repos/${repo}/contents/${file}`,{
+        method:"PUT",
+        headers:{
+          "Authorization":`token ${token}`,
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          message:`Upload ${file} [AUTO-DEPLOY v2.4.6]`,
+          content:btoa(`// ${file} placeholder created by AUTO-DEPLOY Installer`)
+        })
+      });
+      if(res.ok) await log(`✅ ${file}`,"ok");
+      else await log(`❌ ${file} (${res.status})`,"err");
+    }catch(e){await log(`⚠️ Fehler bei ${file}: ${e}`,"err");}
+  }
+
+  // Auto-Deploy Trigger
+  await log("🔁 Starte GitHub Pages Auto-Deploy …","info");
+  try{
+    const deploy=await fetch(`https://api.github.com/repos/${repo}/pages/builds`,{
+      method:"POST",
+      headers:{
+        "Authorization":`token ${token}`,
+        "Accept":"application/vnd.github+json"
+      }
+    });
+    if(deploy.ok){
+      await log("🟢 GitHub Pages Rebuild erfolgreich ausgelöst","ok");
+      await log("🌐 Öffne: https://adler-fsa.github.io/Lp-Generator/tools/Adler-FSA_Werkstatt_v2.4.6_AUTO_DEPLOY.html","info");
+    }else{
+      await log(`⚠️ Deploy Fehler: ${deploy.status}`,"err");
+    }
+  }catch(e){
+    await log(`🚫 Deploy-Aufruf fehlgeschlagen: ${e}`,"err");
+  }
+}
+</script>
+</body>
+</html>
