@@ -1,1 +1,0 @@
-console.log("Monitor v2.4.5b aktiviert");
