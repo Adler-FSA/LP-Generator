@@ -2,621 +2,136 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LP-Generator v2.4.1 – Zwei-Fenster-Werkstatt (SAFE)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LP-Generator v2.4.1 – Workbench (SAFE)</title>
 <style>
-  :root{
-    --bg:#0b0f14;--panel:#111827;--mut:#9aa4b2;--ok:#22c55e;--warn:#eab308;--err:#ef4444;
-    --ink:#e5e7eb; --ink2:#cbd5e1; --accent:#ffd662;
+  /* Dashboard Basis */
+  #ws-dashboard {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #e2e8f0;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+    font-family: system-ui, Segoe UI, Roboto, sans-serif;
+    font-size: 13.5px;
+    line-height: 1.4;
+    z-index: 9999;
+    transition: all .3s ease;
   }
-  *{box-sizing:border-box}
-  body{margin:0;font:16px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--bg);color:var(--ink)}
-  h1{font:700 1.1rem/1 system-ui,Segoe UI,Roboto;letter-spacing:.2px;margin:0 0 10px}
-  .bar{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#0b0f14,#0a0e13);border-bottom:1px solid #0e141c;
-       padding:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .bar input[type=text]{width:360px;max-width:70vw;padding:10px 12px;background:#0e1620;border:1px solid #1b2634;color:var(--ink);
-       border-radius:8px}
-  .btn{appearance:none;border:1px solid #263244;background:#132033;color:#e8eef6;padding:10px 14px;border-radius:10px;
-       font-weight:700;cursor:pointer;transition:transform .06s ease, box-shadow .15s ease}
-  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.35)}
-  .btn.primary{background:linear-gradient(180deg,#1f2937,#111827);border-color:#263244}
-  .btn.ok{background:linear-gradient(180deg,#1f3b23,#102315);border-color:#1c4126;color:#c9f7d2}
-  .btn.ghost{background:#101723;border-color:#1a2433}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px}
-  @media (max-width:980px){.row{grid-template-columns:1fr}}
-  .card{background:var(--panel);border:1px solid #1a2433;border-radius:12px;box-shadow:0 16px 38px rgba(0,0,0,.28)}
-  .card h2{margin:0;padding:14px 16px;border-bottom:1px solid #1a2433;font:700 1rem/1.2 system-ui,Segoe UI}
-  .card .body{padding:12px}
-  textarea{width:100%;min-height:420px;background:#0a131d;border:1px solid #1a2433;color:#cfe3ff;border-radius:10px;
-           padding:12px;resize:vertical;tab-size:2}
-  textarea[readonly]{opacity:.9;color:#98a7c0}
-  .hint{font-size:.9rem;color:var(--ink2)}
-  .pill{display:inline-block;padding:10px 14px;border-radius:999px;background:#0f172a;border:1px solid #1d2840;margin:4px 6px 8px 0;
-        font-weight:700}
-  .pill b{color:#fef3c7}
-  .status{padding:8px 12px;border-radius:8px;border:1px solid #1b2a43;margin-left:10px}
-  .okc{color:#80efb6;border-color:#1e3b2a;background:#0e2117}
-  .errc{color:#fecaca;border-color:#3b1e22;background:#200e10}
-  .warnc{color:#fde68a;border-color:#3b2e1e;background:#21180d}
-  .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-  .right{margin-left:auto}
-  .mt8{margin-top:8px} .mt12{margin-top:12px}
-  .small{font-size:.85rem}
-  .search{display:flex;gap:8px;align-items:center}
-  .search input{width:220px;padding:8px 10px;background:#0e1620;border:1px solid #1b2634;color:var(--ink);border-radius:8px}
-  .toggle{display:flex;align-items:center;gap:8px}
-  .toggle input{transform:scale(1.2)}
-  .preview{background:#000;min-height:220px;border-radius:8px;border:1px dashed #243247}
+
+  #ws-dashboard button {
+    background: #38bdf8;
+    color: #0f172a;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s ease;
+    margin-left: 10px;
+  }
+
+  #ws-dashboard button:hover {
+    background: #0ea5e9;
+    color: #fff;
+    transform: scale(1.05);
+  }
+
+  #ws-dashboard b { color: #22d3ee; }
+
+  #ws-dashboard:before {
+    content: "🧩";
+    margin-right: 6px;
+    opacity: 0.85;
+  }
+
+  @keyframes dots {
+    0% {content: ".";}
+    33% {content: "..";}
+    66% {content: "...";}
+    100% {content: ".";}
+  }
+
+  #ws-state::after {
+    animation: dots 1.5s steps(3, end) infinite;
+  }
+
+  .status-ok   { color:#22c55e !important; }  /* Grün: Aktiv */
+  .status-warn { color:#f59e0b !important; }  /* Gelb: Warten */
+  .status-err  { color:#ef4444 !important; }  /* Rot: Fehler */
 </style>
 </head>
-<body>
 
-<div class="bar">
-  <h1>LP-Generator v2.4.1 – Zwei-Fenster-Werkstatt (SAFE)</h1>
-  <div class="right flex">
-    <div class="toggle"><input id="ts" type="checkbox" checked>
-      <label for="ts" class="small">Zeitstempel anhängen</label></div>
-    <button class="btn ghost" id="openNew">In neuem Tab öffnen</button>
-    <button class="btn ghost" id="copyAll">Alles markieren</button>
-    <button class="btn ok" id="save">Als Datei speichern</button>
-  </div>
-</div>
-
-<div class="row">
-  <div class="card">
-    <h2>1) Root-Quelle laden</h2>
-    <div class="body">
-      <div class="flex">
-        <input type="text" id="srcUrl" value="/Lp-Generator/lp-template.html" aria-label="Quelle URL">
-        <button class="btn primary" id="load">Quelle laden</button>
-        <span id="msg" class="status warnc" style="display:none"></span>
-      </div>
-      <div class="mt12">
-        <div class="hint">Tipp: Lädt direkt die Live-Datei aus <code>/Lp-Generator/lp-template.html</code>. Alternativ: Code kopieren und rechts einfügen.</div>
-      </div>
-      <div class="mt12" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div>
-          <div class="hint">Quelle (nur Ansicht)</div>
-          <textarea id="view" readonly placeholder="– noch nichts geladen –"></textarea>
-          <div class="flex mt8">
-            <button class="btn ghost" id="pushRight">Aus Quelle übernehmen → rechts</button>
-            <button class="btn ghost" id="refresh">Aktualisieren</button>
-          </div>
-        </div>
-        <div>
-          <div class="flex" style="justify-content:space-between">
-            <div class="hint">Bearbeitung (editierbar)</div>
-            <div class="search">
-              <input id="find" placeholder="Suche im Editor …">
-              <button class="btn ghost" id="prev">◀︎</button>
-              <button class="btn ghost" id="next">▶︎</button>
-            </div>
-          </div>
-          <textarea id="edit" placeholder="— hier landet die Quelle —"></textarea>
-          <div class="flex mt8">
-            <button class="btn ghost" id="pasteClip">Aus Zwischenablage einfügen</button>
-            <button class="btn ghost" id="syncBack">Bearbeitung = Quelle (neu übernehmen)</button>
-          </div>
-        </div>
-      </div>
-    </div>
+<body style="background:#0b0f14; color:#e5e7eb; font-family:system-ui, sans-serif;">
+  <div id="ws-dashboard">
+    <div>Module: <b id="ws-modules">ReBind, UI, Check, Console</b></div>
+    <div>Status: <b id="ws-state" class="status-warn">Initialisiere...</b></div>
+    <button id="ws-restart">Neu-Scan</button>
   </div>
 
-  <div class="card">
-    <h2>2) Patches anwenden</h2>
-    <div class="body">
-      <div class="pill"><b>Patch 2</b>: NAV ohne „Kino“, mit Onboarding</div>
-      <div class="pill"><b>Patch 1</b>: Modal Vorname/Nachname (WERKSZUSTAND)</div>
-      <div class="flex mt12">
-        <button class="btn primary" id="applyNav">Patch 2 anwenden</button>
-        <button class="btn primary" id="applyModal">Patch 1 anwenden</button>
-        <label class="toggle"><input id="autoclear" type="checkbox" checked> <span class="small">Nach Anwenden: Meldungen automatisch leeren</span></label>
-      </div>
-      <div id="patchMsg" class="status okc mt12" style="display:none"></div>
-      <div class="mt12">
-        <div class="hint">Vorschau (öffnet gepatchten Text als reine Seite, kein Script-Eval):</div>
-        <div class="preview" id="prevBox"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-/* ========= helpers ========= */
-const $ = s => document.querySelector(s);
-const view = $('#view'), edit = $('#edit'), msg = $('#msg'), patchMsg = $('#patchMsg');
-
-function setMsg(el, text, cls='okc'){ el.textContent = text; el.className = 'status ' + cls; el.style.display='inline-block'; }
-function hide(el){ el.style.display='none'; }
-
-function download(name, text){
-  try{
-    const ts = $('#ts').checked ? '_' + new Date().toISOString().slice(0,16).replace(/[:T]/g,'-') : '';
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([text],{type:'text/plain'}));
-    a.download = (name||'lp-template_patched') + ts + '.html';
-    document.body.appendChild(a); a.click(); a.remove();
-  }catch(e){ alert('Download fehlgeschlagen: '+e.message); }
-}
-
-async function readClipboard(){
-  if (navigator.clipboard?.readText) return await navigator.clipboard.readText();
-  return prompt('Zwischenablage nicht freigegeben. Bitte Code hier einfügen:') || '';
-}
-
-/* ========= loader ========= */
-async function loadUrl(){
-  hide(msg);
-  try{
-    const u = $('#srcUrl').value.trim();
-    const res = await fetch(u, {cache:'no-store'});
-    if(!res.ok) throw new Error(res.status+' '+res.statusText);
-    const t = await res.text();
-    view.value = t;
-    setMsg(msg,'Quelle geladen ('+t.length+' Bytes)','okc');
-  }catch(e){
-    setMsg(msg,'Fehler beim Laden: '+e.message,'errc');
-  }
-}
-
-/* ========= editor search ========= */
-let findIdx = -1, findHits = [];
-function doFind(next=true){
-  const q = $('#find').value;
-  if(!q){ findHits=[]; return; }
-  const txt = edit.value;
-  findHits = []; let i = 0;
-  while((i = txt.indexOf(q, i)) !== -1){ findHits.push(i); i += q.length; }
-  if(!findHits.length){ setMsg(patchMsg,'Kein Treffer für „'+q+'“','warnc'); return; }
-  findIdx = (findIdx + (next?1:-1) + findHits.length) % findHits.length;
-  const start = findHits[findIdx], end = start + q.length;
-  edit.focus(); edit.setSelectionRange(start,end);
-}
-
-/* ========= patch utils ========= */
-function replaceNav(html){
-  const NAV_SNIPPET = `
-<!-- ===== NAV_BUTTONS · v2.4.1-REV-B ===== -->
-<style>
-  #lp-nav { padding:24px 0; background:#000; }
-  #lp-nav .wrap {
-    max-width:1100px; margin:0 auto;
-    display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
-  }
-  .pill-btn{
-    text-decoration:none; font-weight:700; color:#f8fafc;
-    padding:12px 18px; border-radius:999px; display:inline-block;
-    background:linear-gradient(180deg,#1a1f2a,#0b0f14);
-    border:1px solid rgba(255,255,255,.08);
-    box-shadow:0 8px 22px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
-    backdrop-filter:saturate(120%);
-    transition:transform .12s ease, box-shadow .2s ease;
-  }
-  .pill-btn:hover{
-    transform:translateY(-1px);
-    box-shadow:0 12px 28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08);
-  }
-  .pill-btn:active{ transform:translateY(0); }
-  @media (max-width:640px){
-    .pill-btn{ padding:12px 16px; font-size:.95rem; }
-  }
-</style>
-
-<div id="lp-nav">
-  <div class="wrap">
-    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/startseite" aria-label="Startseite">Startseite</a>
-    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/campus" aria-label="Campus">Campus</a>
-    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/grundkurs" aria-label="Grundkurs">Grundkurs</a>
-    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/onboarding" aria-label="Onboarding">Onboarding</a>
-    <a class="pill-btn" href="https://www.finanziellesouveraenitaet.de/krypto-glossar" aria-label="Krypto-Glossar">Krypto-Glossar</a>
-    <!-- Hinweis: 'Kino' entfernt -->
-  </div>
-</div>
-<!-- ===== /NAV_BUTTONS · v2.4.1-REV-B ===== -->
-`.trim();
-
-  // 1) Versuche kompletten NAV-Bereich via Kommentar zu ersetzen
-  let reBlock = /<!--\s*=====.*?NAV.*?=====.*?-->([\s\S]*?)<!--\s*=====.*?\/NAV.*?=====.*?-->/i;
-  if (reBlock.test(html)) return html.replace(reBlock, NAV_SNIPPET);
-
-  // 2) Fallback: <div id="lp-nav" ...> ... </div> ersetzen (non-greedy)
-  let reDiv = /<div\s+id=["']lp-nav["'][\s\S]*?<\/div>\s*<\/div>/i;
-  if (reDiv.test(html)) return html.replace(reDiv, NAV_SNIPPET);
-
-  // 3) Wenn nicht gefunden: einfach am Anfang von <header> einfügen
-  let reHeader = /<header[\s\S]*?>/i;
-  if (reHeader.test(html)) return html.replace(reHeader, m => m + '\n' + NAV_SNIPPET + '\n');
-  return html + '\n' + NAV_SNIPPET + '\n';
-}
-
-function addModalNames(html){
-  const MODAL_SNIPPET = `
-<!-- ===== Modal-Patch: Vorname & Nachname vor E-Mail (v2.4.1) ===== -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  try {
-    var root = document.querySelector('#welcome-overlay, #fsa-welcome, #welcome, #modal-welcome, #welcome-modal');
-    if (!root) root = document;
-    var email = root.querySelector('input[type="email"]');
-    if (!email) return;
-
-    function addField(label, name, ac) {
-      if (root.querySelector('input[name="'+name+'"]')) return;
-      var i = document.createElement('input');
-      i.type = 'text';
-      i.name = name;
-      i.placeholder = label;
-      i.setAttribute('aria-label', label);
-      if (ac) i.setAttribute('autocomplete', ac);
-      if (email.className) i.className = email.className;
-      email.parentNode.insertBefore(i, email);
-    }
-    addField('Vorname', 'vorname', 'given-name');
-    addField('Nachname', 'nachname', 'family-name');
-  } catch (e) {}
-});
-</script>
-<!-- ===== /Modal-Patch ===== -->
-`.trim();
-
-  if (/Modal-Patch:\s*Vorname/i.test(html)) return html; // schon drin
-  return html.replace(/<\/body>\s*<\/html>\s*$/i, MODAL_SNIPPET + '\n</body>\n</html>');
-}
-
-/* ========= wire up ========= */
-$('#load').onclick = loadUrl;
-$('#refresh').onclick = ()=>{ if($('#srcUrl').value) loadUrl(); };
-$('#pushRight').onclick = ()=>{ edit.value = view.value; setMsg(patchMsg,'Quelle nach rechts übernommen','okc'); };
-$('#pasteClip').onclick = async ()=>{
-  const t = await readClipboard(); if(!t) return;
-  edit.value = t; setMsg(patchMsg,'Aus Zwischenablage eingefügt ('+t.length+' Bytes)','okc');
-};
-$('#syncBack').onclick = ()=>{ view.value = edit.value; setMsg(msg,'Bearbeitung → Quelle übernommen','okc'); };
-
-$('#next').onclick = ()=>doFind(true);
-$('#prev').onclick = ()=>doFind(false);
-
-$('#applyNav').onclick = ()=>{
-  const before = edit.value; const after = replaceNav(before);
-  edit.value = after;
-  setMsg(patchMsg, (after!==before?'Patch 2 angewendet.':'NAV-Bereich nicht gefunden – Block eingefügt.'), after!==before?'okc':'warnc');
-  if($('#autoclear').checked) setTimeout(()=>hide(patchMsg),1500);
-};
-$('#applyModal').onclick = ()=>{
-  const before = edit.value; const after = addModalNames(before);
-  edit.value = after;
-  setMsg(patchMsg, (after!==before?'Patch 1 angewendet.':'Modal-Patch war bereits vorhanden.'), after!==before?'okc':'warnc');
-  if($('#autoclear').checked) setTimeout(()=>hide(patchMsg),1500);
-};
-
-$('#openNew').onclick = ()=>{
-  const w = window.open('', '_blank'); if(!w) return alert('Popup blockiert');
-  w.document.open(); w.document.write('<pre style="white-space:pre-wrap;word-wrap:break-word;background:#000;color:#d1e4ff;padding:16px;margin:0">'+
-    edit.value.replace(/[&<>]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]))+'</pre>'); w.document.close();
-};
-$('#copyAll').onclick = ()=>{ edit.focus(); edit.select(); document.execCommand('copy'); setMsg(patchMsg,'Alles kopiert','okc'); setTimeout(()=>hide(patchMsg),900); };
-$('#save').onclick = ()=> download('lp-template_patched', edit.value);
-
-// Autofokus ins Edit-Feld
-window.addEventListener('load', ()=> edit.focus());
-</script><!-- 🧩 ReBind Patch-Werkstatt v2.4.2 -->
-<script src="./patch-modules/debug-overlay.js"></script>
-<script src="./patch-modules/rebind-core.js"></script>
-<script src="./patch-modules/rebind-observer.js"></script><script src="./status-monitor.js"></script><!-- 🦅 Auto-Init Werkstatt System -->
-<script src="tools/auto-init/auto-init-rebind.js"></script>
-<script src="tools/auto-init/auto-ui.js"></script>
-<script src="tools/auto-init/auto-bind.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    console.log("🧩 Werkstatt Auto-Init gestartet…");
-  });
-</script><!-- 🧩 Auto-Init Werkstatt Module v2.4.4 -->
-<script src="tools/auto-init/auto-init-rebind.js"></script>
-<script src="tools/auto-init/auto-ui.js"></script>
-<script src="tools/auto-init/auto-bind.js"></script>
-<script src="tools/auto-init/werkstatt-check.js"></script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('🧩 Werkstatt Auto-Init System v2.4.4 aktiviert.');
-  });
-</script><!-- 🧭 Werkstatt-On-Page-Konsole -->
-<div id="fsa-console" style="
-  font-family: monospace;
-  font-size: 13px;
-  color: #d1fae5;
-  background: rgba(0,0,0,0.8);
-  border-top: 1px solid #065f46;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  max-height: 180px;
-  overflow-y: auto;
-  padding: 6px 10px;
-  z-index: 9999;
-  white-space: pre-wrap;
-  line-height: 1.4;
-"></div>
-
-<script>
-(function() {
-  const box = document.getElementById('fsa-console');
-  const log = (msg, type='info') => {
-    const color = type === 'warn' ? '#facc15'
-                : type === 'error' ? '#f87171'
-                : '#34d399';
-    const time = new Date().toLocaleTimeString();
-    box.innerHTML += `<span style="color:${color}">[${time}] ${msg}</span>\n`;
-    box.scrollTop = box.scrollHeight;
-  };
-
-  // Patch console methods
-  const origLog = console.log, origWarn = console.warn, origErr = console.error;
-  console.log = (...a) => { origLog(...a); log(a.join(' '), 'info'); };
-  console.warn = (...a) => { origWarn(...a); log(a.join(' '), 'warn'); };
-  console.error = (...a) => { origErr(...a); log(a.join(' '), 'error'); };
-
-  log('🧠 Werkstatt-Konsole aktiviert.');
-})();
-</script><!-- 🧩 Werkstatt-Statuspanel v2.4.4 -->
-<div id="werkstatt-status"
-     style="position:fixed;bottom:12px;right:12px;background:#0f172a;
-            color:#e2e8f0;font-family:system-ui,Segoe UI,Roboto,sans-serif;
-            border:1px solid #1e293b;border-radius:8px;
-            padding:10px 14px;box-shadow:0 4px 10px rgba(0,0,0,.35);
-            display:flex;align-items:center;gap:8px;z-index:99999;
-            font-size:.9rem;min-width:180px;">
-  <div id="status-dot"
-       style="width:12px;height:12px;border-radius:50%;
-              background:#f87171;box-shadow:0 0 6px #f87171;"></div>
-  <div id="status-text">Werkstatt: Initialisiere…</div>
-</div>
-
-<script>
-(() => {
-  const dot = document.getElementById('status-dot');
-  const txt = document.getElementById('status-text');
-
-  const update = (color, text) => {
-    dot.style.background = color;
-    dot.style.boxShadow = `0 0 6px ${color}`;
-    txt.textContent = `Werkstatt: ${text}`;
-  };
-
-  update('#f59e0b', 'Scan läuft…');
-
-  window.addEventListener('WerkstattReady', () => {
-    update('#10b981', 'Aktiv');
-  });
-
-  window.addEventListener('WerkstattError', () => {
-    update('#ef4444', 'Fehler');
-  });
-
-  // Timeout-Fallback falls kein Signal kommt
-  setTimeout(() => {
-    if (txt.textContent.includes('Scan'))
-      update('#94a3b8', 'keine Rückmeldung');
-  }, 7000);
-})();
-<!-- 🧠 Ende Werkstatt-Statuspanel -->
-<script src="tools/auto-init/auto-rebind.js"></script>
-<script src="tools/auto-init/auto-ui.js"></script>
-<script src="tools/auto-init/werkstatt-check.js"></script>
-<script src="tools/auto-init/werkstatt-console.js"></script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('🧩 Werkstatt-Konsole aktiviert.');
-    console.log('🪛 Werkstatt Auto-Init gestartet.');
-    console.log('🌿 Werkstatt Auto-Init System v2.4.4 aktiviert.');
-  });
-</script><!-- 🧭 Werkstatt Statusanzeige -->
-<style>
-  #status-panel {
-    position: fixed;
-    top: 12px;
-    right: 16px;
-    background: linear-gradient(90deg,#0f172a,#1e293b);
-    color: #e2e8f0;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-family: system-ui,Segoe UI,Roboto,sans-serif;
-    font-size: 14px;
-    box-shadow: 0 0 15px rgba(0,0,0,.45);
-    z-index: 9999;
-  }
-  #status-dot {
-    display:inline-block;
-    width:10px;height:10px;
-    border-radius:50%;
-    background:#f87171;
-    margin-right:8px;
-  }
-</style>
-
-<div id="status-panel">
-  <span id="status-dot"></span>
-  <span id="status-text">Werkstatt: Initialisiere…</span>
-</div>
-</body><!-- 🧠 Werkstatt Dashboard Logik -->
 <script>
 (() => {
   const state = document.getElementById('ws-state');
   const modules = document.getElementById('ws-modules');
   const restart = document.getElementById('ws-restart');
 
-  // Startzustand
-  state.textContent = 'Scan läuft…';
-  state.style.color = '#f59e0b';
+  // Initialzustand
+  state.textContent = 'Scan läuft...';
+  state.className = 'status-warn';
   modules.textContent = 'Module: ReBind, UI, Check, Console';
 
-  // Ereignisse aus Auto-Init auffangen
+  // Ereignisse abfangen
   window.addEventListener('WerkstattReady', () => {
     state.textContent = 'Aktiv';
-    state.style.color = '#10b981';
-  });
-  window.addEventListener('WerkstattError', () => {
-    state.textContent = 'Fehler';
-    state.style.color = '#ef4444';
-  });
-
-  // Manueller Restart
-  restart.onclick = () => {
-    state.textContent = 'Neu-Scan läuft…';
-    state.style.color = '#f59e0b';
-    console.clear();
-    document.dispatchEvent(new CustomEvent('WerkstattRebindInit'));
-  };
-})();
-</script><!-- 🧭 Werkstatt Dashboard -->
-<!-- 🧩 Werkstatt Dashboard (v2.4.4 SAFE Style) -->
-<style>
-#ws-dashboard {
-  position: fixed;
-  bottom: 12px;
-  right: 12px;
-  background: linear-gradient(135deg,#0f172a,#1e293b);
-  color: #e2e8f0;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px;
-  padding: 12px 16px;
-  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
-  font-family: system-ui, Segoe UI, Roboto, sans-serif;
-  font-size: 13.5px;
-  line-height: 1.4;
-  z-index: 9999;
-}
-
-#ws-dashboard button {
-  background: #38bdf8;
-  color: #0f172a;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  margin-left: 10px;
-}
-
-#ws-dashboard button:hover {
-  background: #0ea5e9;
-  color: #fff;
-  transform: scale(1.05);
-}
-
-#ws-dashboard b {
-  color: #22d3ee;
-}
-
-#ws-dashboard::before {
-  content: "🛠️";
-  margin-right: 6px;
-  opacity: 0.85;
-}
-</style>
-
-<div id="ws-dashboard">
-  <div>🧩 Module: <b id="ws-modules">ReBind, UI, Check, Console</b></div>
-  <div>🧭 Status: <b id="ws-state">Initialisiere…</b></div>
-  <button id="ws-restart">Neu-Scan</button>
-</div>
-  }
-  #ws-dashboard button:hover{background:#0284c7}
-</style>
-
-<div id="ws-dashboard">
-  <div>🧩 Module: <b id="ws-modules">ReBind, UI, Check, Console</b></div>
-  <div>⚙️ Status: <b id="ws-state">Initialisiere...</b></div>
-  <button id="ws-restart">Neu-Scan</button>
-
-  const restart = document.getElementById('ws-restart');
-
-  // Anfangszustand
-  state.textContent = 'Scan läuft ...';
-  state.style.color = '#f59e0b';
-  modules.textContent = 'Module: ReBind, UI, Check, Console';
-
-  // Ereignisse vom Auto-Init empfangen
-  window.addEventListener('WerkstattReady', () => {
-    state.textContent = 'Aktiv';
-    state.style.color = '#10b981';
+    state.className = 'status-ok';
   });
 
   window.addEventListener('WerkstattError', () => {
     state.textContent = 'Fehler';
-    state.style.color = '#ef4444';
+    state.className = 'status-err';
   });
 
   // Manuell neu starten
   restart.onclick = () => {
-    state.textContent = 'Neu-Scan läuft ...';
-    state.style.color = '#f59e0b';
+    state.textContent = 'Neu-Scan läuft...';
+    state.className = 'status-warn';
     console.clear();
     document.dispatchEvent(new CustomEvent('WerkstattRebindInit'));
+    setTimeout(checkGithubPages, 1500);
   };
-})();
-</script><!-- 🛰️ GitHub Pages Auto-Check (404-Safe Guard) -->
-<script>
-(async () => {
-  const dashboardStatus = document.getElementById("ws-state");
-  const modules = document.getElementById("ws-modules");
-  try {
-    // 🔍 Prüfe Hauptseite auf Erreichbarkeit
-    const resp = await fetch("https://adler-fsa.github.io/", { cache: "no-store" });
-    if (!resp.ok) throw new Error("Site offline oder im Neuaufbau");
 
-    const html = await resp.text();
-    if (html.includes("404") || html.includes("not found")) {
-      dashboardStatus.textContent = "⚙️ GitHub Pages im Neuaufbau – bitte 2–3 Minuten warten";
-      dashboardStatus.style.color = "#facc15";
-      modules.textContent = "Module: ReBind, UI, Check, Console (Standby)";
-    } else {
-      console.log("✅ GitHub Pages online und aktiv.");
+  // Auto-Check auf GitHub-Pages Erreichbarkeit
+  async function checkGithubPages() {
+    const dashboardStatus = document.getElementById('ws-state');
+    const modules = document.getElementById('ws-modules');
+    try {
+      const resp = await fetch('https://adler-fsa.github.io/', { cache: 'no-store' });
+      if (!resp.ok) throw new Error('Seite offline oder im Neuaufbau');
+
+      const html = await resp.text();
+      if (html.includes('404') || html.includes('not found')) {
+        dashboardStatus.textContent = '⚠️ GitHub Pages im Neuaufbau – bitte 2–3 Minuten warten';
+        dashboardStatus.className = 'status-warn';
+        modules.textContent = 'Module: ReBind, UI, Check, Console (Standby)';
+      } else {
+        console.log('✅ GitHub Pages online und aktiv.');
+        document.dispatchEvent(new CustomEvent('WerkstattReady'));
+      }
+    } catch (err) {
+      dashboardStatus.textContent = '🚫 GitHub Pages aktuell nicht erreichbar';
+      dashboardStatus.className = 'status-err';
+      modules.textContent = 'Module: Offline – Verbindung prüfen';
+      console.warn('Werkstatt: GitHub Pages Error →', err.message);
     }
-  } catch (err) {
-    dashboardStatus.textContent = "🚧 GitHub Pages aktuell nicht erreichbar";
-    dashboardStatus.style.color = "#f87171";
-    modules.textContent = "Module: Offline – Verbindung prüfen";
-    console.warn("Werkstatt: GitHub Pages Error →", err.message);
   }
-})();
-</script>
-<!-- 🔚 Ende Werkstatt Dashboard --><!-- 🧩 Patch v2.4.4b – Visual Fix + Status Animation -->
-<style>
-#ws-dashboard {
-  right: 32px;
-  bottom: 16px;
-  transition: all .3s ease;
-}
-@keyframes dots {
-  0% {content:".";}
-  33% {content:"..";}
-  66% {content:"...";}
-  100% {content:".";}
-}
-#ws-state::after {
-  animation: dots 1.5s steps(3,end) infinite;
-}
-.status-ok { color:#22c55e !important; }     /* 🟢 Aktiv */
-.status-warn { color:#f59e0b !important; }   /* 🟠 Warten */
-.status-err { color:#ef4444 !important; }    /* 🔴 Fehler */
-</style>
 
-<script>
-(() => {
-  const state = document.getElementById('ws-state');
-  window.addEventListener('WerkstattReady', () => {
-    state.className = 'status-ok';
-  });
-  window.addEventListener('WerkstattWarn', () => {
-    state.className = 'status-warn';
-  });
-  window.addEventListener('WerkstattError', () => {
-    state.className = 'status-err';
-  });
+  // Erststart beim Laden
+  checkGithubPages();
 })();
 </script>
+</body>
 </html>
