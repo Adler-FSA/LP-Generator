@@ -320,6 +320,45 @@ window.addEventListener('load', ()=> edit.focus());
   document.addEventListener('DOMContentLoaded', () => {
     console.log('🧩 Werkstatt Auto-Init System v2.4.4 aktiviert.');
   });
+</script><!-- 🧭 Werkstatt-On-Page-Konsole -->
+<div id="fsa-console" style="
+  font-family: monospace;
+  font-size: 13px;
+  color: #d1fae5;
+  background: rgba(0,0,0,0.8);
+  border-top: 1px solid #065f46;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 6px 10px;
+  z-index: 9999;
+  white-space: pre-wrap;
+  line-height: 1.4;
+"></div>
+
+<script>
+(function() {
+  const box = document.getElementById('fsa-console');
+  const log = (msg, type='info') => {
+    const color = type === 'warn' ? '#facc15'
+                : type === 'error' ? '#f87171'
+                : '#34d399';
+    const time = new Date().toLocaleTimeString();
+    box.innerHTML += `<span style="color:${color}">[${time}] ${msg}</span>\n`;
+    box.scrollTop = box.scrollHeight;
+  };
+
+  // Patch console methods
+  const origLog = console.log, origWarn = console.warn, origErr = console.error;
+  console.log = (...a) => { origLog(...a); log(a.join(' '), 'info'); };
+  console.warn = (...a) => { origWarn(...a); log(a.join(' '), 'warn'); };
+  console.error = (...a) => { origErr(...a); log(a.join(' '), 'error'); };
+
+  log('🧠 Werkstatt-Konsole aktiviert.');
+})();
 </script>
 </body>
 </html>
