@@ -584,5 +584,39 @@ window.addEventListener('load', ()=> edit.focus());
   }
 })();
 </script>
-<!-- 🔚 Ende Werkstatt Dashboard -->
+<!-- 🔚 Ende Werkstatt Dashboard --><!-- 🧩 Patch v2.4.4b – Visual Fix + Status Animation -->
+<style>
+#ws-dashboard {
+  right: 32px;
+  bottom: 16px;
+  transition: all .3s ease;
+}
+@keyframes dots {
+  0% {content:".";}
+  33% {content:"..";}
+  66% {content:"...";}
+  100% {content:".";}
+}
+#ws-state::after {
+  animation: dots 1.5s steps(3,end) infinite;
+}
+.status-ok { color:#22c55e !important; }     /* 🟢 Aktiv */
+.status-warn { color:#f59e0b !important; }   /* 🟠 Warten */
+.status-err { color:#ef4444 !important; }    /* 🔴 Fehler */
+</style>
+
+<script>
+(() => {
+  const state = document.getElementById('ws-state');
+  window.addEventListener('WerkstattReady', () => {
+    state.className = 'status-ok';
+  });
+  window.addEventListener('WerkstattWarn', () => {
+    state.className = 'status-warn';
+  });
+  window.addEventListener('WerkstattError', () => {
+    state.className = 'status-err';
+  });
+})();
+</script>
 </html>
