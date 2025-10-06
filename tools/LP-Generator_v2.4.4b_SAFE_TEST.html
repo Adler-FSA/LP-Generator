@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>🦅 Adler-FSA Tools Monitor v2.4.4b SAFE-TEST</title>
+  <style>
+    body {
+      margin:0; background:#0b0f14; color:#e5e7eb;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    /* Dashboard */
+    #ws-dashboard {
+      position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+      background: linear-gradient(135deg,#0f172a,#1e293b);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px; padding: 14px 16px; box-shadow: 0 8px 28px rgba(0,0,0,.35);
+      min-width: 280px; line-height: 1.45;
+    }
+    #ws-dashboard h3 { margin:0 0 6px 0; font-size:14px; color:#38bdf8; font-weight:700; display:flex; align-items:center; gap:8px; }
+    #ws-dashboard h3 small { color:#94a3b8; font-weight:500; }
+    #ws-dashboard b { color: #22d3ee; }
+    #ws-dashboard button {
+      background:#38bdf8; color:#0f172a; border:0; border-radius:8px;
+      padding:6px 12px; font-weight:700; cursor:pointer; margin-top:8px;
+      transition: transform .18s ease, background .18s ease;
+    }
+    #ws-dashboard button:hover { transform: translateY(-1px); background:#0ea5e9; color:#fff; }
+
+    /* Status Farben */
+    .status-ok   { color:#22c55e !important; }
+    .status-warn { color:#f59e0b !important; }
+    .status-err  { color:#ef4444 !important; }
+
+    /* Animierte Punkte */
+    @keyframes dots { 0% {content:"."} 33% {content:".."} 66% {content:"..."} 100% {content:"."} }
+    #ws-state::after { animation: dots 1.5s steps(3,end) infinite; content:"."; margin-left:3px; }
+
+    /* Aufklapp-Panel */
+    #ws-info { display:none; margin-top:8px; padding:8px 10px; border-top:1px solid rgba(255,255,255,.12);
+               background: rgba(15,23,42,.7); border-radius:8px; font-size:12.5px; color:#cbd5e1; }
+    #ws-info ul { margin:6px 0 0 16px; }
+    #ws-info li { margin:4px 0; }
+    #toggle-info { background:none; border:none; color:#38bdf8; text-decoration:underline; font-size:12.5px; cursor:pointer; margin-left:8px; }
+
+    /* Mini-Log unten links */
+    #ws-log {
+      position: fixed; bottom: 14px; left: 14px; z-index: 9998;
+      width: min(46vw, 520px); max-height: 38vh; overflow:auto;
+      background: rgba(0,0,0,.7); border: 1px solid #0f172a; border-radius: 10px; padding: 8px 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height:1.4;
+    }
+    #ws-log h4 { margin: 2px 0 6px; font-size:12px; color:#93c5fd; }
+    #ws-log .ok { color:#86efac; } .warn { color:#fde68a; } .err { color:#fca5a5; }
+  </style>
+</head>
+<body>
+  <div id="ws-dashboard">
+    <h3>🧰 Werkstatt Monitor <small>v2.4.4b SAFE‑TEST</small></h3>
+    <div>Modulset: <b id="ws-modules">Auto‑Check, Dashboard, Log</b></div>
+    <div>Status: <b id="ws-state" class="status-warn">Initialisiere…</b></div>
+    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <button id="ws-restart">Neu‑Scan</button>
+      <button id="toggle-info">▼ Funktionsübersicht</button>
+    </div>
+    <div id="ws-info">
+      <b>Funktionsübersicht:</b>
+      <ul>
+        <li>⚙️ <b>Auto‑Check</b> prüft https://adler-fsa.github.io/tools/</li>
+        <li>🟢 <b>Statusfarben</b> – Grün=aktiv, Gelb=warten, Rot=Fehler</li>
+        <li>📝 <b>Mini‑Log</b> unten links zeigt alle Meldungen</li>
+        <li>🔁 <b>Neu‑Scan</b> startet den Check sofort erneut</li>
+        <li>🧱 <b>SAFE</b> – keine externen Abhängigkeiten, 1‑Datei‑Test</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="ws-log">
+    <h4>🦅 Adler‑FSA Tools Monitor – Log</h4>
+    <div id="log-body"></div>
+  </div>
+
+<script>
+(() => {
+  const state = document.getElementById('ws-state');
+  const modules = document.getElementById('ws-modules');
+  const restart = document.getElementById('ws-restart');
+  const infoBtn = document.getElementById('toggle-info');
+  const infoBox = document.getElementById('ws-info');
+  const logBody = document.getElementById('log-body');
+
+  const log = (msg, level='ok') => {
+    const time = new Date().toLocaleTimeString();
+    const el = document.createElement('div');
+    el.className = level;
+    const icon = level==='ok'?'✅':(level==='warn'?'⚠️':'❌');
+    el.textContent = `[${time}] ${icon} ${
+      msg
+    }`;
+    logBody.appendChild(el);
+    logBody.scrollTop = logBody.scrollHeight;
+  };
+
+  // Toggle
+  infoBtn.onclick = () => {
+    const open = infoBox.style.display === 'block';
+    infoBox.style.display = open ? 'none' : 'block';
+    infoBtn.textContent = open ? '▼ Funktionsübersicht' : '▲ Schließen';
+  };
+
+  // Status Hilfen
+  const setWarn = (txt) => { state.textContent = txt; state.className = 'status-warn'; };
+  const setOk   = (txt) => { state.textContent = txt; state.className = 'status-ok'; };
+  const setErr  = (txt) => { state.textContent = txt; state.className = 'status-err'; };
+
+  // Haupt-Check
+  async function checkPages() {
+    setWarn('Scan läuft…');
+    log('Starte Check auf https://adler-fsa.github.io/tools/','warn');
+    try {
+      const resp = await fetch('https://adler-fsa.github.io/tools/', { cache: 'no-store' });
+      if (!resp.ok) throw new Error('HTTP '+resp.status);
+      const html = await resp.text();
+      if (html.includes('404') || html.toLowerCase().includes('not found')) {
+        setWarn('GitHub Pages im Neuaufbau – bitte 2–3 Min warten');
+        log('Pages liefert 404/„not found“ (Deploy läuft)','warn');
+      } else {
+        setOk('Aktiv');
+        log('GitHub Pages online und aktiv','ok');
+      }
+    } catch (e) {
+      setErr('GitHub Pages nicht erreichbar');
+      log('Fehler beim Abruf: '+e.message,'err');
+    }
+  }
+
+  // Button
+  restart.onclick = () => { checkPages(); };
+
+  // Autostart
+  checkPages();
+})();
+</script>
+</body>
+</html>
