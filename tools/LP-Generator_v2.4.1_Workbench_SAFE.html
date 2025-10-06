@@ -413,5 +413,35 @@ window.addEventListener('load', ()=> edit.focus());
     console.log('🌿 Werkstatt Auto-Init System v2.4.4 aktiviert.');
   });
 </script>
-</body>
+</body><!-- 🧠 Werkstatt Dashboard Logik -->
+<script>
+(() => {
+  const state = document.getElementById('ws-state');
+  const modules = document.getElementById('ws-modules');
+  const restart = document.getElementById('ws-restart');
+
+  // Startzustand
+  state.textContent = 'Scan läuft…';
+  state.style.color = '#f59e0b';
+  modules.textContent = 'Module: ReBind, UI, Check, Console';
+
+  // Ereignisse aus Auto-Init auffangen
+  window.addEventListener('WerkstattReady', () => {
+    state.textContent = 'Aktiv';
+    state.style.color = '#10b981';
+  });
+  window.addEventListener('WerkstattError', () => {
+    state.textContent = 'Fehler';
+    state.style.color = '#ef4444';
+  });
+
+  // Manueller Restart
+  restart.onclick = () => {
+    state.textContent = 'Neu-Scan läuft…';
+    state.style.color = '#f59e0b';
+    console.clear();
+    document.dispatchEvent(new CustomEvent('WerkstattRebindInit'));
+  };
+})();
+</script>
 </html>
