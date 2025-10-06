@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LP-Generator v2.4.1 – Workbench (SAFE)</title>
+<title>LP-Generator v2.4.4b SAFE+UX</title>
 <style>
-  /* Dashboard Basis */
+  /* === Dashboard Grundlayout === */
   #ws-dashboard {
     position: fixed;
     bottom: 12px;
@@ -23,6 +23,12 @@
     transition: all .3s ease;
   }
 
+  #ws-dashboard h3 {
+    margin: 0 0 6px 0;
+    font-size: 14px;
+    color: #38bdf8;
+  }
+
   #ws-dashboard button {
     background: #38bdf8;
     color: #0f172a;
@@ -32,7 +38,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all .25s ease;
-    margin-left: 10px;
+    margin-top: 6px;
   }
 
   #ws-dashboard button:hover {
@@ -41,13 +47,14 @@
     transform: scale(1.05);
   }
 
-  #ws-dashboard b { color: #22d3ee; }
-
-  #ws-dashboard:before {
-    content: "🧩";
-    margin-right: 6px;
-    opacity: 0.85;
+  #ws-dashboard small {
+    display: block;
+    margin-top: 6px;
+    color: #94a3b8;
+    font-size: 12px;
   }
+
+  #ws-dashboard b { color: #22d3ee; }
 
   @keyframes dots {
     0% {content: ".";}
@@ -63,14 +70,56 @@
   .status-ok   { color:#22c55e !important; }  /* Grün: Aktiv */
   .status-warn { color:#f59e0b !important; }  /* Gelb: Warten */
   .status-err  { color:#ef4444 !important; }  /* Rot: Fehler */
+
+  /* === Aufklapp-Menü (Funktionsübersicht) === */
+  #ws-info {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 12.5px;
+    color: #cbd5e1;
+    background: rgba(15,23,42,0.7);
+    border-radius: 6px;
+    line-height: 1.5;
+  }
+  #ws-info ul { margin: 6px 0 0 14px; padding: 0; }
+  #ws-info li { margin-bottom: 4px; }
+
+  #toggle-info {
+    background: none;
+    border: none;
+    color: #38bdf8;
+    font-size: 12.5px;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-top: 4px;
+  }
+  #toggle-info:hover { color:#0ea5e9; }
 </style>
 </head>
 
 <body style="background:#0b0f14; color:#e5e7eb; font-family:system-ui, sans-serif;">
+
+  <!-- 🧩 Dashboard -->
   <div id="ws-dashboard">
+    <h3>🧰 Werkstatt Dashboard <small>v2.4.4b SAFE+UX</small></h3>
     <div>Module: <b id="ws-modules">ReBind, UI, Check, Console</b></div>
     <div>Status: <b id="ws-state" class="status-warn">Initialisiere...</b></div>
     <button id="ws-restart">Neu-Scan</button>
+    <button id="toggle-info">▼ Funktionsübersicht</button>
+
+    <!-- Aufklappfeld -->
+    <div id="ws-info">
+      <b>Funktionsübersicht:</b>
+      <ul>
+        <li>🧩 <b>Dashboard</b> – zeigt Systemstatus & aktive Module</li>
+        <li>⚙️ <b>Auto-Check</b> – prüft GitHub-Pages-Verfügbarkeit</li>
+        <li>🟢 <b>Statusfarben</b> – Grün = aktiv, Gelb = prüfen, Rot = Fehler</li>
+        <li>🔁 <b>Neu-Scan</b> – startet Prüfung & ReBind-Event neu</li>
+        <li>🧱 <b>SAFE-Modus</b> – schützt gegen doppelte Instanzen</li>
+      </ul>
+    </div>
   </div>
 
 <script>
@@ -78,6 +127,15 @@
   const state = document.getElementById('ws-state');
   const modules = document.getElementById('ws-modules');
   const restart = document.getElementById('ws-restart');
+  const infoBtn = document.getElementById('toggle-info');
+  const infoBox = document.getElementById('ws-info');
+
+  // Toggle Funktionsübersicht
+  infoBtn.onclick = () => {
+    const open = infoBox.style.display === 'block';
+    infoBox.style.display = open ? 'none' : 'block';
+    infoBtn.textContent = open ? '▼ Funktionsübersicht' : '▲ Schließen';
+  };
 
   // Initialzustand
   state.textContent = 'Scan läuft...';
@@ -107,7 +165,6 @@
   // Auto-Check auf GitHub-Pages Erreichbarkeit
   async function checkGithubPages() {
     const dashboardStatus = document.getElementById('ws-state');
-    const modules = document.getElementById('ws-modules');
     try {
       const resp = await fetch('https://adler-fsa.github.io/', { cache: 'no-store' });
       if (!resp.ok) throw new Error('Seite offline oder im Neuaufbau');
