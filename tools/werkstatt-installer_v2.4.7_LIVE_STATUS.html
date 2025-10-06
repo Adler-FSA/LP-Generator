@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Adler-FSA Werkstatt-Installer v2.4.7 • LIVE-STATUS</title>
+<style>
+  :root{
+    --bg:#0e1116; --card:#121826; --ink:#eaf2ff; --muted:#a9b3c7;
+    --ok:#2bd576; --warn:#ffcc66; --err:#ff6b6b; --accent:#15b3ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  .wrap{max-width:960px;margin:48px auto;padding:0 16px}
+  h1{font-size:clamp(22px,2.6vw,28px);font-weight:800;letter-spacing:.2px;margin:0 0 8px}
+  p.sub{margin:0 0 22px;color:var(--muted)}
+  .card{background:linear-gradient(180deg,#101728,#0f1421);border:1px solid rgba(255,255,255,.06);
+        border-radius:14px;padding:22px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+  input[type=password]{flex:1;min-width:260px;background:#0b1220;border:1px solid #1d2741;color:var(--ink);
+        padding:12px 14px;border-radius:10px;outline:none}
+  button{background:var(--accent);color:#001018;border:0;padding:12px 16px;border-radius:10px;
+        font-weight:700;cursor:pointer}
+  button[disabled]{opacity:.55;cursor:not-allowed}
+  .log{font-family:ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;background:#0a0f1a;border:1px solid #121a2e;
+       border-radius:10px;padding:14px;white-space:pre-wrap;max-height:44vh;overflow:auto}
+  .badge{display:inline-block;margin-right:8px;padding:.15rem .45rem;border-radius:6px;font:12px/1 ui-monospace}
+  .ok{background:rgba(43,213,118,.14);color:var(--ok);border:1px solid rgba(43,213,118,.35)}
+  .warn{background:rgba(255,204,102,.12);color:var(--warn);border:1px solid rgba(255,204,102,.35)}
+  .err{background:rgba(255,107,107,.12);color:var(--err);border:1px solid rgba(255,107,107,.35)}
+  .muted{color:var(--muted)}
+  .tiny{font-size:12px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🦅 Adler-FSA Werkstatt-Installer <span class="muted">v2.4.7 LIVE-STATUS</span></h1>
+    <p class="sub">Legt die Grundstruktur unter <code>tools/</code> an, führt ein Smart-Update durch, triggert GitHub-Pages
+      und zeigt den Live-Build-Status an.</p>
+
+    <div class="card">
+      <div class="row">
+        <input id="token" type="password" placeholder="🔑 GitHub Personal Access Token (fine-grained oder classic)"/>
+        <button id="run">🚀 Werkstatt installieren</button>
+      </div>
+      <div id="statusLine" class="tiny muted" aria-live="polite">Bereit.</div>
+    </div>
+
+    <div style="height:14px"></div>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div><span class="badge muted">Owner</span> <code id="owner">Adler-FSA</code>
+             &nbsp;&nbsp;<span class="badge muted">Repo</span> <code id="repo">Lp-Generator</code></div>
+        <div class="tiny muted">Ziel-Seite: <code id="targetPath">/tools/Adler-FSA_Werkstatt_v2.4.7_LIVE_STATUS.html</code></div>
+      </div>
+      <div id="log" class="log" role="log" aria-live="polite"></div>
+    </div>
+
+    <p class="tiny muted">Tipp: Token-Scope für <b>Adler-FSA/Lp-Generator</b> → Repository-Zugriff
+      <i>Only select repositories</i> + Permissions: <b>contents: read & write</b>, <b>metadata</b> (required), optional <b>actions</b>.</p>
+  </div>
+
+<script>
+(() => {
+  // ----- Einstellungen (Owner/Repo/Dateien) ------------------------------
+  const OWNER = 'Adler-FSA';
+  const REPO  = 'Lp-Generator';
+  const TARGET_URL = 'https://adler-fsa.github.io/Lp-Generator/tools/Adler-FSA_Werkstatt_v2.4.7_LIVE_STATUS.html';
+
+  // Klein & robust gehaltene Platzhalter-Dateien zum Grundaufbau:
+  const FILES = [
+    {
+      path: 'tools/Adler-FSA_Werkstatt_v2.4.7_LIVE_STATUS.html',
+      message: 'Add Adler-FSA_Werkstatt v2.4.7 LIVE_STATUS (auto-generated)',
+      content: `<!doctype html><meta charset="utf-8"><title>Adler-FSA Werkstatt v2.4.7</title>
+<style>body{margin:0;background:#0e1116;color:#eaf2ff;font:16px/1.6 system-ui}
+.wrap{max-width:900px;margin:18vh auto 0;padding:0 18px;text-align:center}
+h1{font:800 28px/1.2 system-ui;margin:0 0 10px}
+p{color:#a9b3c7;margin:0}</style>
+<div class="wrap">
+  <h1>🦅 Adler-FSA Werkstatt v2.4.7</h1>
+  <p>Basisinstallation erfolgreich. Dashboard/Auto-Check/Glow werden über Patches aktiviert.</p>
+</div>`
+    },
+    { path: 'tools/js/monitor.js',       message: 'Add tools/js/monitor.js (seed)',       content: `console.log("🛠️ monitor.js bereit");` },
+    { path: 'tools/js/glow.js',          message: 'Add tools/js/glow.js (seed)',          content: `console.log("✨ glow.js aktiv");` },
+    { path: 'tools/js/lang.js',          message: 'Add tools/js/lang.js (seed)',          content: `console.log("🌍 lang.js geladen");` },
+    { path: 'tools/js/patch-manager.js', message: 'Add tools/js/patch-manager.js (seed)', content: `console.log("🩹 patch-manager.js bereit");` },
+  ];
+
+  // ----- UI Elemente ------------------------------------------------------
+  const $ = sel => document.querySelector(sel);
+  const tokenEl = $('#token');
+  const runBtn  = $('#run');
+  const logEl   = $('#log');
+  const statusEl= $('#statusLine');
+
+  const log = (msg, type='info') => {
+    const ts = new Date().toLocaleTimeString('de-DE',{hour12:false});
+    const icon = type==='ok'?'✅':type==='warn'?'⚠️':type==='err'?'❌':'•';
+    logEl.textContent += `[${ts}] ${icon} ${msg}\n`;
+    logEl.scrollTop = logEl.scrollHeight;
+  };
+  const setStatus = (txt, cls='muted') => { statusEl.className = `tiny ${cls}`; statusEl.textContent = txt; };
+
+  // ----- GitHub API Helpers ----------------------------------------------
+  const gh = (token, path, opt={}) =>
+    fetch(`https://api.github.com${path}`, {
+      method: opt.method || 'GET',
+      headers: {
+        'Accept': 'application/vnd.github+json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: opt.body ? JSON.stringify(opt.body) : undefined
+    });
+
+  const toB64 = s => btoa(unescape(encodeURIComponent(s)));
+
+  async function getFileSHA(token, path){
+    const r = await gh(token, `/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`);
+    if (r.status===200){ const j = await r.json(); return j.sha; }
+    if (r.status===404) return null;
+    throw new Error(`GET contents ${path} → HTTP ${r.status}`);
+  }
+
+  async function upsertFile(token, {path, message, content}){
+    const sha = await getFileSHA(token, path);
+    const body = { message, content: toB64(content) };
+    if (sha) body.sha = sha;
+
+    const r = await gh(token, `/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}`, {
+      method:'PUT', body
+    });
+
+    if (r.status===201 || r.status===200){
+      log(`${sha?'Update':'Create'} ${path} ✓`, 'ok');
+      return true;
+    }
+    if (r.status===401) { log(`${path} → 401 (Unauthorized) – Token/Scope prüfen.`, 'err'); return false; }
+    if (r.status===403) { log(`${path} → 403 (Forbidden) – fehlende Rechte.`, 'err'); return false; }
+    if (r.status===422) { log(`${path} → 422 (Validation) – evtl. Konflikt.`, 'warn'); return false; }
+    log(`${path} → HTTP ${r.status}`, 'err');
+    return false;
+  }
+
+  async function triggerPagesBuild(token){
+    const r = await gh(token, `/repos/${OWNER}/${REPO}/pages/builds`, {method:'POST'});
+    if (r.status===201){ log('GitHub Pages Build ausgelöst ✓', 'ok'); return true; }
+    if (r.status===409){ log('Build läuft bereits (409).', 'warn'); return true; }
+    log(`Build-Trigger → HTTP ${r.status}`, r.status===401?'err':'warn');
+    return false;
+  }
+
+  async function getLatestBuild(token){
+    const r = await gh(token, `/repos/${OWNER}/${REPO}/pages/builds/latest`);
+    if (r.status!==200) throw new Error(`latest build → HTTP ${r.status}`);
+    return r.json(); // {status, url, error, ...}
+  }
+
+  async function waitForBuilt(token, {attempts=30, interval=7000}={}){
+    for (let i=1;i<=attempts;i++){
+      try{
+        const j = await getLatestBuild(token);
+        const s = j.status; // 'queued' | 'building' | 'built' | 'errored'
+        setStatus(`Pages Build-Status: ${s} (Versuch ${i}/${attempts}) …`,
+                  s==='built'?'ok':(s==='errored'?'err':'muted'));
+        if (s==='built') return {ok:true, data:j};
+        if (s==='errored') { log('Pages-Build: Fehler. Details in Actions/Pages.', 'err'); return {ok:false, data:j}; }
+      }catch(e){
+        log(`Status-Abfrage fehlgeschlagen: ${e.message}`, 'warn');
+      }
+      await new Promise(r=>setTimeout(r, interval));
+    }
+    return {ok:false, timeout:true};
+  }
+
+  // ----- Hauptablauf ------------------------------------------------------
+  runBtn.addEventListener('click', async () => {
+    const token = (tokenEl.value||'').trim();
+    if (!token){ tokenEl.focus(); return; }
+
+    runBtn.disabled = true;
+    logEl.textContent = '';
+    setStatus('Verbinde mit GitHub …');
+
+    // 1) Dateien (smart) anlegen/aktualisieren
+    for (const f of FILES){
+      const ok = await upsertFile(token, f);
+      if (!ok) log(`Hinweis: Weiter mit den übrigen Dateien …`, 'warn');
+    }
+
+    // 2) Pages-Deploy anstoßen
+    setStatus('Starte GitHub Pages Auto-Deploy …');
+    await triggerPagesBuild(token);
+
+    // 3) Live-Status verfolgen
+    setStatus('Warte auf Build (Polling) …');
+    const res = await waitForBuilt(token, {attempts:30, interval:7000});
+
+    if (res.ok){
+      log('✅ Veröffentlichung erfolgreich. Öffne Ziel-Seite …', 'ok');
+      setStatus('Fertig ✔', 'ok');
+      // 4) Auto-Weiterleitung
+      setTimeout(()=>{ window.location.href = TARGET_URL; }, 600);
+    }else if(res.timeout){
+      log('⏱️ Timeout: Build ist noch nicht „built“. Bitte später neu laden oder Actions prüfen.', 'warn');
+      setStatus('Timeout – bitte später erneut prüfen.', 'warn');
+    }else{
+      log('❌ Build meldete einen Fehler. Siehe „Actions › pages build and deployment“.', 'err');
+      setStatus('Build-Fehler.', 'err');
+    }
+
+    runBtn.disabled = false;
+  });
+})();
+</script>
+</body>
+</html>
