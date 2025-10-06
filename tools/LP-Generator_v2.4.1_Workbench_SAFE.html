@@ -470,5 +470,69 @@ window.addEventListener('load', ()=> edit.focus());
     document.dispatchEvent(new CustomEvent('WerkstattRebindInit'));
   };
 })();
+</script><!-- 🧭 Werkstatt Dashboard -->
+<style>
+  #ws-dashboard {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: linear-gradient(90deg,#0f172a,#1e293b);
+    color: #e2e8f0;
+    font-family: system-ui,Segoe UI,Roboto,sans-serif;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 14px;
+    box-shadow: 0 8px 20px rgba(0,0,0,.35);
+    z-index: 9999;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  #ws-dashboard b {color:#38bdf8;}
+  #ws-dashboard button {
+    background:#0ea5e9;color:#fff;border:none;
+    padding:4px 10px;border-radius:6px;
+    font-weight:600;font-size:12px;cursor:pointer;
+    margin-left:10px;
+  }
+  #ws-dashboard button:hover{background:#0284c7}
+</style>
+
+<div id="ws-dashboard">
+  <div>🧩 Module: <b id="ws-modules">ReBind, UI, Check, Console</b></div>
+  <div>⚙️ Status: <b id="ws-state">Initialisiere...</b></div>
+  <button id="ws-restart">Neu-Scan</button>
+</div>
+
+<script>
+(() => {
+  const state = document.getElementById('ws-state');
+  const modules = document.getElementById('ws-modules');
+  const restart = document.getElementById('ws-restart');
+
+  // Anfangszustand
+  state.textContent = 'Scan läuft ...';
+  state.style.color = '#f59e0b';
+  modules.textContent = 'Module: ReBind, UI, Check, Console';
+
+  // Ereignisse vom Auto-Init empfangen
+  window.addEventListener('WerkstattReady', () => {
+    state.textContent = 'Aktiv';
+    state.style.color = '#10b981';
+  });
+
+  window.addEventListener('WerkstattError', () => {
+    state.textContent = 'Fehler';
+    state.style.color = '#ef4444';
+  });
+
+  // Manuell neu starten
+  restart.onclick = () => {
+    state.textContent = 'Neu-Scan läuft ...';
+    state.style.color = '#f59e0b';
+    console.clear();
+    document.dispatchEvent(new CustomEvent('WerkstattRebindInit'));
+  };
+})();
 </script>
+<!-- 🔚 Ende Werkstatt Dashboard -->
 </html>
