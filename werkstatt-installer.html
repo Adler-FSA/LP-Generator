@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Adler-FSA Werkstatt-Installer v2.4.5b FULL-SAFE</title>
+<style>
+  body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:#0b0f14;color:#e0eafc;text-align:center;padding:40px}
+  h1{color:#38bdf8}
+  input,button{padding:10px 14px;margin:6px;border-radius:8px;border:none;font-size:1rem}
+  input{width:320px}
+  button{background:#22d3ee;color:#000;font-weight:600;cursor:pointer}
+  pre{background:#111827;color:#22d3ee;padding:10px;text-align:left;border-radius:6px;max-width:700px;margin:20px auto;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h1>🦅 Adler-FSA Werkstatt-Installer v2.4.5b FULL-SAFE</h1>
+<p>Diese Datei legt automatisch die komplette Werkstatt-Struktur in deinem Repository an.</p>
+
+<label>🔑 GitHub Personal Access Token:</label><br>
+<input id="token" type="password" placeholder="ghp_…"><br>
+<button onclick="install()">🚀 Werkstatt installieren</button>
+
+<pre id="log"></pre>
+
+<script>
+async function install(){
+  const log = m => document.getElementById('log').textContent += m + "\n";
+  const token = document.getElementById('token').value.trim();
+  if(!token){alert('Bitte GitHub-Token eingeben');return;}
+  log('Verbinde mit GitHub …');
+
+  const repo = 'Adler-FSA/Lp-Generator';
+  const api = 'https://api.github.com/repos/' + repo + '/contents/';
+  const headers = {'Authorization':'token '+token,'Content-Type':'application/json'};
+
+  async function upload(path,content){
+    const body = {
+      message: 'Werkstatt Installer upload '+path,
+      content: btoa(unescape(encodeURIComponent(content)))
+    };
+    const r = await fetch(api+path,{method:'PUT',headers,body:JSON.stringify(body)});
+    if(r.ok) log('✅ '+path); else log('❌ '+path+' ('+r.status+')');
+  }
+
+  // Beispiel-Dateien
+  await upload('tools/Adler-FSA_Werkstatt_v2.4.5b_FULL_SAFE.html',
+`<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Adler-FSA Werkstatt</title></head>
+<body style="font-family:system-ui;background:#0b0f14;color:#e0eafc;text-align:center;padding:60px">
+<h1>🦅 Adler-FSA Werkstatt v2.4.5b FULL-SAFE</h1>
+<p>Basisinstallation erfolgreich. Dashboard, Auto-Check und Glow werden nach dem ersten Patch aktiviert.</p>
+</body></html>`);
+
+  await upload('tools/js/monitor.js',
+`console.log("Monitor v2.4.5b aktiviert");`);
+
+  await upload('tools/js/glow.js',
+`console.log("Glow-Engine läuft");`);
+
+  await upload('tools/js/lang.js',
+`console.log("Language-Hook bereit");`);
+
+  await upload('tools/js/patch-manager.js',
+`console.log("Patch-Manager aktiv");`);
+
+  log('\\n🎉 Installation abgeschlossen! Öffne https://adler-fsa.github.io/tools/Adler-FSA_Werkstatt_v2.4.5b_FULL_SAFE.html');
+}
+</script>
+</body>
+</html>
