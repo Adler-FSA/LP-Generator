@@ -1,1 +1,0 @@
-// tools/js/lang.js placeholder created by AUTO-DEPLOY Installer
