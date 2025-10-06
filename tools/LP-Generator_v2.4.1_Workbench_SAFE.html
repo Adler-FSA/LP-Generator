@@ -563,6 +563,31 @@ window.addEventListener('load', ()=> edit.focus());
     document.dispatchEvent(new CustomEvent('WerkstattRebindInit'));
   };
 })();
+</script><!-- 🛰️ GitHub Pages Auto-Check (404-Safe Guard) -->
+<script>
+(async () => {
+  const dashboardStatus = document.getElementById("ws-state");
+  const modules = document.getElementById("ws-modules");
+  try {
+    // 🔍 Prüfe Hauptseite auf Erreichbarkeit
+    const resp = await fetch("https://adler-fsa.github.io/", { cache: "no-store" });
+    if (!resp.ok) throw new Error("Site offline oder im Neuaufbau");
+
+    const html = await resp.text();
+    if (html.includes("404") || html.includes("not found")) {
+      dashboardStatus.textContent = "⚙️ GitHub Pages im Neuaufbau – bitte 2–3 Minuten warten";
+      dashboardStatus.style.color = "#facc15";
+      modules.textContent = "Module: ReBind, UI, Check, Console (Standby)";
+    } else {
+      console.log("✅ GitHub Pages online und aktiv.");
+    }
+  } catch (err) {
+    dashboardStatus.textContent = "🚧 GitHub Pages aktuell nicht erreichbar";
+    dashboardStatus.style.color = "#f87171";
+    modules.textContent = "Module: Offline – Verbindung prüfen";
+    console.warn("Werkstatt: GitHub Pages Error →", err.message);
+  }
+})();
 </script>
 <!-- 🔚 Ende Werkstatt Dashboard -->
 </html>
