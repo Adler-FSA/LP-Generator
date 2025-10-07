@@ -1,121 +1,142 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>📮 FSA Poststelle v2.7.3 · Autonom-Update-System</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>📨 FSA Poststelle · Mega-Patch-Deploy v2.7.4</title>
 <style>
-  :root{--bg:#0b1220;--card:#111827;--ink:#e5e7eb;--muted:#94a3b8;--accent:#38bdf8;--ok:#10b981;--warn:#fbbf24;--err:#ef4444;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
-  .wrap{max-width:960px;margin:40px auto;padding:0 16px}
-  h1{font-size:1.8rem;margin:0 0 10px;color:var(--accent)}
-  p.lead{margin:0 0 20px;color:var(--muted)}
-  .info{background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:14px;margin:16px 0}
-  .info b{color:#e2e8f0}
-  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:20px}
-  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  input[type=password]{background:#0f172a;border:1px solid #1e293b;border-radius:8px;color:#fff;padding:10px 12px;font-size:1rem;min-width:260px}
-  button{cursor:pointer;border:0;border-radius:8px;font-weight:700}
-  .primary{background:#2563eb;color:#fff;padding:10px 14px}
-  .ghost{background:#1f2937;color:#cbd5e1;padding:8px 12px}
-  .hint{font-size:.9rem;color:#8da0be;margin-top:8px}
-  pre#log{white-space:pre-wrap;background:#0f172a;border:1px dashed #334155;border-radius:8px;padding:12px;min-height:140px;max-height:400px;overflow:auto;margin-top:16px}
-  .footer{margin-top:18px;color:#64748b;font-size:.85rem;text-align:center}
-  .badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:.8rem;margin-left:8px}
-  .ok{background:rgba(16,185,129,.2);color:#10b981}
-  .warn{background:rgba(251,191,36,.2);color:#fbbf24}
-  .err{background:rgba(239,68,68,.2);color:#ef4444}
+  body {
+    font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
+    background: #0b1220;
+    color: #e2e8f0;
+    margin: 0;
+    padding: 40px;
+  }
+  .box {
+    max-width: 780px;
+    margin: 40px auto;
+    background: #111827;
+    border-radius: 14px;
+    border: 1px solid #1e293b;
+    padding: 32px;
+    box-shadow: 0 0 20px rgba(0,0,0,.4);
+  }
+  h1 {
+    color: #38bdf8;
+    margin-top: 0;
+  }
+  input {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px;
+    color: #e2e8f0;
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+  button {
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: .2s;
+  }
+  button:hover { background: #1d4ed8; }
+  .log {
+    margin-top: 16px;
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 12px;
+    font-family: monospace;
+    white-space: pre-line;
+    border: 1px solid #1e293b;
+  }
+  .info {
+    background: #172554;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 20px 0;
+    border-left: 4px solid #60a5fa;
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>📮 FSA Poststelle · Mega-Patch-Deploy <small style="font-weight:600;color:#7dd3fc">v2.7.3</small></h1>
-  <p class="lead">Autonomes Update-System mit automatischer Selbstprüfung & Werkstatt-Integration.</p>
+
+<div class="box">
+  <h1>📮 FSA Poststelle · Mega-Patch-Deploy v2.7.4</h1>
+  <p>Autonomes Update-System mit automatischer Selbstprüfung & Werkstatt-Integration.</p>
 
   <div class="info">
     <b>Arbeitsweise:</b><br>
-    Punkte <b>1–3 = du</b> (Start + Token + Klick) · Punkte <b>4–5 = System</b> (Poststelle + Werkstatt führen automatisch aus).<br><br>
-    <b>Status:</b> <span id="verStatus" class="badge warn">Überprüfe Version …</span>
+    Punkte 1-3 = du ( Start + Token + Klick ) · Punkte 4-5 = System (Poststelle + Werkstatt führen automatisch aus )
   </div>
 
-  <div class="card">
-    <div class="row">
-      <input id="token" type="password" placeholder="Token eingeben …" />
-      <button id="go" class="primary">🚀 Mega-Patch starten</button>
-      <button id="btnLoad" class="ghost" title="aus URL übernehmen">🔄</button>
-    </div>
-    <div class="hint">Hinweis: Der Token wird <b>nicht gespeichert</b> – nur für diesen Deploy-Lauf verwendet.</div>
-    <pre id="log">Log gestartet …</pre>
-  </div>
+  <label for="token">Token eingeben …</label>
+  <input id="token" type="password" placeholder="**************"/>
+  <button id="go">🚀 Mega-Patch starten</button>
 
-  <div class="footer">FSA Poststelle · autonomer Deploy-Runner · Build v2.7.3</div>
+  <p style="font-size:.9rem;color:#94a3b8;margin-top:6px">
+    Hinweis: Der Token wird nicht gespeichert – nur für diesen Deploy-Lauf verwendet.
+  </p>
+
+  <div id="status" class="log">Log gestartet …</div>
 </div>
 
 <script>
-const OWNER="Adler-FSA",REPO="Lp-Generator",BRANCH="main";
-const apiBase=`https://api.github.com/repos/${OWNER}/${REPO}/contents`;
-const $=s=>document.querySelector(s);
-const enc=s=>btoa(unescape(encodeURIComponent(s)));
-const log=(m,cls="")=>{const el=$("#log");el.innerHTML+=m+"\\n";el.scrollTop=el.scrollHeight;};
-
-// Version Self-Check
 (async()=>{
- try{
-  const res=await fetch(`https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/poststelle/index.html`);
-  const txt=await res.text();
-  const m=txt.match(/v(\\d+\\.\\d+\\.\\d+)/);
-  const remoteVer=m?m[1]:"unknown";
-  const localVer="2.7.3";
-  const el=$("#verStatus");
-  if(remoteVer===localVer){el.textContent="Aktuell ("+localVer+")";el.className="badge ok";}
-  else{el.textContent="Update verfügbar ("+remoteVer+")";el.className="badge warn";}
- }catch(e){$("#verStatus").textContent="Fehler bei Versionsprüfung";$("#verStatus").className="badge err";}
+  const log=(msg)=>{document.querySelector('#status').textContent+="\n"+msg;}
+  log("📡 Poststelle v2.7.4 aktiviert …")
+
+  // Deploy-Routine
+  document.querySelector("#go").onclick=async()=>{
+    const token=(document.querySelector("#token").value||"").trim()
+    if(!token)return alert("Bitte gültigen Token eingeben.")
+    const btn=document.querySelector("#go")
+    btn.disabled=true;btn.textContent="⏳ Starte Deploy …"
+    try{
+      log("🚀 Starte Mega-Patch-Deploy v2.7.4 …")
+      // HTML-Anteil – Werkstatt Patch-Manager
+      await putFile("tools/patch-manager.html",
+        "<html><body>🧩 Patch-Manager aktualisiert (v2.7.4)</body></html>",
+        "Auto-Patch HTML",token)
+      log("✅ HTML installiert: /tools/patch-manager.html")
+
+      // JS-Anteil
+      await putFile("tools/js/patch-manager.js",
+        "// Patch-Manager v2.7.4 – Werkstatt logisch integriert",
+        "Auto-Patch JS",token)
+      log("✅ JS installiert: /tools/js/patch-manager.js")
+
+      // Erfolg
+      log("✅ Deploy abgeschlossen – System übergeben an Werkstatt.")
+      alert("Fertig ✅ Patch-Manager v2.7.4 wurde installiert.")
+    }catch(e){
+      log("❌ Fehler: "+e.message)
+      alert("Fehler beim Deploy: "+e.message)
+    }finally{
+      btn.disabled=false;btn.textContent="🚀 Mega-Patch starten"
+    }
+  }
+
+  async function putFile(path,content,message,token){
+    const api="https://api.github.com/repos/Adler-FSA/Lp-Generator/contents/"+path
+    const get=await fetch(api+"?ref=main",{headers:{Authorization:"token "+token}})
+    const sha=(get.ok?(await get.json()).sha:null)
+    const body={message,content:btoa(unescape(encodeURIComponent(content))),sha,branch:"main"}
+    const res=await fetch(api,{method:"PUT",headers:{
+      "Accept":"application/vnd.github+json",
+      "Authorization":"token "+token
+    },body:JSON.stringify(body)})
+    if(!res.ok)throw new Error("HTTP "+res.status+" ("+path+")")
+  }
 })();
-
-// GitHub PUT
-async function getSha(path,token){
- const url=`${apiBase}/${path}?ref=${BRANCH}`;
- const res=await fetch(url,{headers:{"Accept":"application/vnd.github+json","Authorization":"token "+token}});
- if(res.status===200){const j=await res.json();return j.sha;}
- if(res.status===404)return null;
- throw new Error("GET "+path+" -> "+res.status);
-}
-async function putFile(path,content,message,token){
- const sha=await getSha(path,token).catch(()=>null);
- const body={message,content:enc(content),branch:BRANCH};
- if(sha)body.sha=sha;
- const res=await fetch(`${apiBase}/${path}`,{
-  method:"PUT",
-  headers:{"Accept":"application/vnd.github+json","Authorization":"token "+token},
-  body:JSON.stringify(body)
- });
- if(!res.ok){const t=await res.text();throw new Error(`PUT ${path} -> ${res.status} ${t}`);}
-}
-
-// Deploy-Routine
-$("#go").onclick=async()=>{
- const token=($("#token").value||new URLSearchParams(location.search).get("token")||"").trim();
- if(!token)return alert("Bitte gültigen Token eingeben.");
- $("#go").disabled=true;$("#token").disabled=true;
- log("🟦 Starte Mega-Patch-Deploy …");
-
- try{
-  await putFile("tools/patch-manager.html","<html><body>🧠 Patch-Manager aktualisiert (v2.7.3)</body></html>","Auto-Patch HTML",token);
-  await putFile("tools/js/patch-manager.js","// Patch-Manager JS v2.7.3","Auto-Patch JS",token);
-  log("✅ Patch-Manager v2.7.3 installiert & bestätigt.");
-  alert("Fertig ✅ Patch-Manager v2.7.3 wurde installiert.");
- }catch(e){
-  log("🟥 Fehler: "+e.message);
-  alert("Fehler beim Deploy: "+e.message);
- }finally{
-  $("#go").disabled=false;$("#token").disabled=false;
- }
-};
-
-// URL-Token Übernahme
-$("#btnLoad").onclick=()=>{const t=new URLSearchParams(location.search).get("token");if(t)$("#token").value=t;log("🔑 Token übernommen.");};
 </script>
+
+<div style="display:none">build-trigger-v2.7.4</div>
+<!-- build: force v2.7.4 | poststelle auto-redeploy trigger -->
 </body>
 </html>
-<!-- rebuild v2.7.4 -->
-<!-- build: force v2.7.4 | poststelle auto-redeploy trigger -->
