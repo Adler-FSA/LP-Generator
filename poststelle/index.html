@@ -3,78 +3,121 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FSA Poststelle – Werkstatt-Weiterleitung v2.4.9 TOKEN-SAFE</title>
+<title>🦅 FSA Werkstatt-Zentrale · TOKEN-CONTROL</title>
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: system-ui, Segoe UI, Roboto, sans-serif;
-    background: radial-gradient(circle at center, #0b1220, #000);
-    color: #e6f0ff;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  :root {
+    --bg:#0b1220;--card:#111827;--text:#e2e8f0;
+    --ok:#10b981;--warn:#f59e0b;--err:#ef4444;
+    --btn:#2563eb;--btn-hover:#1e40af;
   }
-
-  h1 {
-    font-size: 1.8rem;
-    margin-bottom: 0.4rem;
-    color: #38bdf8;
+  body{
+    font-family:system-ui,Segoe UI,Roboto,sans-serif;
+    background:var(--bg);color:var(--text);
+    margin:0;padding:40px;text-align:center;
   }
-
-  p {
-    font-size: 1rem;
-    color: #94a3b8;
-    margin-bottom: 1.5rem;
+  h1{font-size:1.8rem;margin-bottom:20px;color:#38bdf8;}
+  input[type=password]{
+    padding:8px 12px;border-radius:6px;border:1px solid #1e293b;
+    background:#111827;color:#fff;font-size:1rem;width:240px;
   }
-
-  .btn {
-    display: inline-block;
-    background: #2563eb;
-    color: #fff;
-    padding: 0.8rem 1.6rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 0 20px rgba(37,99,235,.3);
-    transition: all .3s ease;
+  button{
+    background:var(--btn);color:#fff;border:none;
+    padding:8px 14px;border-radius:6px;font-weight:600;
+    cursor:pointer;margin-left:8px;
   }
-
-  .btn:hover {
-    background: #1e40af;
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(59,130,246,.5);
-  }
-
-  footer {
-    position: absolute;
-    bottom: 20px;
-    font-size: 0.8rem;
-    color: #64748b;
-  }
+  button:hover{background:var(--btn-hover);}
+  table{width:100%;max-width:900px;margin:30px auto;border-collapse:collapse;}
+  th,td{padding:12px;border-bottom:1px solid #1e293b;}
+  th{background:#1e293b;text-align:left;}
+  tr:hover{background:#1e293b33;}
+  .status{font-weight:600;}
+  .ok{color:var(--ok);}
+  .err{color:var(--err);}
+  footer{margin-top:30px;font-size:.85rem;color:#64748b;}
 </style>
 </head>
 
 <body>
-  <h1>🦅 Finanzielle Souveränität – Poststelle</h1>
-  <p>Automatische Weiterleitung zur Werkstatt-Installation<br>
-     <b>Version 2.4.9 TOKEN-SAFE</b><br>
-     (Falls keine Weiterleitung erfolgt, klicke den Button unten.)</p>
+<h1>🦅 FSA Werkstatt-Zentrale</h1>
+<p>Token-gesteuerte Systemübersicht · aktiviert & prüft alle Module</p>
 
-  <a class="btn" href="../tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html">
-    🚀 Zur Werkstatt-Installation starten
-  </a>
+<!-- TOKEN-EINGABE -->
+<div id="token-area">
+  <input type="password" id="tokenInput" placeholder="Token eingeben...">
+  <button onclick="activateSystem()">System aktivieren</button>
+</div>
 
-  <footer>FSA Werkstatt-System | Version 2.4.9 TOKEN-SAFE</footer>
+<!-- STATUS-TABELLE -->
+<table id="statusTable" style="display:none;">
+  <tr><th>Modul</th><th>Status</th><th>Zuletzt geprüft</th><th>Aktion</th></tr>
 
-  <script>
-    // 🔁 Automatische Weiterleitung nach 5 Sekunden
-    setTimeout(() => {
-      window.location.href = "../tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html";
-    }, 5000);
-  </script>
+  <tr data-url="https://adler-fsa.github.io/Lp-Generator/tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html">
+    <td>🏗️ Werkstatt-Installer</td><td class="status">⏳</td><td class="time">–</td>
+    <td><a class="btn" target="_blank" href="#">Öffnen</a></td>
+  </tr>
+
+  <tr data-url="https://adler-fsa.github.io/Lp-Generator/poststelle/">
+    <td>📬 Poststelle</td><td class="status">⏳</td><td class="time">–</td>
+    <td><a class="btn" target="_blank" href="#">Öffnen</a></td>
+  </tr>
+
+  <tr data-url="https://adler-fsa.github.io/Lp-Generator/">
+    <td>⚙️ LP-Generator</td><td class="status">⏳</td><td class="time">–</td>
+    <td><a class="btn" target="_blank" href="#">Öffnen</a></td>
+  </tr>
+
+  <tr data-url="https://adler-fsa.github.io/Lp-Generator/tools/js/patch-manager_backup.js">
+    <td>🧠 Patch-Manager</td><td class="status">⏳</td><td class="time">–</td>
+    <td><a class="btn" target="_blank" href="#">Code</a></td>
+  </tr>
+
+  <tr data-url="https://github.com/Adler-FSA/Lp-Generator/commits/main">
+    <td>🧾 Werkstatt-Logs</td><td class="status">⏳</td><td class="time">–</td>
+    <td><a class="btn" target="_blank" href="#">Öffnen</a></td>
+  </tr>
+
+  <tr data-url="https://github.com/Adler-FSA/Lp-Generator/blob/main/tools/Adler-FSA_Werkstatt_v2.4.5b_FULL_SAFE_ADLER_GLOW.zip">
+    <td>🗂️ Backup-Archiv</td><td class="status">⏳</td><td class="time">–</td>
+    <td><a class="btn" target="_blank" href="#">Download</a></td>
+  </tr>
+</table>
+
+<footer>FSA Werkstatt-System | Admin-Board v1.1 TOKEN-CONTROL</footer>
+
+<script>
+let globalToken="";
+
+function activateSystem(){
+  const token=document.getElementById("tokenInput").value.trim();
+  if(!token){alert("Bitte gültigen Token eingeben.");return;}
+  globalToken=token;
+  document.getElementById("token-area").style.display="none";
+  document.getElementById("statusTable").style.display="table";
+  refreshAll();
+  setInterval(refreshAll,60000);
+}
+
+async function checkStatus(row){
+  const url=row.dataset.url;
+  const statusCell=row.querySelector(".status");
+  const timeCell=row.querySelector(".time");
+  const btn=row.querySelector(".btn");
+  try{
+    const fullUrl=url+(url.includes("?")?"&":"?")+"token="+encodeURIComponent(globalToken);
+    const res=await fetch(fullUrl,{method:"HEAD",mode:"no-cors"});
+    statusCell.textContent="🟢 aktiv";
+    statusCell.className="status ok";
+    btn.href=fullUrl;
+  }catch(e){
+    statusCell.textContent="🔴 offline";
+    statusCell.className="status err";
+  }
+  timeCell.textContent=new Date().toLocaleTimeString("de-DE");
+}
+
+function refreshAll(){
+  document.querySelectorAll("#statusTable tr[data-url]").forEach(r=>checkStatus(r));
+}
+</script>
 </body>
 </html>
