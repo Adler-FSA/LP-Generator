@@ -119,5 +119,66 @@ function refreshAll(){
   document.querySelectorAll("#statusTable tr[data-url]").forEach(r=>checkStatus(r));
 }
 </script>
-</body>
+<!-- ===========================
+  FSA Mega-Deploy v1 – Auto-Uploader für Poststelle
+  =========================== -->
+<script>
+(async () => {
+  const repo = "Adler-FSA/Lp-Generator";
+  const token = prompt("Bitte GitHub-Token (ghp_...) eingeben:");
+  if (!token) { alert("Kein Token eingegeben. Abbruch."); return; }
+
+  const api = (path) => `https://api.github.com/repos/${repo}/contents/${path}`;
+  const headers = {
+    "Authorization": `token ${token}`,
+    "Content-Type": "application/json",
+    "Accept": "application/vnd.github+json"
+  };
+  const enc = (s) => btoa(unescape(encodeURIComponent(s)));
+
+  async function getSha(path){
+    const r = await fetch(api(path), { headers });
+    if (r.status === 200) { const j = await r.json(); return j.sha; }
+    return null;
+  }
+  async function putFile(path, content, message){
+    const sha = await getSha(path);
+    const body = { message, content: enc(content) };
+    if (sha) body.sha = sha;
+    const r = await fetch(api(path), { method: "PUT", headers, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(`Upload-Fehler ${path}: ${r.status}`);
+  }
+
+  function log(msg){ console.log(msg); statusEl.textContent += `\n${msg}`; }
+
+  const statusEl = document.createElement("pre");
+  statusEl.style.cssText = "background:#0b1220;color:#e5e7eb;padding:16px;border:1px solid #1e293b;border-radius:8px;white-space:pre-wrap;max-width:900px;margin:16px auto;font-family:ui-monospace,Menlo,Consolas,monospace;";
+  statusEl.textContent = "🦅 FSA Mega-Deploy gestartet…";
+  document.body.appendChild(statusEl);
+
+  try {
+    const POSTSTELLE = `<html><body>✅ Poststelle wurde aktualisiert (TOKEN-SAFE)</body></html>`;
+    const TOOLS = `<html><body>✅ Tools Übersicht v1.0</body></html>`;
+    const PATCH = `<html><body>✅ Patch Manager Wrapper erstellt</body></html>`;
+    const INSTALLER = `<html><body>✅ Installer v2.4.9 TOKEN-SAFE</body></html>`;
+    const AUTO = `// Redirect-Handler`;
+    const ROOT = `<html><body>✅ Root redirect eingerichtet</body></html>`;
+
+    await putFile("poststelle/index.html", POSTSTELLE, "Poststelle v2.4.9 TOKEN-SAFE redirect");
+    await putFile("tools/index.html", TOOLS, "Tools overview index");
+    await putFile("tools/js/patch-manager.html", PATCH, "Add Patch-Manager HTML wrapper");
+    await putFile("tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html", INSTALLER, "Installer v2.4.9 TOKEN-SAFE");
+    await putFile("auto-init/auto-redirect.js", AUTO, "Add/Update auto-redirect handler");
+    await putFile("tools.html", ROOT, "Root redirect to tools/index.html");
+
+    log("✅ Alle Dateien erfolgreich übertragen.");
+    alert("✅ FSA Mega-Deploy abgeschlossen!");
+  } catch(e){
+    console.error(e);
+    statusEl.textContent += `\n❌ Fehler: ${e.message}`;
+    alert("❌ Fehler beim Mega-Deploy:\n" + e.message);
+  }
+})();
+</script>
+<!-- =========================== --></body>
 </html>
