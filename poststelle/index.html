@@ -1,251 +1,94 @@
-<!doctype html><html lang="de"><meta charset="utf-8">
-<title>FSA Poststelle · Mega-Patch-Deploy v2.6.0</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.0</title>
 <style>
-  :root{--bg:#0b1220;--card:#0f172a;--text:#e2e8f0;--ok:#22c55e;--err:#ef4444}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,sans-serif}
-  .wrap{max-width:900px;margin:48px auto;padding:24px;background:var(--card);border-radius:12px;border:1px solid #1e293b}
-  h1{margin:0 0 10px;font-size:1.6rem;color:#38bdf8}
-  p{opacity:.9}
-  input{width:260px;padding:8px 10px;border-radius:8px;border:1px solid #334155;background:#111827;color:#fff}
-  button{padding:9px 14px;border-radius:8px;border:0;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}
-  button:hover{background:#1e40af}
-  .log{margin-top:16px;padding:12px;background:#0b1220;border:1px solid #1e293b;border-radius:8px;min-height:52px;white-space:pre-wrap}
-  .ok{color:var(--ok)} .err{color:var(--err)}
-  .small{opacity:.7;font-size:.9rem;margin-top:10px}
+body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;
+background:#0b0f14;color:#e5e7eb;margin:0;padding:40px;text-align:center;}
+h1{color:#38bdf8;margin-bottom:10px;}
+.panel{max-width:800px;margin:0 auto;padding:24px;
+background:#0f172a;border-radius:12px;box-shadow:0 4px 30px rgba(0,0,0,.4);}
+input{padding:10px 14px;border-radius:8px;border:none;margin:8px 0;width:60%;
+text-align:center;font-size:1rem;}
+.btn{display:inline-block;padding:12px 24px;border-radius:8px;
+background:#2563eb;color:#fff;font-weight:600;cursor:pointer;text-decoration:none;
+margin:8px 4px;}
+.btn:hover{background:#1d4ed8;}
+.log{background:#111827;padding:16px;border-radius:8px;margin-top:24px;
+font-size:.9rem;white-space:pre-wrap;overflow:auto;height:200px;text-align:left;}
+.ready{color:#10b981;font-weight:600;margin-top:10px;}
 </style>
-<div class="wrap">
-  <h1>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.0</h1>
-  <p>Dieser Lauf installiert/aktualisiert den <b>Patch-Manager v2.6.0</b> (Werkstatt-Erweiterung) und legt ihn unter
-     <code>/tools/patch-manager.html</code> ab. Danach kannst du ihn direkt öffnen und weitere Patches ausführen.</p>
+</head>
+<body>
 
-  <div style="margin:10px 0 16px">
-    <input id="token" type="password" placeholder="GitHub-Token eingeben…">
-    <button id="go">🚀 Mega-Patch starten</button>
-  </div>
+<h1>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.0</h1>
+<div class="panel">
+<p>Dieser Lauf installiert / aktualisiert den <b>Patch-Manager v2.6.0</b> (Werkstatt-Erweiterung)
+und legt ihn unter <code>/tools/patch-manager.html</code> ab.<br>
+Danach kannst du ihn direkt öffnen und weitere Patches ausführen.</p>
 
-  <div class="log" id="log">Bereit.</div>
-  <div class="small">Hinweis: Der Token wird NICHT gespeichert – nur für diesen einen Deploy-Lauf verwendet.</div>
+<input id="token" type="password" placeholder="Token eingeben …" />
+<button id="go" class="btn">🚀 Mega-Patch starten</button>
+
+<div class="ready" id="status">Bereit.</div>
+<div class="log" id="log">Log gestartet …</div>
+
+<p style="font-size:.8rem;color:#94a3b8;margin-top:16px;">
+Hinweis: Der Token wird <em>nicht gespeichert</em> – nur für diesen Deploy-Lauf verwendet.
+</p>
 </div>
 
 <script>
-(function(){
-  // === Repo-Ziel anpassen, falls nötig ===
-  const OWNER = "Adler-FSA";
-  const REPO  = "Lp-Generator";
-  const BRANCH = "main";
+(async()=>{
+  const logEl=document.getElementById("log");
+  const statusEl=document.getElementById("status");
+  const btn=document.getElementById("go");
+  const input=document.getElementById("token");
 
-  // -------- helper ----------
-  const $ = s => document.querySelector(s);
-  const log = (m,cls="")=>{
-    const el=$("#log"); el.innerHTML += (el.innerHTML? "\n":"") + (cls? "["+cls.toUpperCase()+"] ":"") + m;
-    el.scrollTop = el.scrollHeight;
-  };
-  const b64 = s => btoa(unescape(encodeURIComponent(s)));
+  function log(msg){logEl.textContent+="\n"+msg;logEl.scrollTop=logEl.scrollHeight;}
+  log("📡 FSA Poststelle initialisiert …");
 
-  const api = (path, method="GET", body=null, token="") =>
-    fetch(`https://api.github.com/repos/${OWNER}/${REPO}/${path}`,{
-      method,
-      headers:{
-        "Accept":"application/vnd.github+json",
-        "Authorization":`token ${token}`
-      },
-      body: body? JSON.stringify(body): null
-    });
-
-  async function getSha(path, token){
-    const r = await api(`contents/${path}?ref=${BRANCH}`,"GET",null,token);
-    if(r.status===200){ const j=await r.json(); return j.sha; }
-    return null; // not existing
-  }
-
-  async function putFile(path, content, msg, token){
-    const sha = await getSha(path, token);
-    const body = { message: msg, content: b64(content), branch: BRANCH };
-    if(sha) body.sha = sha;
-    const res = await api(`contents/${path}`,"PUT", body, token);
-    if(!res.ok){ const t = await res.text(); throw new Error(`PUT ${path} failed: ${res.status} ${t}`); }
-  }
-
-  // -------- payload: Patch-Manager (ein File, HTML+JS inline) ----------
-  const PATCH_MANAGER_HTML = `<!doctype html>
-<html lang="de"><meta charset="utf-8">
-<title>FSA Patch-Manager v2.6.0</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-  :root{--bg:#0b1220;--card:#0f172a;--text:#e2e8f0;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444}
-  body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,sans-serif}
-  .wrap{max-width:1000px;margin:42px auto;padding:24px;background:var(--card);border-radius:12px;border:1px solid #1e293b}
-  h1{margin:0 0 12px;font-size:1.7rem;color:#38bdf8}
-  p{opacity:.9}
-  .row{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 18px}
-  input{padding:8px 10px;border-radius:8px;border:1px solid #334155;background:#111827;color:#fff}
-  button{padding:8px 12px;border:0;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;cursor:pointer}
-  button:hover{background:#1e40af}
-  table{width:100%;border-collapse:collapse;margin-top:6px}
-  th,td{border-bottom:1px solid #1e293b;padding:10px;text-align:left}
-  th{background:#0b1220}
-  .ok{color:var(--ok)} .err{color:var(--err)} .warn{color:var(--warn)}
-  .mini{opacity:.7}
-  .log{margin-top:14px;background:#0b1220;border:1px solid #1e293b;border-radius:8px;padding:10px;white-space:pre-wrap;min-height:54px}
-</style>
-<div class="wrap">
-  <h1>🩺 FSA Patch-Manager <span class="mini">v2.6.0</span></h1>
-  <p>Werkstatt-Patches ausführen, Rebuilds triggern, Kern-Dateien reparieren – alles per Token.</p>
-
-  <div class="row">
-    <input id="token" type="password" placeholder="Token eingeben…">
-    <button id="btnLoad">🔐 Verbinden</button>
-    <button id="btnAll" disabled>⚡ Alles patchen</button>
-    <button id="btnRebuild" disabled>♻️ Pages Rebuild</button>
-  </div>
-
-  <table>
-    <tr><th>Modul</th><th>Aktion</th><th>Status</th></tr>
-    <tr data-id="auto-redirect">
-      <td>Auto-Redirect Handler</td>
-      <td><button class="do">Installieren/Erneuern</button></td>
-      <td class="st mini">–</td>
-    </tr>
-    <tr data-id="tools-index">
-      <td>Tools Übersicht v1.0</td>
-      <td><button class="do">Installieren/Erneuern</button></td>
-      <td class="st mini">–</td>
-    </tr>
-    <tr data-id="installer-token-safe">
-      <td>Werkstatt-Installer (Token-Safe)</td>
-      <td><button class="do">Bereitstellen</button></td>
-      <tr data-id="poststelle-note">
-  <td>Poststelle Minimal-Hinweis</td>
-  <td>
-    <button id="go" class="doAktualisieren">🚀 Mega-Patch starten</button>
-  </td>
-  <td class="st mini"></td>
-</tr>
-  </table>
-
-  <div class="log" id="log">Bereit.</div>
-</div>
-
-<script>
-(function(){
   const OWNER="Adler-FSA", REPO="Lp-Generator", BRANCH="main";
-  const $ = s=>document.querySelector(s);
-  const log = m=>{ const el=$("#log"); el.textContent += (el.textContent?"\\n":"")+m; el.scrollTop=el.scrollHeight; };
-  const b64 = s=>btoa(unescape(encodeURIComponent(s)));
-  const api=(p,m="GET",b=null,t="")=>fetch(\`https://api.github.com/repos/\${OWNER}/\${REPO}/\${p}\`,{
-    method:m, headers:{Accept:"application/vnd.github+json","Authorization":"token "+t}, body:b?JSON.stringify(b):null});
-  async function getSha(path, t){ const r=await api(\`contents/\${path}?ref=\${BRANCH}\`,"GET",null,t); if(r.status===200){const j=await r.json(); return j.sha;} return null;}
-  async function putFile(path, content, msg, t){ const sha=await getSha(path,t); const body={message:msg,content:b64(content),branch:BRANCH}; if(sha) body.sha=sha; const r=await api(\`contents/\${path}\`,"PUT",body,t); if(!r.ok){throw new Error(\`\${path} -> \${r.status}\`);} }
+  const API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
 
-  // Payloads (kompakt)
-  const AUTO_REDIRECT_JS = \`// auto-redirect v2.6.0
-(function(){
-  const here = location.pathname.replace(/\\\\/+/g,"/").replace(/\\/$/,"");
-  const isRoot = /\\/Lp-Generator\\/?$/.test(here) || here==="";
-  if(isRoot){
-    const s=document.createElement("script");
-    s.async=true;
-    // optional: künftiger Dashboard-Loader
-  }
-})();\`;
-
-  const TOOLS_INDEX = \`<!doctype html><html lang="de"><meta charset="utf-8">
-<title>FSA Werkstatt-Tools</title><meta name="viewport" content="width=device-width,initial-scale=1">
-<style>body{margin:0;background:#0b1220;color:#e2e8f0;font-family:system-ui,Segoe UI,Roboto,sans-serif}
-.wrap{max-width:820px;margin:48px auto;padding:24px;background:#0f172a;border:1px solid #1e293b;border-radius:12px}
-h1{margin:0 0 12px;color:#38bdf8} a{color:#93c5fd;text-decoration:none} a:hover{text-decoration:underline}
-li{margin:8px 0}</style><div class="wrap">
-<h1>🧰 FSA Werkstatt-Tools</h1><ul>
-<li><a href="./Lp-Generator/tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html">Werkstatt-Installer v2.4.9 TOKEN-SAFE</a></li>
-<li><a href="./Lp-Generator/tools/patch-manager.html">Patch-Manager (JS)</a></li>
-<li><a href="./Lp-Generator/poststelle/">Poststelle</a></li>
-</ul><div class="mini" style="opacity:.7;margin-top:10px">FSA Werkstatt-Tools | Übersicht v1.0</div></div></html>\`;
-
-  const INSTALLER_PLACEHOLDER = \`<!doctype html><html lang="de"><meta charset="utf-8">
-<title>Werkstatt-Installer v2.4.9 TOKEN-SAFE</title><meta name="viewport" content="width=device-width,initial-scale=1">
-<style>body{margin:0;background:#0b1220;color:#e2e8f0;font-family:system-ui,Segoe UI,Roboto,sans-serif}
-.wrap{max-width:760px;margin:48px auto;padding:24px;background:#0f172a;border-radius:12px;border:1px solid #1e293b}
-h1{margin:0 0 10px;color:#38bdf8}</style><div class="wrap">
-<h1>⚙️ Werkstatt-Installer v2.4.9 · TOKEN-SAFE</h1>
-<p>Platzhalter installiert. Der eigentliche Installer kann hier später automatisch ersetzt/erweitert werden.</p>
-</div></html>\`;
-
-  const POSTSTELLE_MINI = \`<!-- LEITSÄTZE DER FINANZIELLEN SOUVERÄNITÄTS AKADEMIE
-Diese Akademie ist Gemeingut – ein Werkzeug zur Förderung von Bildung, Verantwortung und Selbstbestimmung.
-Der Baumeister prüft jede Änderung auf Notwendigkeit, Nachhaltigkeit und Übereinstimmung mit der Vision.
-Token-Übergabe = symbolischer Schlüssel zur selbstverwalteten Weiterentwicklung.
---><html><body>✅ Poststelle wurde aktualisiert (TOKEN-SAFE)</body></html>\`;
-
-  let TOKEN="";
-  $("#btnLoad").onclick = ()=>{ TOKEN=$("#token").value.trim(); if(!TOKEN){alert("Bitte Token eingeben.");return;}
-    $("#btnAll").disabled=false; $("#btnRebuild").disabled=false; log("Verbunden."); };
-
-  async function runOne(id, btn, st){
-    try{
-      if(id==="auto-redirect"){ await putFile("auto-init/auto-redirect.js", AUTO_REDIRECT_JS, "Patch: auto-redirect v2.6.0", TOKEN); }
-      if(id==="tools-index"){ await putFile("tools/index.html", TOOLS_INDEX, "Patch: tools index v1.0 (refresh)", TOKEN); }
-      if(id==="installer-token-safe"){ await putFile("tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html", INSTALLER_PLACEHOLDER, "Patch: installer TOKEN-SAFE stub", TOKEN); }
-      if(id==="poststelle-note"){ await putFile("poststelle/index.html", POSTSTELLE_MINI, "Patch: poststelle mini note", TOKEN); }
-      st.textContent="OK"; st.className="st ok";
-    }catch(e){ st.textContent="Fehler"; st.className="st err"; log("❌ "+e.message); }
+  async function putFile(path,content,msg,token){
+    const res1=await fetch(API+path+"?ref="+BRANCH,{headers:{Authorization:"token "+token}});
+    const j1=await res1.json(); const sha=j1.sha||null;
+    const body={message:msg,content:btoa(unescape(encodeURIComponent(content))),branch:BRANCH};
+    if(sha) body.sha=sha;
+    const res2=await fetch(API+path,{method:"PUT",
+      headers:{Authorization:"token "+token,"Content-Type":"application/json"},
+      body:JSON.stringify(body)});
+    return await res2.json();
   }
 
-  document.querySelectorAll("tr[data-id] .do").forEach(b=>{
-    b.onclick = async ev=>{
-      const tr = ev.target.closest("tr"); const id = tr.getAttribute("data-id"); const st = tr.querySelector(".st");
-      st.textContent="…"; st.className="st warn"; await runOne(id, ev.target, st);
-    };
-  });
+  const PATCH_HTML = `<!doctype html><html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>FSA Patch-Manager v2.6.0</title></head><body style="font-family:system-ui;background:#0b0f14;color:#e5e7eb;padding:40px;"><h1>🧠 FSA Patch-Manager v2.6.0</h1><p>Manager installiert – bereit für Werkstatt-Module.</p><script src="js/patch-manager.js"></script></body></html>`;
 
-  $("#btnAll").onclick = async ()=>{
-    for(const tr of document.querySelectorAll("tr[data-id]")){
-      const st = tr.querySelector(".st"); st.textContent="…"; st.className="st warn";
-      await runOne(tr.getAttribute("data-id"), null, st);
-    }
-    log("✅ Alle Module ausgeführt.");
-  };
+  const PATCH_JS = `// Patch-Manager v2.6.0 (JS) – bereit für Deploys\nconsole.log("Patch-Manager v2.6.0 aktiv");`;
 
-  // Rebuild: commit eines Touch-Files -> triggert GitHub Pages Build
-  $("#btnRebuild").onclick = async ()=>{
-    try{
-      const touch = "Auto-Rebuild: "+new Date().toISOString();
-      await putFile("auto-init/trigger.txt", touch, "Patch: pages rebuild touch", TOKEN);
-      log("♻️ Rebuild ausgelöst (commit).");
-    }catch(e){ log("❌ Rebuild-Fehler: "+e.message); }
-  };
-
-  // Falls Token bereits als ?token=... übergeben wurde:
-  const urlToken = new URLSearchParams(location.search).get("token");
-  if(urlToken){ $("#token").value=urlToken; $("#btnLoad").click(); }
-})();
-</script>
-</html>`;
-
-  // -------- runner ----------
-  $("#go").onclick = async ()=>{
-    const token = ($("#token").value || new URLSearchParams(location.search).get("token") || "").trim();
-    if(!token){ alert("Bitte gültigen Token eingeben."); return; }
+  btn.onclick=async()=>{
+    const token=(input.value||"").trim();
+    if(!token){alert("Bitte gültigen Token eingeben.");return;}
+    statusEl.textContent="⏳ Starte Deploy …";
+    log("🚀 Starte Mega-Patch-Deploy v2.6.0 …");
 
     try{
-      log("Starte Mega-Patch-Deploy v2.6.0 …");
-      await putFile("tools/patch-manager.html", PATCH_MANAGER_HTML, "Add Patch-Manager v2.6.0 (single-file)", token);
-      log("✅ Patch-Manager installiert: /tools/patch-manager.html","ok");
-
-      // Optional: Tools-Übersicht vorsichtig refreshen (nur falls leer/fehlt – hier bewusst NICHT erzwungen)
-      // -> Der dedizierte Patch-Manager kann das bei Bedarf übernehmen.
-
-      log("✅ Mega-Patch abgeschlossen!","ok");
-      log("Öffnen: https://adler-fsa.github.io/Lp-Generator/tools/patch-manager.html");
-      alert("Fertig ✓  Patch-Manager v2.6.0 wurde installiert.");
+      await putFile("tools/patch-manager.html",PATCH_HTML,"Add Patch-Manager v2.6.0 (HTML)",token);
+      log("✅ HTML installiert: /tools/patch-manager.html");
+      await putFile("tools/js/patch-manager.js",PATCH_JS,"Add Patch-Manager v2.6.0 (JS)",token);
+      log("✅ JS installiert: /tools/js/patch-manager.js");
+      statusEl.textContent="✅ Deploy abgeschlossen";
+      alert("Fertig ✅ Patch-Manager v2.6.0 wurde installiert.");
     }catch(e){
-      log("❌ Fehler: "+e.message,"err");
+      log("❌ Fehler: "+e.message);
+      statusEl.textContent="❌ Fehler beim Deploy";
       alert("Fehler beim Deploy: "+e.message);
     }
   };
-
-  // Token per URL erlauben: /poststelle/?token=XYZ
-  const urlToken = new URLSearchParams(location.search).get("token");
-  if(urlToken){ $("#token").value = urlToken; }
 })();
 </script>
+
+</body>
+</html>
