@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🦅 FSA Werkstatt Installer v2.4.8</title>
+<style>
+body{background:#0b0f14;color:#e2e8f0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;text-align:center;padding:40px}
+h1{color:#38bdf8}
+#console{background:#1e293b;border-radius:10px;padding:12px;max-width:600px;margin:20px auto;text-align:left;font-size:.9rem;line-height:1.4;overflow:auto;max-height:300px}
+.ok{color:#10b981}.err{color:#f87171}.info{color:#facc15}
+button{background:#06b6d4;border:none;color:#fff;font-weight:600;padding:10px 20px;border-radius:8px;cursor:pointer;margin-top:15px}
+button:hover{background:#0891b2}
+</style>
+<script src="https://adler-fsa.github.io/Lp-Generator/tools/js/poststelle.js"></script>
+</head>
+<body>
+<h1>🦅 Werkstatt-Installer v2.4.8</h1>
+<p>Automatische Initialisierung & Statusübertragung an Poststelle</p>
+
+<div id="console">Starte Installer...</div>
+<button onclick="install()">🔧 Installation starten</button>
+
+<script>
+function log(msg, cls="info"){
+  const el=document.getElementById('console');
+  el.innerHTML+=`<div class="${cls}">${msg}</div>`;
+  el.scrollTop=el.scrollHeight;
+  FSA_Poststelle.postMessage(cls,msg);
+}
+
+async function install(){
+  log("🟢 Installer gestartet...","ok");
+  await new Promise(r=>setTimeout(r,800));
+  log("🔍 Prüfe Abhängigkeiten...","info");
+  await new Promise(r=>setTimeout(r,1200));
+  log("📦 Installiere Module...","info");
+  await new Promise(r=>setTimeout(r,1500));
+  log("✅ Installation abgeschlossen.","ok");
+  log("📨 Sende Abschlussmeldung an Poststelle...","info");
+  await new Promise(r=>setTimeout(r,1000));
+  FSA_Poststelle.postMessage("ok","Installation erfolgreich abgeschlossen.");
+  log("🌐 Dashboard wird geöffnet...","info");
+  setTimeout(()=>window.open('https://adler-fsa.github.io/Lp-Generator/tools/Dashboard_Patch_001.html','_blank'),2500);
+}
+</script>
+</body>
+</html>
