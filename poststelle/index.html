@@ -55,12 +55,21 @@ Hinweis: Der Token wird <em>nicht gespeichert</em> – nur für diesen Deploy-La
 
   async function putFile(path,content,msg,token){
     const res1=await fetch(API+path+"?ref="+BRANCH,{headers:{Authorization:"token "+token}});
-    const j1=await res1.json(); const sha=j1.sha||null;
-    const body={message:msg,content:btoa(unescape(encodeURIComponent(content))),branch:BRANCH};
-    if(sha) body.sha=sha;
-    const res2=await fetch(API+path,{method:"PUT",
-      headers:{Authorization:"token "+token,"Content-Type":"application/json"},
-      body:JSON.stringify(body)});
+    const j1=await res1.json();const sha=j1.sha||null;
+    const body={
+      message:msg,
+      content:btoa(unescape(encodeURIComponent(content))),
+      branch:BRANCH
+    };
+    if(sha)body.sha=sha;
+    const res2=await fetch(API+path,{
+      method:"PUT",
+      headers:{
+        Authorization:"token "+token,
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(body)
+    });
     return await res2.json();
   }
 
