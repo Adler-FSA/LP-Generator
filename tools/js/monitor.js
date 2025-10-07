@@ -1,1 +1,0 @@
-// tools/js/monitor.js placeholder created by AUTO-DEPLOY Installer
