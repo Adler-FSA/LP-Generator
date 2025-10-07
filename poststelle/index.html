@@ -3,51 +3,50 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>🦅 FSA Poststelle – Werkstatt Weiterleitung</title>
+<title>FSA Poststelle – Werkstatt-Weiterleitung v2.4.9 TOKEN-SAFE</title>
 <style>
   body {
     margin: 0;
     padding: 0;
     font-family: system-ui, Segoe UI, Roboto, sans-serif;
     background: radial-gradient(circle at center, #0b1220, #000);
-    color: #e5e7eb;
+    color: #e6f0ff;
+    text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+    align-items: center;
     height: 100vh;
-    text-align: center;
   }
 
   h1 {
-    font-size: 1.9rem;
+    font-size: 1.8rem;
+    margin-bottom: 0.4rem;
     color: #38bdf8;
-    margin-bottom: 0.4em;
   }
 
   p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: #94a3b8;
-    margin-bottom: 1.5em;
+    margin-bottom: 1.5rem;
   }
 
   .btn {
     display: inline-block;
     background: #2563eb;
     color: #fff;
-    font-weight: 600;
-    padding: 0.9em 1.5em;
+    padding: 0.8rem 1.6rem;
     border-radius: 8px;
+    font-weight: 600;
     text-decoration: none;
-    font-size: 1rem;
-    box-shadow: 0 0 20px rgba(37,99,235,0.4);
-    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(37,99,235,.3);
+    transition: all .3s ease;
   }
 
   .btn:hover {
-    background: #1d4ed8;
+    background: #1e40af;
     transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(59,130,246,0.6);
+    box-shadow: 0 0 25px rgba(59,130,246,.5);
   }
 
   footer {
@@ -58,24 +57,24 @@
   }
 </style>
 </head>
+
 <body>
-
   <h1>🦅 Finanzielle Souveränität – Poststelle</h1>
-  <p>Automatische Weiterleitung zur Werkstatt-Installation <b>v2.4.9 TOKEN-SAFE</b><br>
-  (Falls keine Weiterleitung erfolgt, klicke den Button unten.)</p>
+  <p>Automatische Weiterleitung zur Werkstatt-Installation<br>
+     <b>Version 2.4.9 TOKEN-SAFE</b><br>
+     (Falls keine Weiterleitung erfolgt, klicke den Button unten.)</p>
 
-  <a class="btn" href="/Lp-Generator/tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html">
+  <a class="btn" href="../tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html">
     🚀 Zur Werkstatt-Installation starten
   </a>
 
-  <footer>© FSA Werkstatt-System | Version 2.4.9 TOKEN-SAFE</footer>
+  <footer>FSA Werkstatt-System | Version 2.4.9 TOKEN-SAFE</footer>
 
   <script>
-    // Nach 5 Sekunden automatisch weiterleiten
-    setTimeout(()=>{
-      window.location.href="/Lp-Generator/tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html";
-    },5000);
+    // 🔁 Automatische Weiterleitung nach 5 Sekunden
+    setTimeout(() => {
+      window.location.href = "../tools/werkstatt-installer_v2.4.9_TOKEN_SAFE.html";
+    }, 5000);
   </script>
-
 </body>
 </html>
