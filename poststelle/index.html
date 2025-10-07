@@ -1,92 +1,165 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.1</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>📮 FSA Poststelle v2.7.2 · Mega-Patch-Deploy</title>
 <style>
-body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;
-background:#0b0f14;color:#e5e7eb;margin:0;padding:40px;text-align:center;}
-h1{color:#38bdf8;margin-bottom:10px;}
-.panel{max-width:800px;margin:0 auto;padding:24px;
-background:#0f172a;border-radius:12px;box-shadow:0 4px 30px rgba(0,0,0,.4);}
-input{padding:10px 14px;border-radius:8px;border:none;margin:8px 0;width:60%;
-text-align:center;font-size:1rem;}
-.btn{display:inline-block;padding:12px 24px;border-radius:8px;
-background:#2563eb;color:#fff;font-weight:600;cursor:pointer;text-decoration:none;
-margin:8px 4px;}
-.btn:hover{background:#1d4ed8;}
-.log{background:#111827;padding:16px;border-radius:8px;margin-top:24px;
-font-size:.9rem;white-space:pre-wrap;overflow:auto;height:200px;text-align:left;}
-.ready{color:#10b981;font-weight:600;margin-top:10px;}
+  :root{
+    --bg:#0b1220;--card:#111827;--ink:#e5e7eb;
+    --muted:#94a3b8;--accent:#38bdf8;--ok:#10b981;--err:#ef4444;--btn:#2563eb;--btn2:#1f2937;
+  }
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+  .wrap{max-width:960px;margin:40px auto;padding:0 16px}
+  h1{font-size:1.8rem;margin:0 0 10px;color:var(--accent)}
+  p.lead{margin:0 0 24px;color:var(--muted)}
+  .card{background:var(--card);border:1px solid #1e293b;border-radius:12px;padding:20px}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  input[type=password]{background:#0f172a;border:1px solid #1e293b;border-radius:8px;color:#fff;padding:10px 12px;font-size:1rem;min-width:260px}
+  button{cursor:pointer;border:0;border-radius:8px;font-weight:700}
+  .primary{background:var(--btn);color:#fff;padding:10px 14px}
+  .ghost{background:var(--btn2);color:#cbd5e1;padding:8px 12px}
+  .hint{font-size:.9rem;color:#8da0be;margin-top:8px}
+  .ok{color:var(--ok)} .err{color:var(--err)}
+  pre#log{white-space:pre-wrap;background:#0f172a;border:1px dashed #334155;border-radius:8px;padding:12px;min-height:120px;max-height:380px;overflow:auto;margin-top:16px}
+  .info{background:#0f172a;border:1px solid #1e293b;border-radius:10px;padding:14px;margin:16px 0;color:#cbd5e1}
+  .info b{color:#e2e8f0}
+  .footer{margin-top:18px;color:#64748b;font-size:.85rem}
+  code{background:#0f172a;border:1px solid #1e293b;border-radius:6px;padding:0 6px}
 </style>
 </head>
 <body>
+<div class="wrap">
+  <h1>📮 FSA Poststelle · Mega-Patch-Deploy <small style="font-weight:600;color:#7dd3fc">v2.7.2</small></h1>
+  <p class="lead">Dieser Lauf installiert/aktualisiert den <b>Patch-Manager</b> (Werkstatt-Erweiterung) und legt ihn unter <code>/tools/patch-manager.html</code> und <code>/tools/js/patch-manager.js</code> ab.</p>
 
-<h1>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.1</h1>
-<div class="panel">
-<p>Dieser Lauf installiert / aktualisiert den <b>Patch-Manager v2.6.1</b> (Werkstatt-Erweiterung)
-und legt ihn unter <code>/tools/patch-manager.html</code> ab.<br>
-Danach kannst du ihn direkt öffnen und weitere Patches ausführen.</p>
+  <!-- Infofeld: Verantwortung -->
+  <div class="info">
+    <div><b>Arbeitsweise:</b> <br>
+      Punkte <b>1–3 = du</b> (Start + Token + Klick) · Punkte <b>4–5 = System</b> (Poststelle + Werkstatt führen automatisch aus).
+    </div>
+  </div>
 
-<input id="token" type="password" placeholder="Token eingeben …" />
-<button id="go" class="btn">🚀 Mega-Patch starten</button>
+  <div class="card">
+    <div class="row">
+      <input id="token" type="password" placeholder="Token eingeben …" />
+      <button id="go" class="primary">🚀 Mega-Patch starten</button>
+      <button id="btnLoad" class="ghost" title="aus URL übernehmen">🔄</button>
+    </div>
+    <div class="hint">Hinweis: Der Token wird <b>nicht gespeichert</b> – nur für diesen Deploy-Lauf verwendet.</div>
 
-<div class="ready" id="status">Bereit.</div>
-<div class="log" id="log">Log gestartet …</div>
+    <pre id="log">Log gestartet …</pre>
+  </div>
 
-<p style="font-size:.8rem;color:#94a3b8;margin-top:16px;">
-Hinweis: Der Token wird <em>nicht gespeichert</em> – nur für diesen Deploy-Lauf verwendet.
-</p>
+  <div class="footer">FSA Poststelle · autonomer Deploy-Runner · Build v2.7.2</div>
 </div>
 
 <script>
-(async()=>{
-const logEl=document.getElementById("log");
-const statusEl=document.getElementById("status");
-const btn=document.getElementById("go");
-const input=document.getElementById("token");
-function log(msg){logEl.textContent+="\n"+msg;logEl.scrollTop=logEl.scrollHeight;}
-log("📡 FSA Poststelle initialisiert …");
+/* ===== Utils ===== */
+const OWNER  = "Adler-FSA";
+const REPO   = "Lp-Generator";
+const BRANCH = "main";
+const apiBase = `https://api.github.com/repos/${OWNER}/${REPO}/contents`;
 
-const OWNER="Adler-FSA",REPO="Lp-Generator",BRANCH="main";
-const API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
-
-async function putFile(path,content,msg,token){
-const res1=await fetch(API+path+"?ref="+BRANCH,{headers:{Authorization:"token "+token}});
-const j1=await res1.json();const sha=j1.sha||null;
-const body={message:msg,content:btoa(unescape(encodeURIComponent(content))),branch:BRANCH};
-if(sha)body.sha=sha;
-const res2=await fetch(API+path,{method:"PUT",
-headers:{Authorization:"token "+token,"Content-Type":"application/json"},
-body:JSON.stringify(body)});
-return await res2.json();
-}
-
-const PATCH_HTML="<!doctype html><html lang='de'><head><meta charset='utf-8'/><meta name='viewport' content='width=device-width,initial-scale=1'/><title>FSA Patch-Manager v2.6.1</title></head><body style='font-family:system-ui;background:#0b0f14;color:#e5e7eb;padding:40px;'><h1>🧠 FSA Patch-Manager v2.6.1</h1><p>Manager installiert – bereit für Werkstatt-Module.</p><script src='js/patch-manager.js'><\/script></body></html>";
-
-const PATCH_JS="// Patch-Manager v2.6.1 (JS) – bereit für Deploys\nconsole.log('Patch-Manager v2.6.1 aktiv');";
-
-btn.onclick=async()=>{
-const token=(input.value||'').trim();
-if(!token){alert('Bitte gültigen Token eingeben.');return;}
-statusEl.textContent='⏳ Starte Deploy …';
-log('🚀 Starte Mega-Patch-Deploy v2.6.1 …');
-try{
-await putFile('tools/patch-manager.html',PATCH_HTML,'Add Patch-Manager v2.6.1 (HTML)',token);
-log('✅ HTML installiert: /tools/patch-manager.html');
-await putFile('tools/js/patch-manager.js',PATCH_JS,'Add Patch-Manager v2.6.1 (JS)',token);
-log('✅ JS installiert: /tools/js/patch-manager.js');
-statusEl.textContent='✅ Deploy abgeschlossen';
-alert('Fertig ✅ Patch-Manager v2.6.1 wurde installiert.');
-}catch(e){
-log('❌ Fehler: '+e.message);
-statusEl.textContent='❌ Fehler beim Deploy';
-alert('Fehler beim Deploy: '+e.message);
-}
+const enc = s => btoa(unescape(encodeURIComponent(s)));
+const $  = sel => document.querySelector(sel);
+const log = (m, cls="") => {
+  const el = $("#log");
+  el.innerHTML += (cls ? `[${cls}] ` : "") + m + "\\n";
+  el.scrollTop = el.scrollHeight;
 };
-})();
-</script>
 
+async function getSha(path, token){
+  const url = `${apiBase}/${path}?ref=${BRANCH}`;
+  const res = await fetch(url, { headers:{ "Accept":"application/vnd.github+json","Authorization":"token "+token }});
+  if(res.status===200){ const j = await res.json(); return j.sha; }
+  if(res.status===404) return null;
+  throw new Error("GET "+path+" -> "+res.status);
+}
+
+async function putFile(path, content, message, token){
+  const sha = await getSha(path, token).catch(()=>null);
+  const body = { message, content: enc(content), branch: BRANCH };
+  if(sha) body.sha = sha;
+  const res = await fetch(`${apiBase}/${path}`, {
+    method:"PUT",
+    headers:{ "Accept":"application/vnd.github+json","Authorization":"token "+token },
+    body: JSON.stringify(body)
+  });
+  if(!res.ok){
+    const t = await res.text();
+    throw new Error(`PUT ${path} -> ${res.status} ${t}`);
+  }
+}
+
+/* ===== Inhalte, die geschrieben werden ===== */
+
+// HTML-Wrapper für Patch-Manager
+const PATCH_HTML = `<!doctype html>
+<html lang="de"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>🧠 Patch-Manager · FSA Werkstatt</title>
+  <style>
+    body{margin:0;padding:28px;background:#0b1220;color:#e5e7eb;font-family:system-ui,Segoe UI,Roboto}
+    .wrap{max-width:920px;margin:0 auto}
+    a{color:#93c5fd}
+    .muted{color:#94a3b8}
+    .card{background:#111827;border:1px solid #1e293b;border-radius:12px;padding:18px;margin-top:16px}
+  </style>
+</head><body>
+  <div class="wrap">
+    <h1>🧠 Patch-Manager</h1>
+    <p class="muted">Werkstatt-Erweiterung · lädt die Logik aus <code>/tools/js/patch-manager.js</code></p>
+    <div id="app" class="card">Lade Patch-Manager …</div>
+  </div>
+  <script src="./js/patch-manager.js"></script>
+</body></html>`;
+
+// JS – Platzhalter/Starter für Patch-Manager
+const PATCH_JS = `// Patch-Manager v2.6.x – Starter
+(function(){
+  const el = document.getElementById("app");
+  const ui = document.createElement("div");
+  ui.innerHTML = "<b>Patch-Manager geladen.</b><br><br>Hier folgen die Patches/Bedienelemente (wird in der Werkstatt weiter ausgebaut).";
+  el.replaceChildren(ui);
+})();`;
+
+/* ===== Runner ===== */
+async function run(){
+  const input = $("#token");
+  const btn   = $("#go");
+  const token = (input.value || new URLSearchParams(location.search).get("token") || "").trim();
+  if(!token){ alert("Bitte gültigen Token eingeben."); return; }
+
+  btn.disabled = true; input.disabled = true;
+  log("🟦 Starte Deploy …");
+
+  try{
+    log("✍️  HTML schreiben -> /tools/patch-manager.html");
+    await putFile("tools/patch-manager.html", PATCH_HTML, "Add/Update Patch-Manager HTML wrapper", token);
+    log("✅ HTML installiert: /tools/patch-manager.html","ok");
+
+    log("✍️  JS schreiben -> /tools/js/patch-manager.js");
+    await putFile("tools/js/patch-manager.js", PATCH_JS, "Add/Update Patch-Manager JS", token);
+    log("✅ JS installiert: /tools/js/patch-manager.js","ok");
+
+    log("🟩 Deploy abgeschlossen!");
+    alert("Fertig ✅ Patch-Manager wurde installiert/aktualisiert.");
+  }catch(e){
+    log("🟥 Fehler: "+e.message,"err");
+    alert("Fehler beim Deploy: "+e.message);
+  }finally{
+    btn.disabled = false; input.disabled = false;
+  }
+}
+
+/* UI + Autoload aus URL */
+$("#go").onclick = run;
+(function(){
+  const t = new URLSearchParams(location.search).get("token");
+  if(t){ $("#token").value = t; $("#btnLoad").click(); }
+})();
+$("#btnLoad").onclick = ()=>log("🔑 Token übernommen.");
+</script>
 </body>
 </html>
