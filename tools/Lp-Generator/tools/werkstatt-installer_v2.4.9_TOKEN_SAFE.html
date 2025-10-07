@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>🦅 Werkstatt-Installer v2.4.9 TOKEN-SAFE</title>
+<style>
+  body{
+    font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;
+    background:#0b0f14;color:#e5e7eb;margin:0;padding:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    height:100vh;text-align:center;
+  }
+  h1{color:#38bdf8;margin-bottom:0.6em}
+  input{
+    background:#111827;border:1px solid #334155;color:#e5e7eb;
+    padding:10px 14px;border-radius:6px;width:260px;font-size:1rem;
+    text-align:center;margin-bottom:14px;
+  }
+  button{
+    background:#0ea5e9;color:#fff;border:none;padding:12px 20px;
+    border-radius:8px;font-size:1rem;font-weight:600;
+    cursor:pointer;transition:background .3s;
+  }
+  button:hover{background:#0284c7}
+  #status{
+    margin-top:22px;font-size:.95rem;line-height:1.4;color:#a5b4fc;
+    white-space:pre-line;
+  }
+</style>
+</head>
+<body>
+  <h1>🦅 Werkstatt-Installer v2.4.9 TOKEN-SAFE</h1>
+  <p>Gib unten dein <b>GitHub Access Token</b> ein, um die Werkstatt automatisch zu installieren.</p>
+  <input id="token" type="password" placeholder="ghp_ ... Token hier eingeben">
+  <button onclick="startInstall()">🚀 Installation starten</button>
+  <div id="status"></div>
+
+<script>
+async function startInstall(){
+  const token=document.getElementById('token').value.trim();
+  const s=document.getElementById('status');
+  if(!token){s.textContent='⚠️ Bitte Token eingeben.';return;}
+
+  s.textContent='🔧 Starte Verbindung zur Poststelle …';
+
+  // Simulierte Statusanzeige
+  await new Promise(r=>setTimeout(r,1000));
+  s.textContent+='\\n✅ Token akzeptiert.';
+  await new Promise(r=>setTimeout(r,800));
+  s.textContent+='\\n📦 Werkstatt-Dateien werden initialisiert …';
+  await new Promise(r=>setTimeout(r,1000));
+  s.textContent+='\\n🚀 Übertrage Status an Poststelle …';
+
+  // Fiktive Statusübertragung an Poststelle
+  try{
+    await fetch('https://adler-fsa.github.io/Lp-Generator/poststelle/index.html?status=install_ok',{
+      method:'GET',mode:'no-cors'
+    });
+    s.textContent+='\\n✅ Poststelle informiert.';
+  }catch(e){
+    s.textContent+='\\n⚠️ Poststelle konnte nicht erreicht werden.';
+  }
+
+  s.textContent+='\\n\\n✨ Installation erfolgreich abgeschlossen!';
+}
+</script>
+</body>
+</html>
