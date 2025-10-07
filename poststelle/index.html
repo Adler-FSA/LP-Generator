@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.0</title>
+<title>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.1</title>
 <style>
 body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;
 background:#0b0f14;color:#e5e7eb;margin:0;padding:40px;text-align:center;}
@@ -23,9 +23,9 @@ font-size:.9rem;white-space:pre-wrap;overflow:auto;height:200px;text-align:left;
 </head>
 <body>
 
-<h1>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.0</h1>
+<h1>📬 FSA Poststelle · Mega-Patch-Deploy v2.6.1</h1>
 <div class="panel">
-<p>Dieser Lauf installiert / aktualisiert den <b>Patch-Manager v2.6.0</b> (Werkstatt-Erweiterung)
+<p>Dieser Lauf installiert / aktualisiert den <b>Patch-Manager v2.6.1</b> (Werkstatt-Erweiterung)
 und legt ihn unter <code>/tools/patch-manager.html</code> ab.<br>
 Danach kannst du ihn direkt öffnen und weitere Patches ausführen.</p>
 
@@ -42,60 +42,49 @@ Hinweis: Der Token wird <em>nicht gespeichert</em> – nur für diesen Deploy-La
 
 <script>
 (async()=>{
-  const logEl=document.getElementById("log");
-  const statusEl=document.getElementById("status");
-  const btn=document.getElementById("go");
-  const input=document.getElementById("token");
+const logEl=document.getElementById("log");
+const statusEl=document.getElementById("status");
+const btn=document.getElementById("go");
+const input=document.getElementById("token");
+function log(msg){logEl.textContent+="\n"+msg;logEl.scrollTop=logEl.scrollHeight;}
+log("📡 FSA Poststelle initialisiert …");
 
-  function log(msg){logEl.textContent+="\n"+msg;logEl.scrollTop=logEl.scrollHeight;}
-  log("📡 FSA Poststelle initialisiert …");
+const OWNER="Adler-FSA",REPO="Lp-Generator",BRANCH="main";
+const API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
 
-  const OWNER="Adler-FSA", REPO="Lp-Generator", BRANCH="main";
-  const API=`https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
+async function putFile(path,content,msg,token){
+const res1=await fetch(API+path+"?ref="+BRANCH,{headers:{Authorization:"token "+token}});
+const j1=await res1.json();const sha=j1.sha||null;
+const body={message:msg,content:btoa(unescape(encodeURIComponent(content))),branch:BRANCH};
+if(sha)body.sha=sha;
+const res2=await fetch(API+path,{method:"PUT",
+headers:{Authorization:"token "+token,"Content-Type":"application/json"},
+body:JSON.stringify(body)});
+return await res2.json();
+}
 
-  async function putFile(path,content,msg,token){
-    const res1=await fetch(API+path+"?ref="+BRANCH,{headers:{Authorization:"token "+token}});
-    const j1=await res1.json();const sha=j1.sha||null;
-    const body={
-      message:msg,
-      content:btoa(unescape(encodeURIComponent(content))),
-      branch:BRANCH
-    };
-    if(sha)body.sha=sha;
-    const res2=await fetch(API+path,{
-      method:"PUT",
-      headers:{
-        Authorization:"token "+token,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(body)
-    });
-    return await res2.json();
-  }
+const PATCH_HTML="<!doctype html><html lang='de'><head><meta charset='utf-8'/><meta name='viewport' content='width=device-width,initial-scale=1'/><title>FSA Patch-Manager v2.6.1</title></head><body style='font-family:system-ui;background:#0b0f14;color:#e5e7eb;padding:40px;'><h1>🧠 FSA Patch-Manager v2.6.1</h1><p>Manager installiert – bereit für Werkstatt-Module.</p><script src='js/patch-manager.js'><\/script></body></html>";
 
-  const PATCH_HTML = `<!doctype html><html lang="de"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>FSA Patch-Manager v2.6.0</title></head><body style="font-family:system-ui;background:#0b0f14;color:#e5e7eb;padding:40px;"><h1>🧠 FSA Patch-Manager v2.6.0</h1><p>Manager installiert – bereit für Werkstatt-Module.</p><script src="js/patch-manager.js"></script></body></html>`;
+const PATCH_JS="// Patch-Manager v2.6.1 (JS) – bereit für Deploys\nconsole.log('Patch-Manager v2.6.1 aktiv');";
 
-  const PATCH_JS = `// Patch-Manager v2.6.0 (JS) – bereit für Deploys\nconsole.log("Patch-Manager v2.6.0 aktiv");`;
-
-  btn.onclick=async()=>{
-    const token=(input.value||"").trim();
-    if(!token){alert("Bitte gültigen Token eingeben.");return;}
-    statusEl.textContent="⏳ Starte Deploy …";
-    log("🚀 Starte Mega-Patch-Deploy v2.6.0 …");
-
-    try{
-      await putFile("tools/patch-manager.html",PATCH_HTML,"Add Patch-Manager v2.6.0 (HTML)",token);
-      log("✅ HTML installiert: /tools/patch-manager.html");
-      await putFile("tools/js/patch-manager.js",PATCH_JS,"Add Patch-Manager v2.6.0 (JS)",token);
-      log("✅ JS installiert: /tools/js/patch-manager.js");
-      statusEl.textContent="✅ Deploy abgeschlossen";
-      alert("Fertig ✅ Patch-Manager v2.6.0 wurde installiert.");
-    }catch(e){
-      log("❌ Fehler: "+e.message);
-      statusEl.textContent="❌ Fehler beim Deploy";
-      alert("Fehler beim Deploy: "+e.message);
-    }
-  };
+btn.onclick=async()=>{
+const token=(input.value||'').trim();
+if(!token){alert('Bitte gültigen Token eingeben.');return;}
+statusEl.textContent='⏳ Starte Deploy …';
+log('🚀 Starte Mega-Patch-Deploy v2.6.1 …');
+try{
+await putFile('tools/patch-manager.html',PATCH_HTML,'Add Patch-Manager v2.6.1 (HTML)',token);
+log('✅ HTML installiert: /tools/patch-manager.html');
+await putFile('tools/js/patch-manager.js',PATCH_JS,'Add Patch-Manager v2.6.1 (JS)',token);
+log('✅ JS installiert: /tools/js/patch-manager.js');
+statusEl.textContent='✅ Deploy abgeschlossen';
+alert('Fertig ✅ Patch-Manager v2.6.1 wurde installiert.');
+}catch(e){
+log('❌ Fehler: '+e.message);
+statusEl.textContent='❌ Fehler beim Deploy';
+alert('Fehler beim Deploy: '+e.message);
+}
+};
 })();
 </script>
 
