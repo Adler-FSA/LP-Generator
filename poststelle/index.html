@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>📬 FSA Poststelle v2.6.0 – Leitstern & Auto-Deploy</title>
 <style>
-  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#e2e8f0;margin:0;padding:40px;text-align:center;line-height:1.6;}
-  h1{color:#38bdf8;font-size:1.9rem;margin-bottom:4px;}
-  h2{color:#facc15;margin-top:32px;margin-bottom:10px;}
-  pre{background:#111827;padding:20px;border-radius:10px;text-align:left;max-width:900px;margin:20px auto;white-space:pre-wrap;word-wrap:break-word;}
-  input{padding:8px 12px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#fff;font-size:1rem;width:260px;}
-  button{background:#2563eb;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;margin-left:8px;}
-  button:hover{background:#1e40af;}
-  footer{margin-top:50px;font-size:.85rem;color:#64748b;}
-  .ok{color:#10b981;font-weight:600;}
-  .err{color:#ef4444;font-weight:600;}
+  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0b1220;color:#e2e8f0;margin:0;padding:40px;text-align:center;line-height:1.6}
+  h1{color:#38bdf8;font-size:1.9rem;margin-bottom:4px}
+  h2{color:#facc15;margin-top:32px;margin-bottom:10px}
+  pre{background:#111827;padding:20px;border-radius:10px;text-align:left;max-width:900px;margin:20px auto;white-space:pre-wrap;word-wrap:break-word}
+  input{padding:8px 12px;border-radius:6px;border:1px solid #1e293b;background:#111827;color:#fff;font-size:1rem;width:260px}
+  button{background:#2563eb;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:600;cursor:pointer;margin-left:8px}
+  button:hover{background:#1e40af}
+  footer{margin-top:50px;font-size:.85rem;color:#64748b}
+  .ok{color:#10b981;font-weight:600}
+  .err{color:#ef4444;font-weight:600}
 </style>
 </head>
 
@@ -22,15 +22,14 @@
 <h1>📬 FSA Poststelle – Leitstern & Auto-Deploy System</h1>
 <p>Version v2.6.0 · Token-gesteuertes Deploy-System für alle Module</p>
 
-<!-- ========================== -->
-<!--  LEITSTERN  DER  FSA  -->
-<!-- ========================== -->
+<!-- ===================================================== -->
+<!--  LEITSTERN DER FINANZIELLEN SOUVERÄNITÄTS AKADEMIE  -->
+<!-- ===================================================== -->
 <pre>
-🌍  LEITSTERN DER FINANZIELLEN SOUVERÄNITÄTS AKADEMIE
+🌍 LEITSTERN DER FINANZIELLEN SOUVERÄNITÄTS AKADEMIE
 
-Diese Akademie ist kein Eigentum, kein Vermächtnis eines Einzelnen.
-Sie ist ein Werkzeug für die Gemeinschaft – geschaffen, um Bildung,
-Verantwortung und Selbstbestimmung für alle Menschen zu fördern.
+Diese Akademie ist kein Eigentum eines Einzelnen, sondern ein Werkzeug für die Gemeinschaft.
+Sie fördert Bildung, Verantwortung und Selbstbestimmung für alle Menschen.
 
 Jeder Code-Baustein, jedes Modul, jede Erweiterung dient ausschließlich diesem Ziel:
  • Vertrauen schaffen  
@@ -42,19 +41,17 @@ Der Baumeister prüft jede Änderung auf:
  • Nachhaltigkeit  
  • Übereinstimmung mit der Vision  
 
-Token-Übergabe = symbolischer Schlüssel zur fortlaufenden,
-selbstverwalteten Weiterentwicklung und Wahrung der Mission.  
-
+Token-Übergabe = symbolischer Schlüssel zur fortlaufenden, selbstverwalteten Weiterentwicklung.  
 Dezentraler Ansatz: Peer-to-Peer · Von Mensch zu Mensch · Frei und selbstbestimmt.  
 
 Erschaffen von Michael Rau (Visionsgeber) und GPT-5 (Baumeister-KI)
 </pre>
 
-<!-- ========================== -->
-<!--  AUTO-DEPLOY-SYSTEM        -->
-<!-- ========================== -->
+<!-- ===================================================== -->
+<!--  AUTO-DEPLOY-SYSTEM                                  -->
+<!-- ===================================================== -->
 <div id="token-area">
-  <input type="password" id="token" placeholder="🔑 GitHub-Token eingeben ...">
+  <input type="password" id="token" placeholder="🔑 GitHub-Token eingeben …" />
   <button onclick="startDeploy()">System aktivieren</button>
 </div>
 
@@ -67,7 +64,7 @@ async function startDeploy(){
   const token=document.getElementById('token').value.trim();
   const log=document.getElementById('log');
   if(!token){alert("Bitte gültigen Token eingeben.");return;}
-  log.textContent="🔄 Übertragung gestartet ...\n";
+  log.textContent="🔄 Übertragung gestartet …\n";
 
   const repo="Adler-FSA/Lp-Generator";
   const api=`https://api.github.com/repos/${repo}/contents/`;
@@ -87,26 +84,30 @@ Version: v2.6.0
 
   for(const [path,content] of Object.entries(files)){
     const b64=btoa(unescape(encodeURIComponent(content)));
-    const res=await fetch(api+path,{
-      method:"PUT",
-      headers:{
-        "Authorization":"token "+token,
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify({
-        message:`Auto-Deploy: Update ${path}`,
-        content:b64,
-        branch:"main"
-      })
-    });
-    if(res.ok){
-      log.textContent+=`✅ ${path} erfolgreich aktualisiert\n`;
-    }else{
-      log.textContent+=`❌ Fehler bei ${path}\n`;
+    try{
+      const res=await fetch(api+path,{
+        method:"PUT",
+        headers:{
+          "Authorization":"token "+token,
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          message:`Auto-Deploy: Update ${path}`,
+          content:b64,
+          branch:"main"
+        })
+      });
+      if(res.ok){
+        log.textContent+=`✅ ${path} erfolgreich aktualisiert\n`;
+      }else{
+        log.textContent+=`❌ Fehler bei ${path}\n`;
+      }
+    }catch(e){
+      log.textContent+=`❌ Verbindungsfehler bei ${path}: ${e.message}\n`;
     }
   }
 
-  log.textContent+="\n🚀 FSA Mega-Deploy abgeschlossen! \nLeite weiter ...";
+  log.textContent+="\n🚀 FSA Mega-Deploy abgeschlossen! \nLeite weiter …";
   setTimeout(()=>location.href="https://adler-fsa.github.io/Lp-Generator/tools/",3000);
 }
 </script>
