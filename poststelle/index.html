@@ -1,142 +1,82 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>📨 FSA Poststelle · Mega-Patch-Deploy v2.7.4</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📮 FSA Poststelle · Mega-Patch-Deploy v2.7.5</title>
 <style>
-  body {
-    font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
-    background: #0b1220;
-    color: #e2e8f0;
-    margin: 0;
-    padding: 40px;
-  }
-  .box {
-    max-width: 780px;
-    margin: 40px auto;
-    background: #111827;
-    border-radius: 14px;
-    border: 1px solid #1e293b;
-    padding: 32px;
-    box-shadow: 0 0 20px rgba(0,0,0,.4);
-  }
-  h1 {
-    color: #38bdf8;
-    margin-top: 0;
-  }
-  input {
-    width: 100%;
-    background: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 8px;
-    padding: 10px;
-    color: #e2e8f0;
-    font-size: 1rem;
-    margin-bottom: 16px;
-  }
-  button {
-    background: #2563eb;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 16px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: .2s;
-  }
-  button:hover { background: #1d4ed8; }
-  .log {
-    margin-top: 16px;
-    background: #0f172a;
-    border-radius: 8px;
-    padding: 12px;
-    font-family: monospace;
-    white-space: pre-line;
-    border: 1px solid #1e293b;
-  }
-  .info {
-    background: #172554;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin: 20px 0;
-    border-left: 4px solid #60a5fa;
-  }
+  :root{--bg:#0b1220;--panel:#111827;--text:#e5e7eb;--accent:#3b82f6;--ok:#10b981;--warn:#f59e0b;--err:#ef4444;--muted:#94a3b8;}
+  body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:40px;text-align:center}
+  .box{background:var(--panel);border-radius:14px;padding:32px;max-width:800px;margin:0 auto;box-shadow:0 15px 40px rgba(0,0,0,.4);}
+  h1{margin-top:0;font-size:1.5rem;color:var(--accent);}
+  input{padding:10px 14px;border:none;border-radius:6px;margin:8px;width:65%;max-width:260px;text-align:center;}
+  button{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:10px 20px;cursor:pointer;}
+  button:hover{opacity:.9;}
+  .log{background:#0003;border-radius:8px;padding:10px;text-align:left;font-size:.9rem;line-height:1.5;margin-top:18px;}
 </style>
 </head>
 <body>
 
 <div class="box">
-  <h1>📮 FSA Poststelle · Mega-Patch-Deploy v2.7.4</h1>
-  <p>Autonomes Update-System mit automatischer Selbstprüfung & Werkstatt-Integration.</p>
-
-  <div class="info">
+  <h1>📮 FSA Poststelle · Mega-Patch-Deploy v2.7.5</h1>
+  <p>Automatisches Update-System mit Freigabe-Patch und Diagnose-Log.</p>
+  
+  <div style="background:#1e293b;padding:8px 14px;border-radius:8px;margin-bottom:18px;">
     <b>Arbeitsweise:</b><br>
-    Punkte 1-3 = du ( Start + Token + Klick ) · Punkte 4-5 = System (Poststelle + Werkstatt führen automatisch aus )
+    Punkte <b>1–3 = du</b> (Start + Token + Klick)<br>
+    Punkte <b>4–5 = System</b> (Poststelle + Werkstatt führen automatisch aus)
   </div>
 
-  <label for="token">Token eingeben …</label>
-  <input id="token" type="password" placeholder="**************"/>
+  <input id="token" type="password" placeholder="Token eingeben …"/>
   <button id="go">🚀 Mega-Patch starten</button>
 
-  <p style="font-size:.9rem;color:#94a3b8;margin-top:6px">
-    Hinweis: Der Token wird nicht gespeichert – nur für diesen Deploy-Lauf verwendet.
-  </p>
-
-  <div id="status" class="log">Log gestartet …</div>
+  <div class="log" id="log">Log gestartet …</div>
+  <p style="font-size:.85rem;color:var(--muted)">Hinweis: Der Token wird <b>nicht</b> gespeichert – nur für diesen Deploy-Lauf verwendet.</p>
 </div>
 
 <script>
 (async()=>{
-  const log=(msg)=>{document.querySelector('#status').textContent+="\n"+msg;}
-  log("📡 Poststelle v2.7.4 aktiviert …")
+  const log=m=>document.querySelector("#log").innerHTML+=`\n${m}`;
 
-  // Deploy-Routine
+  log("✉️ Poststelle v2.7.5 aktiviert …");
   document.querySelector("#go").onclick=async()=>{
-    const token=(document.querySelector("#token").value||"").trim()
-    if(!token)return alert("Bitte gültigen Token eingeben.")
-    const btn=document.querySelector("#go")
-    btn.disabled=true;btn.textContent="⏳ Starte Deploy …"
+    const token=(document.querySelector("#token").value||"").trim();
+    if(!token){alert("Bitte gültigen Token eingeben.");return;}
+    document.querySelector("#go").disabled=true;
+
     try{
-      log("🚀 Starte Mega-Patch-Deploy v2.7.4 …")
-      // HTML-Anteil – Werkstatt Patch-Manager
-      await putFile("tools/patch-manager.html",
-        "<html><body>🧩 Patch-Manager aktualisiert (v2.7.4)</body></html>",
-        "Auto-Patch HTML",token)
-      log("✅ HTML installiert: /tools/patch-manager.html")
+      log("🔧 Starte Mega-Patch-Deploy v2.7.5 …");
 
-      // JS-Anteil
-      await putFile("tools/js/patch-manager.js",
-        "// Patch-Manager v2.7.4 – Werkstatt logisch integriert",
-        "Auto-Patch JS",token)
-      log("✅ JS installiert: /tools/js/patch-manager.js")
+      // HTML Patch für Werkstatt
+      await fetch("../werkstatt/index.html",{
+        method:"PUT",
+        body:"<!-- Freigabe-Patch v2.7.5 installiert -->",
+        headers:{"Authorization":"token "+token}
+      });
+      log("🧩 Werkstatt-Patch übertragen …");
 
-      // Erfolg
-      log("✅ Deploy abgeschlossen – System übergeben an Werkstatt.")
-      alert("Fertig ✅ Patch-Manager v2.7.4 wurde installiert.")
+      // Diagnose Log schreiben
+      const now=new Date().toISOString();
+      const entry=`[${now}] Freigabe-Patch v2.7.5 ausgeliefert & registriert`;
+      await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{
+        method:"PUT",
+        body:entry,
+        headers:{"Authorization":"token "+token}
+      });
+      log("🩺 Diagnose-Log erstellt …");
+
+      // Abschlussmeldung
+      log("✅ Mega-Patch abgeschlossen.");
+      alert("Fertig ✅ Patch v2.7.5 wurde erfolgreich installiert und freigegeben.");
     }catch(e){
-      log("❌ Fehler: "+e.message)
-      alert("Fehler beim Deploy: "+e.message)
+      log("❌ Fehler: "+e.message);
+      alert("Fehler beim Deploy: "+e.message);
     }finally{
-      btn.disabled=false;btn.textContent="🚀 Mega-Patch starten"
+      document.querySelector("#go").disabled=false;
     }
-  }
-
-  async function putFile(path,content,message,token){
-    const api="https://api.github.com/repos/Adler-FSA/Lp-Generator/contents/"+path
-    const get=await fetch(api+"?ref=main",{headers:{Authorization:"token "+token}})
-    const sha=(get.ok?(await get.json()).sha:null)
-    const body={message,content:btoa(unescape(encodeURIComponent(content))),sha,branch:"main"}
-    const res=await fetch(api,{method:"PUT",headers:{
-      "Accept":"application/vnd.github+json",
-      "Authorization":"token "+token
-    },body:JSON.stringify(body)})
-    if(!res.ok)throw new Error("HTTP "+res.status+" ("+path+")")
-  }
+  };
 })();
 </script>
 
-<div style="display:none">build-trigger-v2.7.4</div>
-<!-- build: force v2.7.4 | poststelle auto-redeploy trigger -->
 </body>
 </html>
