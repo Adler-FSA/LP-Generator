@@ -3,248 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FSA Werkstatt-Zentrale v1.5</title>
+<title>FSA Werkstatt-Zentrale v1.6 · Commit-Regelhilfe 2.0</title>
 <style>
-  :root{
-    --bg:#0a1220; --panel:#0f1b2e; --ink:#cfe6ff; --muted:#8fa8c7;
-    --ok:#23d18b; --warn:#ffd166; --err:#ff6b6b; --link:#7cc4ff; --accent:#5aa9ff;
-    --line:rgba(255,255,255,.08); --chip:#14243d; --pill:#173154;
-  }
-  html,body{height:100%}
-  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,Segoe UI,Roboto,Arial}
-  .wrap{max-width:980px;margin:40px auto;padding:24px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 3px 30px rgba(0,0,0,.25)}
-  h1{margin:0 0 16px;font-size:26px}
-  .sub{color:var(--muted);font-size:14px;margin-bottom:20px}
-  table{width:100%;border-collapse:collapse}
-  th,td{padding:10px 12px;border-bottom:1px solid var(--line)}
-  th{color:#bcd1ee;text-align:left;font-weight:600}
-  .row-head{background:rgba(255,255,255,.02)}
-  .btn{display:inline-flex;align-items:center;gap:.5rem;border:1px solid var(--line);background:var(--chip);
-       padding:8px 12px;border-radius:8px;color:var(--ink);text-decoration:none;cursor:pointer}
-  .btn:hover{background:#1a2b46}
-  .btn.accent{background:var(--accent);border-color:transparent;color:#041225}
-  .btn.ghost{background:transparent}
-  .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--pill);color:#cde2ff;font-size:12px}
-  .ok{color:var(--ok)} .warn{color:var(--warn)} .err{color:var(--err)}
-  .stack{display:grid;gap:16px}
-  .split{display:grid;gap:16px;grid-template-columns:1.4fr 1fr}
-  .panel{padding:16px 16px 12px}
-  .list{margin:8px 0 0 0;padding:0 0 0 18px;color:var(--muted)}
-  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}
-  .log{background:#0b1629;border:1px solid var(--line);border-radius:8px;padding:12px;min-height:120px;white-space:pre-wrap}
-  footer{margin-top:24px;color:var(--muted);font-size:12px;text-align:center}
-  .grid-2{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-  .small{font-size:12px;color:var(--muted)}
+:root{--bg:#0b1220;--card:#111b2e;--text:#e2e8f0;--accent:#38bdf8;--ok:#22c55e;--warn:#facc15;--err:#ef4444;--radius:12px;--shadow:0 8px 30px rgba(0,0,0,.45);}
+body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0}
+main{max-width:960px;margin:40px auto;padding:24px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+h1{font-size:1.6rem;margin-top:0;color:var(--accent)}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:.95rem}
+th,td{padding:10px;text-align:left}
+th{background:#1e293b;color:#a5f3fc}
+tr:nth-child(even){background:#0f172a}
+button{background:var(--accent);border:none;color:#000;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer}
+.copy{margin-left:8px;background:#1e293b;color:#38bdf8}
+footer{margin-top:24px;font-size:.8rem;text-align:center;color:#64748b}
+pre{background:#0f172a;padding:12px;border-radius:8px;overflow-x:auto}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="card panel">
-    <h1>🛠️ FSA Werkstatt-Zentrale v1.5</h1>
-    <div class="sub">Autonome Freigabe- & Diagnoseeinheit – Build v2.7.5+ · DSGVO-safe · Autopilot konfigurierbar</div>
+<main>
+<h1>🧰 FSA Werkstatt-Zentrale v1.6</h1>
+<p>Autonome Freigabe- und Diagnoseeinheit · Build v2.7.5 + Commit-Regelhilfe 2.0 + Version-Checker aktiv.</p>
 
-    <!-- Module-Tabelle -->
-    <div class="stack">
-      <table>
-        <thead class="row-head">
-          <tr><th>Modul</th><th>Status</th><th>Aktion</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>📮 Poststelle</td><td><span class="pill">aktiv</span></td><td><a class="btn" href="/Lp-Generator/poststelle/">Öffnen</a></td></tr>
-          <tr><td>🧠 Patch-Manager</td><td><span class="pill">aktiv</span></td><td><a class="btn" href="/Lp-Generator/tools/patch-manager.html">Code</a></td></tr>
-          <tr><td>🖊️ LP-Generator</td><td><span class="pill">aktiv</span></td><td><a class="btn" href="/Lp-Generator/lp-template.html">Template</a></td></tr>
-          <tr><td>📦 Backup-Archiv</td><td><span class="pill">aktiv</span></td><td><a class="btn" href="/Lp-Generator/README.md">Info</a></td></tr>
-        </tbody>
-      </table>
+<table>
+<tr><th>Modul</th><th>Status</th><th>Aktion</th></tr>
+<tr><td>📮 Poststelle</td><td style="color:var(--ok)">aktiv</td><td><a href="../poststelle/">Öffnen</a></td></tr>
+<tr><td>🧠 Patch-Manager</td><td style="color:var(--ok)">aktiv</td><td><a href="../tools/">Code</a></td></tr>
+<tr><td>🧩 LP-Generator</td><td style="color:var(--ok)">aktiv</td><td><a href="../lp-template.html">Template</a></td></tr>
+<tr><td>📦 Backup-Archiv</td><td style="color:var(--ok)">aktiv</td><td><a href="../BACKUP_INFO.txt">Info</a></td></tr>
+</table>
 
-      <!-- Eingehende Patches -->
-      <div class="card panel">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
-          <div>
-            <div style="font-weight:600;margin-bottom:6px">📥 Eingehende Patches</div>
-            <ul class="list">
-              <li>📧 E-Mail-Feld inkl. Vor-/Nachnamen (LP-Template)</li>
-              <li>🧭 Menüleiste ohne „Kino“-Modul</li>
-            </ul>
-          </div>
-          <button id="syncAll" class="btn">🔄 System synchronisieren</button>
-        </div>
-        <div id="syslog" class="log mono" style="margin-top:10px;">Log geöffnet …</div>
-      </div>
+<h2>📋 Commit-Regelhilfe 2.0</h2>
+<p>Standardisierte Regelstruktur – immer untereinander 1 bis 5 als To-Do-Liste.</p>
+<pre id="rule">
+1️⃣ Pfadangaben  
+2️⃣ Commit-Nachrichten  
+3️⃣ Upload-Reihenfolge  
+4️⃣ Test-Schritte  
+5️⃣ Bereitstellung  
+</pre>
+<button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('rule').innerText)">Kopieren</button>
 
-      <div class="split">
-        <!-- Diagnose Log-Reader -->
-        <div class="card panel">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div style="font-weight:600">🧪 Diagnose-Log-Reader</div>
-            <div class="small">Quelle: <span class="mono">/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt</span></div>
-          </div>
-          <div class="grid-2" style="margin:10px 0 6px">
-            <div class="grid-2">
-              <button id="logRefresh" class="btn">⟳ Aktualisieren</button>
-              <button id="logAuto" class="btn ghost">▶︎ Auto-Refresh</button>
-            </div>
-            <div style="text-align:right">
-              <label class="small">Filter:&nbsp;
-                <select id="logFilter">
-                  <option value="all">Alle Einträge</option>
-                  <option value="ok">Nur OK</option>
-                  <option value="warn">Nur Warnungen</option>
-                  <option value="err">Nur Fehler</option>
-                </select>
-              </label>
-              <label class="small" style="margin-left:10px">Zeige letzte
-                <select id="logLimit">
-                  <option>50</option><option>100</option><option selected>200</option><option>500</option>
-                </select> Einträge
-              </label>
-            </div>
-          </div>
-          <div id="diag" class="log mono">Log wird initialisiert …</div>
-        </div>
-
-        <!-- Autopilot -->
-        <div class="card panel">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div style="font-weight:600">🤖 Autopilot</div>
-            <div id="apStatus" class="pill">Status: manuell</div>
-          </div>
-          <div class="small" style="margin:6px 0 10px">
-            DSGVO-safe: nur technische HEAD-Prüfungen, keine Tokens/PII, kein Storage.
-          </div>
-          <div class="grid-2">
-            <button id="apStart" class="btn accent">▶︎ Autopilot starten</button>
-            <button id="apStop" class="btn ghost">■ Stoppen</button>
-          </div>
-          <div id="apLog" class="log mono" style="margin-top:10px;min-height:90px">Bereit …</div>
-          <div class="small" style="margin-top:8px">Konfig: <span class="mono">AUTOPILOT_AUTO_START</span> (siehe Quellcode)</div>
-        </div>
-      </div>
-    </div>
-
-    <footer>
-      © 2025 Finanzielle Souveränitäts Akademie · Werkstatt-Zentrale v1.5 · Autopilot konfigurierbar (DSGVO-safe)
-    </footer>
-  </div>
-</div>
+<h2>🔎 Version-Checker</h2>
+<p id="vcheck">Prüfe Version …</p>
 
 <script>
-/* =======================
-   CONFIG (anpassbar)
-   ======================= */
-const CONFIG = {
-  AUTOPILOT_AUTO_START: false,       // <- in öffentlichen/Schüler/Mentor-Bereichen auf false lassen
-  AUTOPILOT_INTERVAL_MS: 60_000,     // 1 Minute
-  SAFE_MODE: true                    // Nur HEAD, no-cors, keine PII
-};
-
-/* =======================
-   UTIL
-   ======================= */
-const $ = sel => document.querySelector(sel);
-const logSys = m => { const el=$("#syslog"); el.textContent += (el.textContent ? "\n" : "") + m; el.scrollTop = el.scrollHeight; };
-const logAP  = m => { const el=$("#apLog");  el.textContent  += (el.textContent ? "\n" : "") + m; el.scrollTop = el.scrollHeight; };
-const setAPStatus = txt => $("#apStatus").textContent = "Status: " + txt;
-
-async function headPing(url){
-  try{
-    await fetch(url, {method:"HEAD", mode: CONFIG.SAFE_MODE ? "no-cors" : "cors", cache:"no-store"});
-    return true;
-  }catch(e){ return false; }
-}
-
-/* =======================
-   SYNC Button (Platzhalter)
-   ======================= */
-$("#syncAll").onclick = async () => {
-  logSys("🔧 Werkstatt gestartet …");
-  // Nur Check-Connectivity (ohne PII)
-  const okPost  = await headPing("/Lp-Generator/poststelle/");
-  const okPatch = await headPing("/Lp-Generator/tools/patch-manager.html");
-  const okTpl   = await headPing("/Lp-Generator/lp-template.html");
-  if(okPost)  logSys("📮 Poststelle erreichbar.");
-  if(okPatch) logSys("🧠 Patch-Manager erreichbar.");
-  if(okTpl)   logSys("🖊️ LP-Generator verbunden.");
-  if(okPost && okPatch && okTpl) logSys("🟢 System vollständig synchronisiert.");
-  else logSys("🟡 Teilweise erreichbar (Details oben).");
-};
-
-/* =======================
-   LOG-READER
-   ======================= */
-let autoTimer = null;
-async function loadLog(){
-  const box = $("#diag");
-  try{
-    const res = await fetch("/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt?ts="+Date.now(), {cache:"no-store"});
-    if(!res.ok) throw new Error("HTTP "+res.status);
-    let txt = await res.text();
-
-    // Filter
-    const filter = $("#logFilter").value;
-    const lines = txt.trim().split(/\r?\n/);
-    let pick = lines;
-    if(filter==="ok")   pick = lines.filter(l=>/\bOK\b|\[OK\]/i.test(l));
-    if(filter==="warn") pick = lines.filter(l=>/\bWARN|\[WARN\]/i.test(l));
-    if(filter==="err")  pick = lines.filter(l=>/\bERR|\[ERR\]|FEHLER/i.test(l));
-
-    // Limit
-    const lim = parseInt($("#logLimit").value,10)||200;
-    pick = pick.slice(-lim);
-
-    box.textContent = pick.join("\n") || "— (keine Einträge) —";
-  }catch(e){
-    box.textContent = "Log konnte nicht geladen werden (Log nicht erreichbar)";
-  }
-}
-
-$("#logRefresh").onclick = loadLog;
-$("#logFilter").onchange = loadLog;
-$("#logLimit").onchange  = loadLog;
-$("#logAuto").onclick = () => {
-  if(autoTimer){ clearInterval(autoTimer); autoTimer=null; $("#logAuto").textContent="▶︎ Auto-Refresh"; }
-  else { autoTimer = setInterval(loadLog, 4000); $("#logAuto").textContent="⏸ Auto-Refresh"; loadLog(); }
-};
-loadLog();
-
-/* =======================
-   AUTOPILOT
-   ======================= */
-let apTimer = null;
-async function apRunOnce(){
-  const ts = new Date().toLocaleTimeString("de-DE");
-  logAP("⏱️  Run @ " + ts);
-  const m = [];
-  m.push(["Poststelle", await headPing("/Lp-Generator/poststelle/")]);
-  m.push(["Patch-Manager", await headPing("/Lp-Generator/tools/patch-manager.html")]);
-  m.push(["LP-Template", await headPing("/Lp-Generator/lp-template.html")]);
-  m.forEach(([name,ok])=> logAP((ok?"✅":"❌")+" "+name));
-  if(m.every(x=>x[1])) logAP("🟢 Gesamtstatus: OK");
-  else                 logAP("🟡 Gesamtstatus: Teilweise erreichbar");
-}
-
-function apStart(){
-  if(apTimer) return;
-  setAPStatus("aktiv");
-  logAP("▶︎ Autopilot gestartet (Intervall "+(CONFIG.AUTOPILOT_INTERVAL_MS/1000)+"s)");
-  apRunOnce();
-  apTimer = setInterval(apRunOnce, CONFIG.AUTOPILOT_INTERVAL_MS);
-}
-function apStop(){
-  if(!apTimer) return;
-  clearInterval(apTimer); apTimer=null;
-  setAPStatus("manuell");
-  logAP("■ Autopilot gestoppt");
-}
-$("#apStart").onclick = apStart;
-$("#apStop").onclick  = apStop;
-
-// Falls intern/admin: optional Auto-Start erlauben
-if(CONFIG.AUTOPILOT_AUTO_START){
-  setAPStatus("auto");
-  apStart();
-}
+(async()=>{
+ const v="1.6";
+ const res=await fetch("../poststelle/version.txt?nocache="+Date.now()).catch(()=>{});
+ if(res&&res.ok){
+   const t=(await res.text()).trim();
+   document.getElementById("vcheck").innerHTML=t===v?"✅ v"+v+" läuft – aktuell":
+   "⚠️ Update verfügbar (" + t + ")";
+ }else{
+   document.getElementById("vcheck").innerHTML="❌ Poststelle nicht erreichbar";
+ }
+})();
 </script>
+</main>
+<footer>© 2025 Finanzielle Souveränitäts Akademie | Werkstatt-Zentrale v1.6 · Commit-Regelhilfe 2.0 aktiv</footer>
 </body>
 </html>
