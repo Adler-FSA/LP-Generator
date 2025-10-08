@@ -1,55 +1,253 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FSA Werkstatt-Zentrale v1.7 · Auto-Deploy Start</title>
-<style>
-:root{--bg:#0b1220;--card:#111b2e;--text:#e2e8f0;--accent:#38bdf8;--ok:#22c55e;--warn:#facc15;--err:#ef4444;--radius:12px;--shadow:0 8px 30px rgba(0,0,0,.45);}
-body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0}
-main{max-width:960px;margin:40px auto;padding:24px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
-h1{font-size:1.6rem;color:var(--accent);margin-top:0}
-button{padding:8px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
-.copy{margin:6px;background:#1e293b;color:#38bdf8}
-footer{margin-top:24px;font-size:.8rem;text-align:center;color:#64748b}
-pre{background:#0f172a;padding:12px;border-radius:8px;overflow-x:auto}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, initial-scale=1" />
+  <title>FSA Werkstatt-Zentrale v1.8</title>
+  <style>
+    :root{
+      --bg:#0b1220;--card:#0f1b2d;--muted:#b8c7e0;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;
+      --link:#7dd3fc;--ink:#e5edff;--line:#1e2a44;--badge:#17233a;--accent:#60a5fa;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,Segoe UI,Roboto,Arial}
+    a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
+    .wrap{max-width:1100px;margin:40px auto;padding:16px}
+    .head{display:flex;align-items:center;gap:12px;margin:8px 0 18px}
+    .head h1{margin:0;font-size:22px}
+    .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
+    .grid{display:grid;gap:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 22px rgba(0,0,0,.18)}
+    .card .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+    .card .hd h2{margin:0;font-size:16px}
+    .card .bd{padding:16px}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:var(--badge);border:1px solid var(--line);border-radius:20px;padding:6px 10px}
+    .s-ok{color:var(--ok)} .s-warn{color:var(--warn)} .s-err{color:var(--err)} .s-muted{color:var(--muted)}
+    .btn{appearance:none;border:1px solid var(--line);background:#122441;color:var(--ink);padding:8px 12px;border-radius:10px;cursor:pointer}
+    .btn:hover{border-color:#274068}
+    .btn.primary{background:#143054;border-color:#1e4a83}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    textarea.log{width:100%;min-height:140px;background:#0b1526;border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:10px}
+    .kvs{display:grid;grid-template-columns:150px 1fr;gap:10px;margin:8px 0}
+    .copy{font-size:12px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#13233f;color:var(--ink);cursor:pointer}
+    .chips{display:flex;gap:8px;flex-wrap:wrap}
+    .chip{background:#13233f;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px}
+    .footer{margin:18px 0;color:var(--muted);font-size:12px}
+    @media (max-width:700px){ .kvs{grid-template-columns:1fr} }
+  </style>
 </head>
 <body>
-<main>
-<h1>🧰 FSA Werkstatt-Zentrale v1.7</h1>
-<p>Autonome Freigabe- & Diagnoseeinheit · Auto-Deploy Start aktiv · Commit-Regelhilfe 3.0</p>
+  <div class="wrap">
+    <div class="head">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 7h18M6 7l2 12h8l2-12" stroke="#7dd3fc" stroke-width="1.5"/><path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="#7dd3fc" stroke-width="1.5"/></svg>
+      <h1>FSA Werkstatt-Zentrale v1.8</h1>
+    </div>
+    <div class="sub">Autonome Freigabe- & Diagnoseeinheit · <span class="s-muted">Build v2.7.7+ · Smart-Checker · Auto-Deploy-History · Diagnose-Sync</span></div>
 
-<h2>📋 Commit-Regelhilfe 3.0</h2>
-<pre id="msg">Werkstatt-Zentrale v1.7 – Auto-Deploy-Start + Commit-Regelhilfe 3.0 + Session-Sync Update</pre>
-<button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('msg').innerText)">Commit Message kopieren</button>
+    <!-- MODULE -->
+    <div class="card">
+      <div class="hd"><h2>Module</h2></div>
+      <div class="bd">
+        <table class="table">
+          <thead><tr><th>Modul</th><th>Status</th><th>Aktion</th></tr></thead>
+          <tbody>
+            <tr><td>📮 Poststelle</td><td><span class="s-ok">aktiv</span></td><td><a href="https://adler-fsa.github.io/Lp-Generator/poststelle/" target="_blank">Öffnen</a></td></tr>
+            <tr><td>🧠 Patch-Manager</td><td><span class="s-ok">aktiv</span></td><td><a href="https://adler-fsa.github.io/Lp-Generator/tools/patch-manager.html" target="_blank">Code</a></td></tr>
+            <tr><td>✒️ LP-Generator</td><td><span class="s-ok">aktiv</span></td><td><a href="https://adler-fsa.github.io/Lp-Generator/lp-template.html" target="_blank">Template</a></td></tr>
+            <tr><td>📦 Backup-Archiv</td><td><span class="s-ok">aktiv</span></td><td><a href="https://adler-fsa.github.io/Lp-Generator/BACKUP_INFO.txt" target="_blank">Info</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-<pre id="desc">Adds Auto-Deploy Start when Poststelle ≥ v2.7.7 is detected.  
-Includes Commit-Regelhilfe 3.0 with two copy buttons and color highlighting.  
-Session-based temporary storage (DSGVO-safe) for cross-page sync.</pre>
-<button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('desc').innerText)">Description kopieren</button>
+    <!-- COMMIT RULE 3.0 -->
+    <div class="card">
+      <div class="hd"><h2>Commit-Regelhilfe 3.0</h2></div>
+      <div class="bd">
+        <div class="chips" style="margin-bottom:10px">
+          <span class="chip">1) Pfadangaben</span>
+          <span class="chip">2) Commit-Nachrichten</span>
+          <span class="chip">3) Upload-Reihenfolge</span>
+          <span class="chip">4) Test-Schritte</span>
+          <span class="chip">5) Bereitstellung</span>
+        </div>
 
-<h2>⚙️ Auto-Deploy Status</h2>
-<pre id="deploylog">Initialisiere …</pre>
-<script>
-(async()=>{
- const log=t=>document.getElementById("deploylog").textContent+="\n"+t;
- log("🔍 Prüfe Poststelle Version …");
- try{
-  const v=await (await fetch("../poststelle/version.txt?"+Date.now())).text();
-  log("📦 Gefundene Version: "+v);
-  if(parseFloat(v)>=2.77){
-    log("🚀 Starte Auto-Deploy Routine für v2.7.7 …");
-    sessionStorage.setItem("autoDeploy","start");
-    await fetch("../poststelle/index.html?autostart=1");
-    log("✅ Auto-Deploy ausgelöst.");
-  }else{
-    log("⚠️ Poststelle veraltet ("+v+")");
-  }
- }catch(e){log("❌ Keine Verbindung zur Poststelle");}
-})();
-</script>
-</main>
-<footer>© 2025 Finanzielle Souveränitäts Akademie | Werkstatt v1.7 · Auto-Deploy Start aktiv</footer>
+        <div class="kvs">
+          <div class="s-muted">Commit Message</div>
+          <div class="row">
+            <input id="cm" class="mono" style="flex:1;min-width:300px;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b1526;color:var(--ink)" value="Werkstatt-Zentrale v1.8 – Smart-Checker + Auto-Deploy-History + Diagnose-Sync" />
+            <button class="copy" data-copy="#cm">kopieren</button>
+          </div>
+
+          <div class="s-muted">Beschreibung</div>
+          <div class="row">
+            <textarea id="cd" class="mono" style="flex:1;min-height:90px;border-radius:8px;background:#0b1526;border:1px solid var(--line);color:var(--ink)">Adds Smart-Checker (erkennt HTML/404/Timeout & zeigt Klartext), Auto-Deploy-History (liest letzte Ereignisse aus /docs/diagnose_log/FSA_DIAGNOSE_LOG.txt), Diagnose-Sync und aktive Testlinks. DSGVO-safe (kein persistenter Storage, nur Reads + optionale Session-Sync).</textarea>
+            <button class="copy" data-copy="#cd">kopieren</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTO-DEPLOY STATUS -->
+    <div class="card">
+      <div class="hd">
+        <h2>Auto-Deploy Status</h2>
+        <div class="row">
+          <button id="check" class="btn">Version jetzt prüfen</button>
+          <a class="btn primary" href="https://adler-fsa.github.io/Lp-Generator/poststelle/?nocache=1" target="_blank">Poststelle testen</a>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="row" style="margin-bottom:8px">
+          <div class="pill">Quelle: <span class="mono" id="src">/Lp-Generator/poststelle/</span></div>
+          <div class="pill">Ergebnis: <span id="res" class="s-muted">–</span></div>
+        </div>
+        <textarea id="raw" class="log mono" placeholder="Antwort der Quelle …"></textarea>
+      </div>
+    </div>
+
+    <!-- DEPLOY HISTORY + DIAGNOSE -->
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div class="card">
+        <div class="hd">
+          <h2>Auto-Deploy-History</h2>
+          <div class="row">
+            <button id="histRefresh" class="btn">Aktualisieren</button>
+            <button id="histAuto" class="btn">Auto-Refresh: aus</button>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="s-muted" style="margin-bottom:6px">Quelle (read-only): <span class="mono">/Lp-Generator/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt</span></div>
+          <table class="table" id="hist">
+            <thead><tr><th>Zeit</th><th>Ereignis</th><th>Status</th></tr></thead>
+            <tbody><tr><td colspan="3" class="s-muted">Lade …</td></tr></tbody>
+          </table>
+          <div class="row" style="margin-top:8px">
+            <a class="btn" target="_blank" href="https://adler-fsa.github.io/Lp-Generator/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt">Log im neuen Tab öffnen</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd"><h2>Aktive Testlinks</h2></div>
+        <div class="bd">
+          <div class="row" style="margin-bottom:8px">
+            <a class="btn" target="_blank" href="https://adler-fsa.github.io/Lp-Generator/werkstatt/">Werkstatt öffnen</a>
+            <a class="btn" target="_blank" href="https://adler-fsa.github.io/Lp-Generator/poststelle/">Poststelle öffnen</a>
+            <a class="btn" target="_blank" href="https://adler-fsa.github.io/Lp-Generator/lp-template.html">LP-Template öffnen</a>
+          </div>
+          <div class="s-muted">Hinweis: Links sind öffentlich lesbar; es werden keine Tokens, PII oder persistente Daten verwendet.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">© 2025 Finanzielle Souveränitäts Akademie · Werkstatt-Zentrale v1.8 · Smart-Checker & History aktiv</div>
+  </div>
+
+  <script>
+    // --- helpers
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    $$(".copy").forEach(btn=>{
+      btn.addEventListener("click",()=>{
+        const inp = document.querySelector(btn.dataset.copy);
+        inp.select?.(); inp.setSelectionRange?.(0, 99999);
+        navigator.clipboard.writeText(inp.value || inp.textContent || "");
+        btn.textContent = "kopiert";
+        setTimeout(()=>btn.textContent="kopieren",1200);
+      });
+    });
+
+    // --- Smart Checker (Poststelle-Version)
+    async function smartCheck(){
+      const resEl = $("#res"); const raw = $("#raw");
+      raw.value = ""; resEl.textContent = "prüfe …"; resEl.className = "s-muted";
+      try{
+        const url = "https://adler-fsa.github.io/Lp-Generator/poststelle/";
+        const r = await fetch(url, { method:"GET", cache:"no-store" });
+        const ctype = r.headers.get("content-type") || "";
+        const text = await r.text();
+        raw.value = text.substring(0, 5000);
+
+        // if JSON & has version
+        if(ctype.includes("application/json")){
+          try{
+            const j = JSON.parse(text);
+            if(j.version){ resEl.textContent = "Poststelle " + j.version; resEl.className="s-ok"; return; }
+          }catch(_){}
+        }
+
+        // HTML fallback or 404 markup
+        if(ctype.includes("text/html") || text.includes("<!DOCTYPE")){
+          resEl.textContent = "Version unbekannt (HTML/404-Fallback)";
+          resEl.className = "s-warn";
+          return;
+        }
+
+        resEl.textContent = "Unbekannte Antwort (kein JSON/HTML)";
+        resEl.className = "s-warn";
+      }catch(e){
+        $("#raw").value = String(e);
+        $("#res").textContent = "Fehler beim Abruf";
+        $("#res").className = "s-err";
+      }
+    }
+    $("#check").addEventListener("click", smartCheck);
+    // auto-run on load (non-blocking)
+    setTimeout(smartCheck, 300);
+
+    // --- History (Diagnose-Log)
+    const LOG_URL = "https://adler-fsa.github.io/Lp-Generator/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt";
+    let auto = false, autoTimer=null;
+
+    function parseLog(txt){
+      const rows = [];
+      const lines = txt.split(/\r?\n/).filter(Boolean).slice(-50); // last 50
+      for(const ln of lines){
+        // expected formats (tolerant):
+        // 2025-10-08 09:50 | Patch v2.7.7 ausgelöst. | ok
+        // 2025-10-08 09:51 | Werkstatt v1.7 Auto-Deploy ausgelöst. | ok
+        const m = ln.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2})\s*\|\s*(.+?)\s*\|\s*(ok|err|warn)$/i);
+        if(m) rows.push({ t:m[1], msg:m[2], st:m[3].toLowerCase() });
+        else  rows.push({ t:"–", msg:ln, st:"warn" });
+      }
+      return rows;
+    }
+
+    async function loadHistory(){
+      const tbody = $("#hist tbody");
+      tbody.innerHTML = `<tr><td colspan="3" class="s-muted">Lade …</td></tr>`;
+      try{
+        const r = await fetch(LOG_URL, { cache:"no-store" });
+        if(!r.ok){ throw new Error(r.status+" "+r.statusText); }
+        const txt = await r.text();
+        const rows = parseLog(txt);
+        if(!rows.length){ tbody.innerHTML = `<tr><td colspan="3" class="s-muted">Keine Einträge</td></tr>`; return; }
+        tbody.innerHTML = rows.reverse().slice(0,15).map(x=>{
+          const cls = x.st==="ok"?"s-ok":(x.st==="err"?"s-err":"s-warn");
+          return `<tr><td class="mono">${x.t}</td><td>${x.msg}</td><td class="${cls}">${x.st.toUpperCase()}</td></tr>`;
+        }).join("");
+      }catch(e){
+        tbody.innerHTML = `<tr><td colspan="3" class="s-err">Log konnte nicht geladen werden (${e.message})</td></tr>`;
+      }
+    }
+    $("#histRefresh").addEventListener("click", loadHistory);
+    $("#histAuto").addEventListener("click", ()=>{
+      auto = !auto;
+      $("#histAuto").textContent = "Auto-Refresh: " + (auto?"an":"aus");
+      if(auto){ loadHistory(); autoTimer = setInterval(loadHistory, 8000); }
+      else{ clearInterval(autoTimer); }
+    });
+    // first load
+    loadHistory();
+
+    // Session-Sync (optional, DSGVO-safe: tab-lokal)
+    try{
+      sessionStorage.setItem("FSA_WERKSTATT_PING","1");
+    }catch{}
+  </script>
 </body>
 </html>
