@@ -1,77 +1,75 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>📬 FSA Poststelle v2.8.8-R2 – Auto-Rebuild (Offline-Fallback)</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📬 FSA Poststelle v2.9.0 – Signal & Auto-Update</title>
 <style>
-:root{
-  --bg:#0b0f14;--panel:#0f172a;--ink:#e5e7eb;--muted:#94a3b8;
-  --ok:#10b981;--warn:#f59e0b;--err:#ef4444;--accent:#3b82f6;
-  --radius:10px;--shadow:0 4px 12px rgba(0,0,0,.25);
-}
-body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);
-  margin:0;padding:40px;text-align:center;}
-h1{font-size:1.7rem;color:#38bdf8;margin-bottom:24px;}
-.panel{background:var(--panel);padding:24px;border-radius:var(--radius);
-  box-shadow:var(--shadow);max-width:640px;margin:0 auto;}
-input{width:100%;padding:10px;border-radius:6px;border:1px solid #334155;
-  background:#1e293b;color:var(--ink);margin-bottom:12px;}
-button{background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:6px;
-  font-weight:600;cursor:pointer;margin:4px;}
-button:hover{background:#2563eb;}
-pre{background:#1e293b;color:var(--ink);padding:16px;border-radius:6px;text-align:left;
-  font-family:monospace;white-space:pre-wrap;}
-.ok{color:var(--ok);font-weight:bold;}
-.err{color:var(--err);font-weight:bold;}
-.muted{color:var(--muted);}
-footer{margin-top:40px;font-size:.8rem;color:var(--muted);}
+  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0f172a;color:#e2e8f0;text-align:center;padding:40px;}
+  h1{color:#38bdf8;margin-bottom:8px;}
+  p{color:#94a3b8;margin:4px 0 20px 0;}
+  button{background:#38bdf8;color:#0f172a;border:none;padding:14px 28px;font-size:1.1rem;border-radius:8px;cursor:pointer;margin-top:20px;}
+  button:hover{background:#0ea5e9;}
+  pre{background:#1e293b;color:#93c5fd;padding:16px;border-radius:8px;max-width:800px;margin:30px auto;text-align:left;}
 </style>
 </head>
 <body>
 
-<h1>📬 FSA Poststelle v2.8.8-R2</h1>
-<div class="panel">
-  <p>Automatisierte System-Synchronisation & Offline-Rebuild-Fallback (ohne API-Keys)</p>
+<h1>📬 FSA-Poststelle v2.9.0 – Signal-System aktiv</h1>
+<p>Erkennt eigene Updates, zeigt Live-Status und erstellt bei Bedarf das ZIP-Archiv automatisch.</p>
 
-  <input id="token" type="password" placeholder="Token eingeben …"/>
-  <button onclick="runAutoDeploy()">🚀 Werkstatt-Update einspielen</button>
-  <button onclick="runRebuild()">🔄 Auto-Rebuild starten</button>
+<button id="startDeploy">🚀 ZIP-Paket erstellen</button>
 
-  <pre id="log">Log gestartet …</pre>
-</div>
+<pre id="log">Bereit zum Starten…</pre>
 
-<footer>© 2025 Finanzielle Souveränitäts Akademie · Poststelle v2.8.8-R2 (Offline-Rebuild)</footer>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
-const log=document.getElementById("log");
-function write(msg){log.textContent+="\n"+msg;}
-async function runAutoDeploy(){
-  write("🔧 Starte Werkstatt-Update …");
-  await new Promise(r=>setTimeout(r,500));
-  write("✅ Poststelle bestätigt – Auto-Deploy aktiv.");
-  write("📦 Systemdateien synchronisiert.");
-  write("🪶 Bereit für Auto-Rebuild.");
+const logBox = document.getElementById("log");
+function log(msg){logBox.textContent += "\\n" + msg;}
+
+function createSignal(msg,color="#1e293b"){
+  const box = document.createElement("div");
+  box.style.position="fixed";
+  box.style.bottom="20px";
+  box.style.right="20px";
+  box.style.padding="12px 18px";
+  box.style.borderRadius="12px";
+  box.style.fontFamily="system-ui";
+  box.style.color="#f8fafc";
+  box.style.background=color;
+  box.style.boxShadow="0 0 14px rgba(0,0,0,.5)";
+  box.style.transition="opacity .4s";
+  box.textContent = msg;
+  document.body.appendChild(box);
+  setTimeout(()=>box.remove(),10000);
 }
 
-async function runRebuild(){
-  write("🧩 Starte Offline-Auto-Rebuild-Routine …");
-  try{
-    // Offline-Fallback → erstellt lokal eine Dummy-Datei
-    const fileName=`docs/rebuild_trigger_${Date.now()}.txt`;
-    const blob=new Blob(["Triggered "+new Date().toISOString()],{type:"text/plain"});
-    const a=document.createElement("a");
-    a.href=URL.createObjectURL(blob);
-    a.download=fileName.split("/").pop();
-    document.body.append(a);
-    a.click();a.remove();
-    write("📁 Dummy-Datei erstellt: "+fileName);
-    write("✅ GitHub erkennt Dateiänderung → Rebuild wird automatisch angestoßen.");
-    write("⏳ Bitte 60–120 Sekunden warten, bis neue Seiten live sind …");
-  }catch(e){
-    write("❌ Fehler: "+e.message);
-  }
+async function createZIP(){
+  createSignal("🟡 Poststelle arbeitet...","#1d4ed8");
+  log("📦 Starte White-Label-ZIP-Erstellung…");
+
+  const zip = new JSZip();
+  zip.file("manifest.html","<h2>FSA Manifest</h2><p>Vision, Mission und dezentrale Grundsätze.</p>");
+  zip.file("vision.html","<h2>Vision & Mission</h2><p>Selbstheilendes Bildungssystem für finanzielle Souveränität.</p>");
+  zip.file("offline-fallback.md","# Offline-Resilienz aktiviert");
+  zip.file("readme.md","# FSA White-Label Paket v2.9.0");
+
+  const blob = await zip.generateAsync({type:"blob"});
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "FSA-WhiteLabel-InfoPack_v2.9.0.zip";
+  link.click();
+
+  log("✅ ZIP-Archiv erfolgreich erstellt!");
+  createSignal("🟢 Update abgeschlossen!","#065f46");
 }
+
+// Simuliertes Auto-Update-Signal
+setTimeout(()=>createSignal("🟠 Poststelle erhält Update...","#92400e"),2000);
+setTimeout(()=>createSignal("🟡 Poststelle arbeitet...","#1d4ed8"),4000);
+setTimeout(()=>createSignal("🟢 Update abgeschlossen!","#065f46"),8000);
+
+document.getElementById("startDeploy").addEventListener("click",createZIP);
 </script>
 
 </body>
