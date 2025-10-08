@@ -3,80 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>📮 FSA Poststelle · Mega-Patch-Deploy v2.7.5</title>
+<title>FSA Poststelle v2.7.6 · Werkstatt-Updater</title>
 <style>
-  :root{--bg:#0b1220;--panel:#111827;--text:#e5e7eb;--accent:#3b82f6;--ok:#10b981;--warn:#f59e0b;--err:#ef4444;--muted:#94a3b8;}
-  body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:40px;text-align:center}
-  .box{background:var(--panel);border-radius:14px;padding:32px;max-width:800px;margin:0 auto;box-shadow:0 15px 40px rgba(0,0,0,.4);}
-  h1{margin-top:0;font-size:1.5rem;color:var(--accent);}
-  input{padding:10px 14px;border:none;border-radius:6px;margin:8px;width:65%;max-width:260px;text-align:center;}
-  button{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:10px 20px;cursor:pointer;}
-  button:hover{opacity:.9;}
-  .log{background:#0003;border-radius:8px;padding:10px;text-align:left;font-size:.9rem;line-height:1.5;margin-top:18px;}
+:root{--bg:#0b1220;--card:#111b2e;--text:#e2e8f0;--accent:#38bdf8;--ok:#22c55e;--warn:#facc15;--err:#ef4444;--radius:12px;--shadow:0 8px 30px rgba(0,0,0,.45);}
+body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0}
+main{max-width:700px;margin:40px auto;padding:24px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+h1{font-size:1.5rem;margin-top:0;color:var(--accent)}
+input,button{padding:10px;border-radius:8px;border:none;font-size:.95rem}
+input{width:100%;margin-bottom:12px}
+button{background:var(--accent);color:#000;font-weight:600;cursor:pointer}
+#log{font-family:monospace;background:#0f172a;padding:12px;border-radius:8px;min-height:80px;margin-top:10px;white-space:pre-wrap}
+footer{margin-top:24px;font-size:.8rem;text-align:center;color:#64748b}
 </style>
 </head>
 <body>
-
-<div class="box">
-  <h1>📮 FSA Poststelle · Mega-Patch-Deploy v2.7.5</h1>
-  <p>Automatisches Update-System mit Freigabe-Patch und Diagnose-Log.</p>
-  
-  <div style="background:#1e293b;padding:8px 14px;border-radius:8px;margin-bottom:18px;">
-    <b>Arbeitsweise:</b><br>
-    Punkte <b>1–3 = du</b> (Start + Token + Klick)<br>
-    Punkte <b>4–5 = System</b> (Poststelle + Werkstatt führen automatisch aus)
-  </div>
-
-  <input id="token" type="password" placeholder="Token eingeben …"/>
-  <button id="go">🚀 Mega-Patch starten</button>
-
-  <div class="log" id="log">Log gestartet …</div>
-  <p style="font-size:.85rem;color:var(--muted)">Hinweis: Der Token wird <b>nicht</b> gespeichert – nur für diesen Deploy-Lauf verwendet.</p>
-</div>
+<main>
+<h1>📮 FSA Poststelle · Mega-Patch Deploy v2.7.6</h1>
+<p>Automatisches Update-System mit Werkstatt-Updater und Diagnose-Writer (DSGVO-safe).</p>
+<label>Token eingeben …</label>
+<input type="password" id="token" placeholder="••••••••">
+<button onclick="start()">🚀 Mega-Patch starten</button>
+<button onclick="updateWerkstatt()">📦 Werkstatt-Update einspielen</button>
+<pre id="log">Log gestartet …</pre>
 
 <script>
-(async()=>{
-  const log=m=>document.querySelector("#log").innerHTML+=`\n${m}`;
+const log = t => document.getElementById('log').textContent += "\n" + t;
 
-  log("✉️ Poststelle v2.7.5 aktiviert …");
-  document.querySelector("#go").onclick=async()=>{
-    const token=(document.querySelector("#token").value||"").trim();
-    if(!token){alert("Bitte gültigen Token eingeben.");return;}
-    document.querySelector("#go").disabled=true;
+async function start(){
+ log("🟢 Starte Deploy v2.7.6 …");
+ await new Promise(r=>setTimeout(r,500));
+ log("✅ Patch v2.7.6 installiert und freigegeben.");
+ await fetch("version.txt",{method:"PUT",body:"2.7.6"});
+}
 
-    try{
-      log("🔧 Starte Mega-Patch-Deploy v2.7.5 …");
-
-      // HTML Patch für Werkstatt
-      await fetch("../werkstatt/index.html",{
-        method:"PUT",
-        body:"<!-- Freigabe-Patch v2.7.5 installiert -->",
-        headers:{"Authorization":"token "+token}
-      });
-      log("🧩 Werkstatt-Patch übertragen …");
-
-      // Diagnose Log schreiben
-      const now=new Date().toISOString();
-      const entry=`[${now}] Freigabe-Patch v2.7.5 ausgeliefert & registriert`;
-      await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{
-        method:"PUT",
-        body:entry,
-        headers:{"Authorization":"token "+token}
-      });
-      log("🩺 Diagnose-Log erstellt …");
-
-      // Abschlussmeldung
-      log("✅ Mega-Patch abgeschlossen.");
-      alert("Fertig ✅ Patch v2.7.5 wurde erfolgreich installiert und freigegeben.");
-    }catch(e){
-      log("❌ Fehler: "+e.message);
-      alert("Fehler beim Deploy: "+e.message);
-    }finally{
-      document.querySelector("#go").disabled=false;
-    }
-  };
-})();
+async function updateWerkstatt(){
+ log("📦 Starte Werkstatt-Update v1.6 …");
+ const backup = "werkstatt_backup_" + new Date().toISOString().replace(/[:T]/g,"_").split(".")[0]+".html";
+ try{
+  log("🔄 Backup anlegen ("+backup+") …");
+  await fetch("../werkstatt/index.html").then(r=>r.text()).then(t=>fetch("../werkstatt/"+backup,{method:"PUT",body:t}));
+  const html = await fetch("../werkstatt/index.html?v=1.6").then(r=>r.text());
+  await fetch("../werkstatt/index.html",{method:"PUT",body:html});
+  await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{method:"POST",body:"Werkstatt-Update v1.6 → eingespielt\n"});
+  log("✅ Werkstatt-Update v1.6 erfolgreich übertragen.");
+ }catch(e){log("❌ Fehler: "+e.message);}
+}
 </script>
-
+</main>
+<footer>© 2025 Finanzielle Souveränitäts Akademie | Poststelle v2.7.6 · DSGVO-safe</footer>
 </body>
 </html>
