@@ -1,0 +1,23 @@
+FSA Manifest · Vision 4.0
+────────────────────────────────────────
+Diese Datei beschreibt Ursprung, Zweck und Funktionsprinzip
+des dezentralen, token-gesteuerten FSA Update-Systems.
+
+Leitgedanke:
+• Bildung, Verantwortung, Selbstbestimmung
+• Werkzeuge statt Abhängigkeiten
+• Von Mensch zu Mensch (Peer-to-Peer), ohne zentrale Instanzen
+• Globale, transparente Steuerung (Web 4.0 Ready)
+
+Systemreferenzen:
+• Poststelle v2.8.5 (Auto-Docs aktiv)
+• Werkstatt (Zentrale) · Diagnose/History/Sync
+• WhiteLabel Kernel · LP-Template Steuerung
+
+Integrität:
+• DSGVO-safe Betriebsmodus (kein PII-Storage)
+• Nur explizite Token-Läufe schreiben ins Repo
+• Alle Änderungen mit Commit-Historie nachvollziehbar
+
+Letzte Aktualisierung: 8.10.2025, 14:06:53
+────────────────────────────────────────
