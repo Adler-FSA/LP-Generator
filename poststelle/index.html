@@ -125,4 +125,25 @@
 </script>
 
 
-</body></html>
+<!-- FSA Auto-Rebuild Patch v2.8.8-R -->
+<script>
+(async ()=>{
+  const log=document.createElement("pre");
+  log.style.cssText="font-family:monospace;background:#0f172a;color:#e5e7eb;padding:12px;border-radius:8px;";
+  document.body.append(log);
+  log.textContent="🧩 Starte Auto-Rebuild-Routine …\n";
+
+  try{
+    const triggerUrl="https://api.github.com/repos/Adler-FSA/Lp-Generator/pages/builds";
+    const resp=await fetch(triggerUrl,{method:"POST"});
+    if(resp.ok){
+      log.textContent+="✅ Build-Trigger gesendet – Seiten werden neu kompiliert …\n";
+      log.textContent+="⏳ Bitte 60-120 Sekunden warten, bis neue Seiten live sind …";
+    }else{
+      log.textContent+="❌ Konnte Build-Trigger nicht senden (HTTP "+resp.status+")";
+    }
+  }catch(e){
+    log.textContent+="❌ Fehler: "+e.message;
+  }
+})();
+</script></body></html>
