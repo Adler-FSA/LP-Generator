@@ -2,9 +2,23 @@
   "pages": [
     {
       "file": "werkstatt/index.html",
-      "version": "v1.9",
+      "version": "v1.9+",
       "updated": "2025-10-08T11:37:00Z",
-      "status": "ok"
+      "status": "ok",
+      "updated_at": "2025-10-08T12:06:55.681Z",
+      "url": "https://adler-fsa.github.io/Lp-Generator/werkstatt/"
+    },
+    {
+      "file": "poststelle/index.html",
+      "url": "https://adler-fsa.github.io/Lp-Generator/poststelle/",
+      "version": "v2.8.5",
+      "updated_at": "2025-10-08T12:06:55.681Z"
+    },
+    {
+      "file": "lp-template.html",
+      "url": "https://adler-fsa.github.io/Lp-Generator/lp-template.html",
+      "version": "v2.4.2+ Patches",
+      "updated_at": "2025-10-08T12:06:55.681Z"
     }
   ]
 }
