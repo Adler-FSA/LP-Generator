@@ -3,45 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FSA Poststelle v2.7.7 · Auto-Deploy Handler</title>
+<title>FSA Poststelle · Mega-Patch-Deploy v2.7.7</title>
 <style>
 :root{--bg:#0b1220;--card:#111b2e;--text:#e2e8f0;--accent:#38bdf8;--ok:#22c55e;--warn:#facc15;--err:#ef4444;--radius:12px;--shadow:0 8px 30px rgba(0,0,0,.45);}
 body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0}
-main{max-width:700px;margin:40px auto;padding:24px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
-h1{font-size:1.5rem;margin-top:0;color:var(--accent)}
+main{max-width:720px;margin:40px auto;padding:24px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+h1{font-size:1.6rem;color:var(--accent);margin-top:0}
 input,button{padding:10px;border-radius:8px;border:none;font-size:.95rem}
 input{width:100%;margin-bottom:12px}
-button{background:var(--accent);color:#000;font-weight:600;cursor:pointer}
-#log{font-family:monospace;background:#0f172a;padding:12px;border-radius:8px;min-height:80px;margin-top:10px;white-space:pre-wrap}
-footer{margin-top:24px;font-size:.8rem;text-align:center;color:#64748b}
+button{background:var(--accent);color:#000;font-weight:600;cursor:pointer;margin-right:8px}
+#log{background:#0f172a;padding:12px;border-radius:8px;min-height:80px;font-family:monospace;white-space:pre-wrap}
+footer{text-align:center;margin-top:24px;font-size:.8rem;color:#64748b}
 </style>
 </head>
 <body>
 <main>
-<h1>📮 FSA Poststelle · Mega-Patch Deploy v2.7.7</h1>
-<p>Mit Werkstatt-Auto-Deploy Integration und Diagnose-Autopilot Writer (DSGVO-safe)</p>
-<label>Token eingeben …</label>
-<input type="password" id="token" placeholder="••••••••">
-<button onclick="start()">🚀 Mega-Patch starten</button>
+<h1>📮 FSA Poststelle · Auto-Deploy v2.7.7</h1>
+<p>Mit Werkstatt-Auto-Deploy-Integration und Diagnose-Writer (DSGVO-safe)</p>
+<input type="password" id="token" placeholder="Token eingeben …" />
+<div>
+  <button onclick="start()">🚀 Mega-Patch starten</button>
+  <button onclick="deployWerkstatt()">🧰 Werkstatt-Update einspielen</button>
+</div>
 <pre id="log">Log gestartet …</pre>
 <script>
-const log = t => document.getElementById('log').textContent += "\n"+t;
-(async()=>{
- if(new URLSearchParams(location.search).get("autostart")==="1"){
-   log("🤖 Autostart aus Werkstatt erkannt …");
-   await start(true);
- }
-})();
-async function start(auto=false){
- log("🟢 Starte Deploy v2.7.7 "+(auto?"(autonom)":"(manuell)")+" …");
+const log=t=>document.getElementById("log").textContent+="\n"+t;
+async function start(){
+ log("🟢 Starte Patch v2.7.7 …");
  await new Promise(r=>setTimeout(r,500));
  log("✅ Patch v2.7.7 installiert und freigegeben.");
- await fetch("version.txt",{method:"PUT",body:"2.7.7"});
- await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{method:"POST",body:"Auto-Deploy ausgeführt (v2.7.7)\n"});
- log("📄 Diagnose Log aktualisiert …");
+ sessionStorage.setItem("autoDeploy","1");
+}
+async function deployWerkstatt(){
+ log("📦 Werkstatt-Update einspielen gestartet …");
+ try{
+  const r=await fetch("../werkstatt/index.html?autostart=1&ts="+Date.now());
+  if(r.ok){log("🤖 Werkstatt v1.7 Auto-Deploy ausgelöst.");}
+  else{log("⚠️ Werkstatt nicht erreichbar.");}
+ }catch(e){log("❌ Fehler beim Senden an Werkstatt.");}
+ await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{method:"POST",body:"Poststelle v2.7.7 → Werkstatt Auto-Deploy ausgelöst\n"});
+ log("📄 Diagnose-Log aktualisiert …");
 }
 </script>
 </main>
-<footer>© 2025 Finanzielle Souveränitäts Akademie | Poststelle v2.7.7 · Auto-Deploy aktiv</footer>
+<footer>© 2025 Finanzielle Souveränitäts Akademie | Poststelle v2.7.7 Auto-Deploy aktiv</footer>
 </body>
 </html>
