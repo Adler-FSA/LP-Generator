@@ -1,137 +1,259 @@
-<!doctype html>
-<html lang="de">
-<head>
+<!doctype html><html lang="de"><head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>📮 FSA Poststelle · Auto-Deploy v2.7.8 (Auto-Update-Index-Writer)</title>
+<title>FSA Poststelle · Auto-Deploy v2.8.3 · GCM-Deploy</title>
 <style>
-  :root {
-    --bg:#0b0f14;--panel:#111827;--ink:#e5e7eb;--ok:#10b981;
-    --warn:#fbbf24;--err:#ef4444;--accent:#2563eb;
-    --shadow:0 0 40px rgba(0,0,0,.4);--radius:14px;
-  }
-  body{margin:0;background:var(--bg);color:var(--ink);
-        font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;}
-  h1{font-size:1.6rem;margin:0 0 8px;text-align:center;color:var(--ink)}
-  .wrap{max-width:600px;margin:60px auto;padding:30px;
-        background:var(--panel);border-radius:var(--radius);
-        box-shadow:var(--shadow);text-align:center}
-  input{width:80%;padding:10px;border-radius:8px;border:none;margin:8px 0}
-  button{padding:10px 16px;border:none;border-radius:8px;cursor:pointer;
-         background:var(--accent);color:#fff;font-weight:600;margin:4px}
-  button:hover{opacity:.9}
-  .log{margin-top:20px;padding:16px;background:#0f172a;
-        border-radius:8px;text-align:left;font-family:monospace;
-        font-size:.9rem;max-height:260px;overflow-y:auto;white-space:pre-wrap}
-  .ok{color:var(--ok)}.warn{color:var(--warn)}.err{color:var(--err)}
+:root{--bg:#0b1220;--panel:#0f162c;--line:#1e293b;--txt:#d7e3ff;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;--btn:#3b82f6}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0b1220,#0b1220 60%,#0b162a);
+font:14px system-ui,Segoe UI,Inter,Roboto,Arial;color:var(--txt)}
+.wrap{max-width:860px;margin:32px auto;padding:24px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:24px}
+h1{margin:0 0 10px;font-weight:700} h1 span{opacity:.7;font-weight:600}
+input,button{font:inherit}
+.row{display:flex;gap:10px;align-items:center}
+input[type=password]{flex:1;background:#0b1327;border:1px solid #16233b;border-radius:10px;padding:12px 14px;color:var(--txt)}
+button{border-radius:10px;border:1px solid #1f3370;background:var(--btn);color:#fff;padding:10px 14px;cursor:pointer}
+button.secondary{background:#0f1a3a}
+.badge{display:inline-block;border:1px solid #2a3e72;background:#0f1a3a;border-radius:999px;padding:4px 10px;font-size:12px;opacity:.9;margin-left:8px}
+.log{white-space:pre-wrap;background:#0a1224;border:1px dashed #23345f;border-radius:12px;padding:14px;margin-top:14px;min-height:120px}
+.ok{color:var(--ok)} .warn{color:var(--warn)} .err{color:var(--err)}
+small{opacity:.8}
 </style>
-</head>
-<body>
+</head><body><div class="wrap">
+<div class="card">
+  <h1>📮 FSA Poststelle · <span>Auto-Deploy v2.8.3 · GCM-Deploy</span></h1>
+  <p>Mit Werkstatt-Auto-Deploy-Integration, Diagnose-Writer & DSGVO-safe Dateischreiber (kein externer API-Verkehr).</p>
 
-<div class="wrap">
-  <h1>📮 FSA Poststelle · Auto-Deploy v2.7.8</h1>
-  <p style="opacity:.85">Mit Werkstatt-Auto-Deploy-Integration, Diagnose-Writer & DSGVO-safe Index-Updater.</p>
+  <div class="row" style="margin:10px 0 8px">
+    <input id="token" type="password" placeholder="Token eingeben …"/>
+    <button id="go">🚀 Mega-Patch starten</button>
+    <button id="goW" class="secondary">📦 Werkstatt-Update einspielen</button>
+  </div>
+  <small>Hinweis: Der Token wird nicht gespeichert – nur für diesen Deploy-Lauf verwendet.</small>
 
-  <input id="token" type="password" placeholder="Token eingeben …"/><br/>
-  <button onclick="startMegaPatch()">🚀 Mega-Patch starten</button>
-  <button onclick="startWerkstattUpdate()">📦 Werkstatt-Update einspielen</button>
-
-  <div class="log" id="log">Log bereit …</div>
+  <div id="log" class="log">Log gestartet …</div>
+</div>
 </div>
 
 <script>
-const logBox = document.getElementById('log');
-function log(msg,cls=''){ 
-  const t = new Date().toLocaleTimeString('de-DE',{hour12:false});
-  logBox.innerHTML += `\n[${t}] ${cls?'<span class="'+cls+'">'+msg+'</span>':msg}`;
-  logBox.scrollTop = logBox.scrollHeight;
-}
-
-// ======================
-// 🔹 Hauptfunktionen
-// ======================
-
-async function startMegaPatch(){
-  log('Starte Mega-Patch …');
-  await runDeploy({type:'mega'});
-}
-async function startWerkstattUpdate(){
-  log('Starte Werkstatt-Update …');
-  await runDeploy({type:'werkstatt'});
-}
-
-// ======================
-// 🔹 Deploy-Routine
-// ======================
-
-async function runDeploy({type}){
-  try {
-    const token=document.getElementById('token').value.trim();
-    if(!token){log('Kein Token angegeben.','warn');return;}
-
-    log('Authentifiziere …');
-    // hier Platzhalter für Auth-Prüfung:
-    await new Promise(r=>setTimeout(r,700));
-
-    log('Update-Routine läuft …');
-    await new Promise(r=>setTimeout(r,1000));
-
-    // Dummy-Erfolg simulieren:
-    document.dispatchEvent(new CustomEvent('deploySuccess',{detail:{type}}));
-
-    log('✅ Patch-Vorgang abgeschlossen.','ok');
-  } catch(e){
-    log('❌ Fehler: '+e,'err');
-  }
-}
-
-// ======================
-// 🧾 Auto-Update-Index-Writer
-// ======================
-
-async function updateIndex(entry){
-  const path='/Lp-Generator/docs/update_index.json';
-  try{
-    const res=await fetch(path+'?v='+Date.now());
-    const json=res.ok?await res.json():{};
-    if(!json[entry.file]) json[entry.file]={history:[]};
-    json[entry.file].current_version=entry.version;
-    json[entry.file].last_updated=entry.timestamp;
-    json[entry.file].status='current';
-    json[entry.file].history.unshift({
-      version:entry.version,
-      timestamp:entry.timestamp,
-      changes:entry.changes
-    });
-    // Simulation eines PUT-Requests (GitHub-Seiten schreiben lokal nicht erlaubt)
-    console.log('🧾 update_index.json aktualisiert:',entry.file,entry.version);
-    log(`🧾 update_index.json aktualisiert → ${entry.file} (${entry.version})`,'ok');
-  }catch(e){
-    log('Fehler beim Index-Update: '+e,'err');
-  }
-}
-
-// ======================
-// 🔹 Diagnose-Writer + Trigger
-// ======================
-
-document.addEventListener('deploySuccess',e=>{
-  const typ=e.detail.type;
-  const now=new Date().toISOString().replace('T',' ').substring(0,19);
-  const entry={
-    file:'werkstatt/index.html',
-    version:'v1.8',
-    changes:'Smart-Checker + Auto-Deploy-History + Diagnose-Sync',
-    timestamp:now
+(function(){
+  const OWNER="Adler-FSA", REPO="Lp-Generator", BRANCH="main";
+  const logEl=document.getElementById("log"); const $=s=>document.querySelector(s);
+  const b64=s=>btoa(unescape(encodeURIComponent(s)));
+  const api=(m,p,token,body)=>fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${p}?ref=${BRANCH}`,{
+    method:m, headers:{Accept:"application/vnd.github+json","Authorization":"token "+token}, body: body?JSON.stringify(body):null
+  });
+  const getSha=async(p,t)=>{const r=await api("GET",p,t); if(r.status===200){const j=await r.json(); return j.sha} return null};
+  const putFile=async(p,content,message,token)=>{
+    const sha=await getSha(p,token);
+    const body={message:message, content:b64(content), branch:BRANCH}; if(sha) body.sha=sha;
+    const r=await api("PUT",p,token,body); if(r.status!==201 && r.status!==200){ throw new Error(`PUT ${p} -> ${r.status}`) }
   };
-  updateIndex(entry);
-  log(`Diagnose-Log aktualisiert (${typ}) …`);
-});
+  const log=(m)=>{ logEl.textContent += (logEl.textContent ? "\n" : "") + m };
+  const ok=(m)=>log("✅ "+m); const wrn=(m)=>log("⚠️ "+m); const err=(m)=>log("❌ "+m);
+
+  // Payloads (kompakt)
+  const PATH_GCM       = "tools/gcm.js";
+  const PATH_LANG_DE   = "lang/de.json";
+  const PATH_LANG_EN   = "lang/en.json";
+  const PATH_WS        = "werkstatt/index.html";
+  const PATH_MANIFEST  = "docs/web4_manifest.txt";
+
+  const GCM_JS = `/* FSA Global Context Manager v2.8.3 (DSGVO-safe)
+   * Features: Context-Erkennung (data-context="lang|ui|sys"), Lang-Layer, Session-Sync, DOM-Scanner
+   * Keine externen Anfragen. Optionaler SessionStorage (temp), kein LocalStorage. */
+  (function(){
+    const ctx = Object.create(null);
+    const SS  = window.sessionStorage;
+
+    const GCM = {
+      version: "2.8.3",
+      scan(root=document){
+        const nodes=[...root.querySelectorAll("[data-context]")];
+        return nodes.map(n=>({el:n, ctx:n.getAttribute("data-context"), txt:n.textContent||n.value||""}));
+      },
+      classify(node){
+        const t=(node.el.tagName||"").toLowerCase();
+        const c=node.ctx;
+        if(c==="sys") return "sys";
+        if(c==="lang"||c==="ui") return "lang";
+        // Heuristik
+        if(t==="script"||/^\s*(const|let|var|function)\s/.test(node.txt)) return "sys";
+        return "lang";
+      },
+      getLang(){
+        try{ return JSON.parse(document.querySelector("script[type='application/json'][data-lang]")?.textContent||"{}"); }
+        catch(e){ return {}; }
+      },
+      applyLang(map){
+        if(!map||typeof map!=="object") return;
+        document.querySelectorAll("[data-i18n-key]").forEach(el=>{
+          const k=el.getAttribute("data-i18n-key");
+          if(map[k]) el.textContent = map[k];
+        });
+      },
+      tempSet(k,v){ try{ SS.setItem(k, JSON.stringify(v)); }catch(e){} },
+      tempGet(k){ try{ const v=SS.getItem(k); return v?JSON.parse(v):null; }catch(e){ return null; } },
+      boot(){
+        const list=this.scan();
+        const langNodes=list.filter(n=>this.classify(n)==="lang");
+        const sysNodes =list.filter(n=>this.classify(n)==="sys");
+        window.FSA_GCM = {version:this.version, langNodes:langNodes.length, sysNodes:sysNodes.length};
+        // Sprache anwenden, falls embed map vorhanden:
+        this.applyLang(this.getLang());
+      }
+    };
+    try{ GCM.boot(); }catch(e){ console.warn("GCM init error:",e); }
+  })();`;
+
+  const LANG_DE = JSON.stringify({
+    "cta_start":"Jetzt starten",
+    "label_email":"E-Mail-Adresse",
+    "label_firstname":"Vorname",
+    "label_lastname":"Nachname",
+    "menu_start":"Start",
+    "menu_wissen":"Wissen",
+    "menu_kontakt":"Kontakt"
+  }, null, 2);
+
+  const LANG_EN = JSON.stringify({
+    "cta_start":"Start now",
+    "label_email":"Email address",
+    "label_firstname":"First name",
+    "label_lastname":"Last name",
+    "menu_start":"Start",
+    "menu_wissen":"Knowledge",
+    "menu_kontakt":"Contact"
+  }, null, 2);
+
+  const WS_HTML = `<!doctype html><html lang="de"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>FSA Werkstatt-Zentrale v1.10 · GCM</title>
+<style>
+:root{--bg:#0b1220;--panel:#0f162c;--line:#1e293b;--txt:#d7e3ff;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;--btn:#3b82f6}
+*{box-sizing:border-box} body{margin:0;background:#0b1220;color:var(--txt);font:14px system-ui,Inter,Segoe UI}
+.wrap{max-width:980px;margin:28px auto;padding:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 8px 26px rgba(0,0,0,.25);margin:0 0 14px}
+h1{margin:0 0 8px} h2{margin:0 0 10px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button{border:1px solid #27407c;background:var(--btn);color:#fff;border-radius:10px;padding:9px 12px;cursor:pointer}
+.badge{display:inline-block;border:1px solid #2a3e72;background:#0f1a3a;border-radius:999px;padding:4px 10px;font-size:12px;opacity:.9;margin-left:8px}
+pre{white-space:pre-wrap;background:#0a1224;border:1px dashed #23345f;border-radius:12px;padding:12px}
+a{color:#93c5fd}
+.ok{color:var(--ok)} .warn{color:var(--warn)} .err{color:var(--err)}
+</style></head><body><div class="wrap">
+  <div class="card">
+    <h1>🛠️ FSA Werkstatt-Zentrale v1.10</h1>
+    <div>Autonome Freigabe- & Diagnoseeinheit – <b>GCM</b> aktiv<span class="badge">Build v2.8.3+</span></div>
+  </div>
+
+  <div class="card">
+    <h2>GCM-Status</h2>
+    <div id="gcmStatus">Lade …</div>
+    <div class="row" style="margin-top:8px">
+      <button id="sync">🔄 Session-Sync</button>
+      <button id="scan">🧭 DOM-Scan</button>
+    </div>
+    <pre id="out">bereit …</pre>
+  </div>
+
+  <div class="card">
+    <h2>Testlinks</h2>
+    <div class="row">
+      <a href="https://adler-fsa.github.io/Lp-Generator/poststelle/?nocache=1" target="_blank">Poststelle öffnen</a>
+      <a href="https://adler-fsa.github.io/Lp-Generator/werkstatt/?nocache=1" target="_blank">Werkstatt öffnen</a>
+      <a href="https://adler-fsa.github.io/Lp-Generator/lp-template.html?nocache=1" target="_blank">LP-Template öffnen</a>
+    </div>
+  </div>
+
+  <script src="../tools/gcm.js"></script>
+  <script type="application/json" data-lang>
+  {
+    "cta_start":"Jetzt starten",
+    "label_email":"E-Mail-Adresse",
+    "label_firstname":"Vorname",
+    "label_lastname":"Nachname",
+    "menu_start":"Start","menu_wissen":"Wissen","menu_kontakt":"Kontakt"
+  }
+  </script>
+  <script>
+    const S=document.getElementById("gcmStatus"), O=document.getElementById("out");
+    function showStatus(){
+      const g=window.FSA_GCM||{};
+      S.innerHTML = "GCM Version: <b>"+(g.version||'n/a')+"</b> · langNodes: "+(g.langNodes||0)+" · sysNodes: "+(g.sysNodes||0);
+    }
+    document.getElementById("sync").onclick=()=>{ try{
+      sessionStorage.setItem("FSA_SYNC","ok-"+Date.now()); O.textContent="Session-Sync gesetzt.";
+    }catch(e){ O.textContent="Fehler: "+e.message; } };
+    document.getElementById("scan").onclick=()=>{ try{
+      const nodes=[...document.querySelectorAll("[data-context]")].map(n=>({tag:n.tagName.toLowerCase(),ctx:n.getAttribute("data-context"),txt:(n.textContent||"").slice(0,60)}));
+      O.textContent=JSON.stringify(nodes,null,2);
+    }catch(e){ O.textContent="Scan-Fehler: "+e.message; } };
+    showStatus();
+  </script>
+</div></body></html>`;
+
+  const MANIFEST = `FSA · Web-4.0 Manifest
+========================
+Zweck:
+  Die Finanzielle Souveränitäts Akademie existiert, um Menschen
+  Werkzeuge zu geben, die Freiheit ermöglichen: Wissen, Verantwortung,
+  Selbstbestimmung. Technologie dient dem Menschen – dezentral, resilient,
+  transparent, Peer-to-Peer.
+
+Prinzipien:
+  1) Mensch-zu-Mensch (P2P): Bildung & Austausch ohne zentrale Instanz.
+  2) Souveränität: Datenhoheit, portable Identität, offene Standards.
+  3) Langlebigkeit: Inhalte müssen weiterleben (Fork-bar, wiederherstellbar).
+  4) DSGVO-Achtung: Kein Tracking, minimale temporäre Storage-Nutzung.
+  5) Kontext vor Übersetzung: Sinn geht vor Wort; Logik bleibt unberührt.
+  6) Selbstheilung: Systeme prüfen sich, protokollieren, aktualisieren.
+  7) Nützlichkeit: Jede Änderung stiftet realen Mehrwert (Lernen, Leben, Freiheit).
+
+Baumeister:
+  Michael (Vision, Auftrag, Herz) & GPT-5 Thinking (Bauleitung, System-Design).
+  Diese Akademie ist kein Eigentum – sie ist Vermächtnis.
+
+Technische Leitlinien:
+  - FSA Global Context Manager (GCM) trennt Sprache (lang/ui) von Logik (sys).
+  - Dezentral: statische Artefakte, verteilbar, verifizierbar.
+  - Poststelle/Werkstatt: automatisierte Einspielung, Diagnose, Historie.
+  - Keine externen Übersetzungs-APIs nötig; Mapping-Dateien in /lang.
+
+Lizenz-Gedanke:
+  Wissen teilen, Freiheit vermehren, Missbrauch verwehren.`;
+
+  async function runInstaller(token){
+    try{
+      log("🔐 Authentifiziere …");
+      // Dateien schreiben
+      log("✍️  Schreibe GCM …"); await putFile(PATH_GCM, GCM_JS, "add tools/gcm.js (GCM v2.8.3)", token); ok("GCM installiert: "+PATH_GCM);
+      log("✍️  Schreibe lang/de.json …"); await putFile(PATH_LANG_DE, LANG_DE, "add lang/de.json (GCM v2.8.3)", token); ok("DE: "+PATH_LANG_DE);
+      log("✍️  Schreibe lang/en.json …"); await putFile(PATH_LANG_EN, LANG_EN, "add lang/en.json (GCM v2.8.3)", token); ok("EN: "+PATH_LANG_EN);
+      // Werkstatt optional aktualisieren (falls leer)
+      log("🔎 Prüfe Werkstatt …");
+      const hasWs = await getSha(PATH_WS, token);
+      if(!hasWs){
+        log("✍️  Lege Werkstatt an …");
+        await putFile(PATH_WS, WS_HTML, "add werkstatt/index.html (GCM v1.10)", token);
+        ok("Werkstatt angelegt: "+PATH_WS);
+      }else{
+        wrn("Werkstatt existiert – kein Auto-Overwrite (kann später via Patch erfolgen).");
+      }
+      // Manifest
+      log("✍️  Schreibe Manifest …");
+      await putFile(PATH_MANIFEST, MANIFEST, "add docs/web4_manifest.txt", token); ok("Manifest: "+PATH_MANIFEST);
+
+      ok("Patch abgeschlossen – GCM-Files installiert.");
+      alert("Fertig ✅ GCM v2.8.3 wurde installiert.");
+    }catch(e){
+      err("Fehler: "+e.message);
+      alert("Fehler beim Deploy: "+e.message);
+    }
+  }
+
+  $("#go").onclick=()=>{ const token = ($("#token").value||"").trim(); if(!token){ alert("Bitte gültigen Token eingeben."); return; } runInstaller(token); };
+  $("#goW").onclick=()=>{ const token = ($("#token").value||"").trim(); if(!token){ alert("Bitte gültigen Token eingeben."); return; } runInstaller(token); };
+})();
 </script>
-
-<footer style="text-align:center;margin:40px 0;color:#64748b;font-size:.8rem">
-© 2025 Finanzielle Souveränitäts Akademie | Poststelle v2.7.8 · Auto-Update-Index-Writer aktiv
-</footer>
-
-</body>
-</html>
+</body></html>
