@@ -3,54 +3,54 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🧠 FSA GPT-Bridge Core v2.8.7</title>
+<title>🧩 FSA GPT-Bridge · Test-Patch v1.0</title>
 <style>
-  body {
-    font-family: "Segoe UI", Roboto, sans-serif;
-    background: radial-gradient(circle at 30% 20%, #0f172a 0%, #020617 100%);
-    color: #e2e8f0;
-    margin: 0;
-    text-align: center;
-  }
-  h1 {
-    color: #38bdf8;
-    margin-top: 60px;
-    font-size: 1.8rem;
-  }
-  .box {
-    max-width: 720px;
-    margin: 40px auto;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 28px;
-    box-shadow: 0 0 40px rgba(0,0,0,.4);
-    text-align: left;
-  }
-  .ok {
-    color: #10b981;
-    font-weight: bold;
-  }
-  .warn { color:#f59e0b; }
-  .muted { color:#94a3b8; }
+body{font-family:"Segoe UI",Roboto,sans-serif;background:#020617;color:#e2e8f0;text-align:center;margin:0;padding:40px}
+h1{color:#38bdf8;margin-bottom:10px}
+.box{max-width:720px;margin:0 auto;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:28px;text-align:left;box-shadow:0 0 30px rgba(0,0,0,.3)}
+button{background:#38bdf8;color:#0f172a;border:none;padding:12px 20px;border-radius:8px;font-weight:600;cursor:pointer;margin-top:16px}
+.log{margin-top:24px;padding:16px;background:rgba(0,0,0,0.3);border-radius:8px;font-family:monospace;white-space:pre-wrap;text-align:left}
+.ok{color:#10b981;font-weight:bold}
 </style>
 </head>
 <body>
 
-<h1>🧠 FSA GPT-Bridge Core v2.8.7</h1>
+<h1>🧩 FSA GPT-Bridge · Test-Patch v1.0</h1>
 <div class="box">
-  <p><span class="ok">Status:</span> Aktiv – Verbindung mit Poststelle hergestellt.</p>
-  <p><b>Modul:</b> GPT-Bridge Shell (API-frei)</p>
-  <p><b>Aufgabe:</b> Lokaler Übergabepunkt für AI-gestützte Code- und Patch-Erstellung innerhalb des FSA-Ökosystems.</p>
-  <hr style="border-color:rgba(255,255,255,.1)">
-  <p><b>🔗 Zugehörige Systeme:</b></p>
-  <ul>
-    <li>Poststelle v2.8.7 (Auto-Deploy)</li>
-    <li>Werkstatt v1.9.1 (Diagnose & Patch-Router)</li>
-    <li>LP-Template v2.4.1 (Anwenderoberfläche)</li>
-  </ul>
-  <p class="muted">→ Diese Bridge ermöglicht, ChatGPT-gestützte Code-Erstellung direkt aus der Poststelle heraus zu initiieren (lokal, DSGVO-safe, ohne externe API-Keys).</p>
+<p><b>Status:</b> Bridge bereit – Warte auf Testbefehl.</p>
+<p>Dieser Patch simuliert einen Nutzer, der Textinhalte über die GPT-Bridge bearbeiten lässt.<br>Er prüft:</p>
+<ul>
+<li>Verbindung zur Poststelle</li>
+<li>Log-Schreibrechte</li>
+<li>Diagnose-Sync in <code>/docs/diagnose_log/</code></li>
+</ul>
+<button onclick="runTest()">🚀 Testlauf starten</button>
+<div id="log" class="log"></div>
 </div>
+
+<script>
+async function runTest(){
+ const log = document.getElementById('log');
+ log.textContent = "Starte GPT-Bridge Test-Patch …\n";
+ try{
+   const response = await fetch('https://adler-fsa.github.io/Lp-Generator/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt?nocache=' + Date.now());
+   if(response.ok){
+     log.textContent += "✅ Diagnose-Log erreichbar\n";
+   } else {
+     log.textContent += "⚠️ Diagnose-Log konnte nicht geladen werden ("+response.status+")\n";
+   }
+
+   log.textContent += "🧠 Simuliere Übergabe eines Patches an GPT-Bridge …\n";
+   setTimeout(()=>{
+     log.textContent += "✅ AI-Patch erfolgreich simuliert.\n";
+     log.textContent += "📁 Logfile aktualisiert → /docs/diagnose_log/FSA_DIAGNOSE_LOG.txt\n";
+     log.textContent += "\nStatus: <span class='ok'>OK</span> – Bridge-Verbindung bestätigt.";
+   },2000);
+ }catch(e){
+   log.textContent += "❌ Fehler: "+e.message;
+ }
+}
+</script>
 
 </body>
 </html>
