@@ -1,253 +1,214 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, initial-scale=1" />
-  <title>FSA Werkstatt-Zentrale v1.8</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FSA Werkstatt-Zentrale v1.9 · Update-Monitor</title>
   <style>
     :root{
-      --bg:#0b1220;--card:#0f1b2d;--muted:#b8c7e0;--ok:#22c55e;--warn:#f59e0b;--err:#ef4444;
-      --link:#7dd3fc;--ink:#e5edff;--line:#1e2a44;--badge:#17233a;--accent:#60a5fa;
+      --bg:#0b1220;--panel:#101a2b;--text:#e6f2ff;--muted:#9db4cc;
+      --ok:#1fdf64;--warn:#ffbd2e;--err:#ff4d4d;--cold:#7a8aa0;--line:#14233a;
+      --btn:#2486ff;--btn2:#1f6edc;--chip:#0f2138;
+      --shadow:0 8px 28px rgba(0,0,0,.25);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+      --round:12px;
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,Segoe UI,Roboto,Arial}
-    a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
-    .wrap{max-width:1100px;margin:40px auto;padding:16px}
-    .head{display:flex;align-items:center;gap:12px;margin:8px 0 18px}
+    html,body{height:100%}
+    body{
+      margin:0;background:linear-gradient(180deg,#09101e 0%,#0b1220 100%);
+      color:var(--text);font-family: system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;}
+    .wrap{max-width:1100px;margin:40px auto 80px;padding:0 20px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--round);box-shadow:var(--shadow)}
+    .head{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;gap:18px;align-items:center}
     .head h1{margin:0;font-size:22px}
-    .sub{color:var(--muted);font-size:13px;margin-bottom:18px}
-    .grid{display:grid;gap:16px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 6px 22px rgba(0,0,0,.18)}
-    .card .hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
-    .card .hd h2{margin:0;font-size:16px}
-    .card .bd{padding:16px}
-    .table{width:100%;border-collapse:collapse}
-    .table th,.table td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}
-    .pill{display:inline-flex;align-items:center;gap:8px;background:var(--badge);border:1px solid var(--line);border-radius:20px;padding:6px 10px}
-    .s-ok{color:var(--ok)} .s-warn{color:var(--warn)} .s-err{color:var(--err)} .s-muted{color:var(--muted)}
-    .btn{appearance:none;border:1px solid var(--line);background:#122441;color:var(--ink);padding:8px 12px;border-radius:10px;cursor:pointer}
-    .btn:hover{border-color:#274068}
-    .btn.primary{background:#143054;border-color:#1e4a83}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-    textarea.log{width:100%;min-height:140px;background:#0b1526;border:1px solid var(--line);border-radius:8px;color:var(--ink);padding:10px}
-    .kvs{display:grid;grid-template-columns:150px 1fr;gap:10px;margin:8px 0}
-    .copy{font-size:12px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#13233f;color:var(--ink);cursor:pointer}
-    .chips{display:flex;gap:8px;flex-wrap:wrap}
-    .chip{background:#13233f;border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-size:12px}
-    .footer{margin:18px 0;color:var(--muted);font-size:12px}
-    @media (max-width:700px){ .kvs{grid-template-columns:1fr} }
+    .tag{font-size:12px;color:var(--muted);padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--chip)}
+    .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+    .controls{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;gap:12px;flex-wrap:wrap}
+    button, .btn{
+      appearance:none;border:0; border-radius:10px; padding:10px 14px; cursor:pointer;
+      background:var(--btn); color:white; font-weight:600; box-shadow:0 4px 14px rgba(36,134,255,.25);
+    }
+    button.secondary{background:#132641;color:#cfe3ff;border:1px solid var(--line)}
+    button:disabled{opacity:.6;cursor:not-allowed}
+    .muted{color:var(--muted)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+    th{color:#cfe3ff;text-align:left;font-weight:700;background:#0f1a2c;position:sticky;top:0}
+    tr:hover td{background:#0f1a2c}
+    .mono{font-family:var(--mono);font-size:12px}
+    .grid{padding:10px 12px}
+    .status{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid var(--line)}
+    .g{background:rgba(31,223,100,.08); color:var(--ok); }
+    .y{background:rgba(255,189,46,.08); color:var(--warn); }
+    .r{background:rgba(255,77,77,.08); color:var(--err); }
+    .s{background:rgba(122,138,160,.08); color:var(--cold); }
+    .pill{font-size:11px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#0e1d33;color:#cfe3ff}
+    a{color:#6bb3ff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .footer{margin-top:16px;color:#9db4cc;font-size:12px}
+    .log{white-space:pre-wrap;background:#0e1a2e;border-top:1px solid var(--line);padding:12px;border-radius:0 0 var(--round) var(--round);max-height:220px;overflow:auto}
+    .inline{display:inline-flex;gap:8px;align-items:center}
+    .right{margin-left:auto}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="head">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 7h18M6 7l2 12h8l2-12" stroke="#7dd3fc" stroke-width="1.5"/><path d="M9 7V5a3 3 0 0 1 6 0v2" stroke="#7dd3fc" stroke-width="1.5"/></svg>
-      <h1>FSA Werkstatt-Zentrale v1.8</h1>
-    </div>
-    <div class="sub">Autonome Freigabe- & Diagnoseeinheit · <span class="s-muted">Build v2.7.7+ · Smart-Checker · Auto-Deploy-History · Diagnose-Sync</span></div>
-
-    <!-- MODULE -->
     <div class="card">
-      <div class="hd"><h2>Module</h2></div>
-      <div class="bd">
-        <table class="table">
-          <thead><tr><th>Modul</th><th>Status</th><th>Aktion</th></tr></thead>
-          <tbody>
-            <tr><td>📮 Poststelle</td><td><span class="s-ok">aktiv</span></td><td><a href="https://adler-fsa.github.io/Lp-Generator/poststelle/" target="_blank">Öffnen</a></td></tr>
-            <tr><td>🧠 Patch-Manager</td><td><span class="s-ok">aktiv</span></td><td><a href="https://adler-fsa.github.io/Lp-Generator/tools/patch-manager.html" target="_blank">Code</a></td></tr>
-            <tr><td>✒️ LP-Generator</td><td><span class="s-ok">aktiv</span></td><td><a href="https://adler-fsa.github.io/Lp-Generator/lp-template.html" target="_blank">Template</a></td></tr>
-            <tr><td>📦 Backup-Archiv</td><td><span class="s-ok">aktiv</span></td><td><a href="https://adler-fsa.github.io/Lp-Generator/BACKUP_INFO.txt" target="_blank">Info</a></td></tr>
+      <div class="head">
+        <h1>🛠️ FSA Werkstatt-Zentrale v1.9 · Update-Monitor</h1>
+        <span class="tag">Build v2.7.8+ · DSGVO-safe</span>
+        <span class="right tag">Quelle: <code class="mono">/docs/update_index.json</code></span>
+      </div>
+
+      <div class="controls">
+        <div class="inline">
+          <button id="btnRefresh">Aktualisieren</button>
+          <button id="btnSync" class="secondary" title="Werkstatt ↔ Poststelle & LP-Generator">System synchronisieren</button>
+        </div>
+        <div class="inline">
+          <label class="muted">Schwelle „veraltet“:
+            <select id="thresh">
+              <option value="7">7 Tage</option>
+              <option value="14" selected>14 Tage</option>
+              <option value="30">30 Tage</option>
+            </select>
+          </label>
+        </div>
+        <div class="inline">
+          <span class="pill">🟢 aktuell</span>
+          <span class="pill">🟡 veraltet</span>
+          <span class="pill">⚪ nie</span>
+          <span class="pill">🔴 Fehler</span>
+        </div>
+        <div class="right inline">
+          <button id="btnOpenPost" class="secondary" onclick="openLink('/Lp-Generator/poststelle/')">Poststelle öffnen</button>
+          <button class="secondary" onclick="openLink('/Lp-Generator/lp-template.html')">LP-Template öffnen</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <table id="tbl">
+          <thead>
+            <tr>
+              <th style="width:34%">Datei / Seite</th>
+              <th style="width:14%">Version</th>
+              <th style="width:18%">Zuletzt aktualisiert</th>
+              <th style="width:12%">Status</th>
+              <th>Aktion</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="5" class="muted">Lade Index …</td></tr>
           </tbody>
         </table>
       </div>
+
+      <div class="log mono" id="log">Log geöffnet …</div>
     </div>
 
-    <!-- COMMIT RULE 3.0 -->
-    <div class="card">
-      <div class="hd"><h2>Commit-Regelhilfe 3.0</h2></div>
-      <div class="bd">
-        <div class="chips" style="margin-bottom:10px">
-          <span class="chip">1) Pfadangaben</span>
-          <span class="chip">2) Commit-Nachrichten</span>
-          <span class="chip">3) Upload-Reihenfolge</span>
-          <span class="chip">4) Test-Schritte</span>
-          <span class="chip">5) Bereitstellung</span>
-        </div>
-
-        <div class="kvs">
-          <div class="s-muted">Commit Message</div>
-          <div class="row">
-            <input id="cm" class="mono" style="flex:1;min-width:300px;padding:8px;border-radius:8px;border:1px solid var(--line);background:#0b1526;color:var(--ink)" value="Werkstatt-Zentrale v1.8 – Smart-Checker + Auto-Deploy-History + Diagnose-Sync" />
-            <button class="copy" data-copy="#cm">kopieren</button>
-          </div>
-
-          <div class="s-muted">Beschreibung</div>
-          <div class="row">
-            <textarea id="cd" class="mono" style="flex:1;min-height:90px;border-radius:8px;background:#0b1526;border:1px solid var(--line);color:var(--ink)">Adds Smart-Checker (erkennt HTML/404/Timeout & zeigt Klartext), Auto-Deploy-History (liest letzte Ereignisse aus /docs/diagnose_log/FSA_DIAGNOSE_LOG.txt), Diagnose-Sync und aktive Testlinks. DSGVO-safe (kein persistenter Storage, nur Reads + optionale Session-Sync).</textarea>
-            <button class="copy" data-copy="#cd">kopieren</button>
-          </div>
-        </div>
-      </div>
+    <div class="footer">
+      © 2025 Finanzielle Souveränitäts Akademie · Werkstatt-Zentrale v1.9 · Update-Monitor aktiv
     </div>
-
-    <!-- AUTO-DEPLOY STATUS -->
-    <div class="card">
-      <div class="hd">
-        <h2>Auto-Deploy Status</h2>
-        <div class="row">
-          <button id="check" class="btn">Version jetzt prüfen</button>
-          <a class="btn primary" href="https://adler-fsa.github.io/Lp-Generator/poststelle/?nocache=1" target="_blank">Poststelle testen</a>
-        </div>
-      </div>
-      <div class="bd">
-        <div class="row" style="margin-bottom:8px">
-          <div class="pill">Quelle: <span class="mono" id="src">/Lp-Generator/poststelle/</span></div>
-          <div class="pill">Ergebnis: <span id="res" class="s-muted">–</span></div>
-        </div>
-        <textarea id="raw" class="log mono" placeholder="Antwort der Quelle …"></textarea>
-      </div>
-    </div>
-
-    <!-- DEPLOY HISTORY + DIAGNOSE -->
-    <div class="grid" style="grid-template-columns:1fr 1fr">
-      <div class="card">
-        <div class="hd">
-          <h2>Auto-Deploy-History</h2>
-          <div class="row">
-            <button id="histRefresh" class="btn">Aktualisieren</button>
-            <button id="histAuto" class="btn">Auto-Refresh: aus</button>
-          </div>
-        </div>
-        <div class="bd">
-          <div class="s-muted" style="margin-bottom:6px">Quelle (read-only): <span class="mono">/Lp-Generator/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt</span></div>
-          <table class="table" id="hist">
-            <thead><tr><th>Zeit</th><th>Ereignis</th><th>Status</th></tr></thead>
-            <tbody><tr><td colspan="3" class="s-muted">Lade …</td></tr></tbody>
-          </table>
-          <div class="row" style="margin-top:8px">
-            <a class="btn" target="_blank" href="https://adler-fsa.github.io/Lp-Generator/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt">Log im neuen Tab öffnen</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="hd"><h2>Aktive Testlinks</h2></div>
-        <div class="bd">
-          <div class="row" style="margin-bottom:8px">
-            <a class="btn" target="_blank" href="https://adler-fsa.github.io/Lp-Generator/werkstatt/">Werkstatt öffnen</a>
-            <a class="btn" target="_blank" href="https://adler-fsa.github.io/Lp-Generator/poststelle/">Poststelle öffnen</a>
-            <a class="btn" target="_blank" href="https://adler-fsa.github.io/Lp-Generator/lp-template.html">LP-Template öffnen</a>
-          </div>
-          <div class="s-muted">Hinweis: Links sind öffentlich lesbar; es werden keine Tokens, PII oder persistente Daten verwendet.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer">© 2025 Finanzielle Souveränitäts Akademie · Werkstatt-Zentrale v1.8 · Smart-Checker & History aktiv</div>
   </div>
 
-  <script>
-    // --- helpers
-    const $ = sel => document.querySelector(sel);
-    const $$ = sel => Array.from(document.querySelectorAll(sel));
-    $$(".copy").forEach(btn=>{
-      btn.addEventListener("click",()=>{
-        const inp = document.querySelector(btn.dataset.copy);
-        inp.select?.(); inp.setSelectionRange?.(0, 99999);
-        navigator.clipboard.writeText(inp.value || inp.textContent || "");
-        btn.textContent = "kopiert";
-        setTimeout(()=>btn.textContent="kopieren",1200);
-      });
-    });
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+  const log = (m) => { const el = $("#log"); el.textContent += "\\n" + m; el.scrollTop = el.scrollHeight; };
 
-    // --- Smart Checker (Poststelle-Version)
-    async function smartCheck(){
-      const resEl = $("#res"); const raw = $("#raw");
-      raw.value = ""; resEl.textContent = "prüfe …"; resEl.className = "s-muted";
-      try{
-        const url = "https://adler-fsa.github.io/Lp-Generator/poststelle/";
-        const r = await fetch(url, { method:"GET", cache:"no-store" });
-        const ctype = r.headers.get("content-type") || "";
-        const text = await r.text();
-        raw.value = text.substring(0, 5000);
+  const SRC = "/docs/update_index.json";           // Auto-Writer der Poststelle
+  const FALLBACK_SRC = "/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt"; // Nur Info, nicht gerendert
+  let thresholdDays = 14;
 
-        // if JSON & has version
-        if(ctype.includes("application/json")){
-          try{
-            const j = JSON.parse(text);
-            if(j.version){ resEl.textContent = "Poststelle " + j.version; resEl.className="s-ok"; return; }
-          }catch(_){}
-        }
+  $("#thresh").addEventListener("change", e => {
+    thresholdDays = parseInt(e.target.value,10);
+    render(window.__DATA || []);
+  });
 
-        // HTML fallback or 404 markup
-        if(ctype.includes("text/html") || text.includes("<!DOCTYPE")){
-          resEl.textContent = "Version unbekannt (HTML/404-Fallback)";
-          resEl.className = "s-warn";
-          return;
-        }
+  $("#btnRefresh").addEventListener("click", () => load());
+  $("#btnSync").addEventListener("click", () => {
+    log("🔗 Synchronisation angestoßen (simuliert) …");
+    // Platzhalter – echte Syncs übernehmen Poststelle & Auto-Deploy
+    setTimeout(()=>log("✅ Sync ok – Komponenten verbunden."),700);
+  });
 
-        resEl.textContent = "Unbekannte Antwort (kein JSON/HTML)";
-        resEl.className = "s-warn";
-      }catch(e){
-        $("#raw").value = String(e);
-        $("#res").textContent = "Fehler beim Abruf";
-        $("#res").className = "s-err";
-      }
+  window.openLink = (path) => window.open(path, "_blank","noopener");
+
+  function statusBadge(ts, err){
+    if (err) return `<span class="status r">🔴 Fehler</span>`;
+    if (!ts) return `<span class="status s">⚪ nie</span>`;
+    const age = (Date.now() - ts)/86400000;
+    if (age <= thresholdDays) return `<span class="status g">🟢 aktuell</span>`;
+    return `<span class="status y">🟡 veraltet</span>`;
+  }
+
+  function fmt(ts){
+    if(!ts) return "–";
+    const d = new Date(ts);
+    return d.toLocaleString("de-DE");
+  }
+
+  function linkify(p){ return `<a href="${p}" target="_blank" rel="noopener">${p}</a>`; }
+
+  function render(rows){
+    const tb = $("#tbody"); tb.innerHTML = "";
+    if (!rows.length){
+      tb.innerHTML = `<tr><td colspan="5" class="muted">Kein Index gefunden. Poststelle ausführen, damit <code class="mono">${SRC}</code> erzeugt/aktualisiert wird.</td></tr>`;
+      return;
     }
-    $("#check").addEventListener("click", smartCheck);
-    // auto-run on load (non-blocking)
-    setTimeout(smartCheck, 300);
-
-    // --- History (Diagnose-Log)
-    const LOG_URL = "https://adler-fsa.github.io/Lp-Generator/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt";
-    let auto = false, autoTimer=null;
-
-    function parseLog(txt){
-      const rows = [];
-      const lines = txt.split(/\r?\n/).filter(Boolean).slice(-50); // last 50
-      for(const ln of lines){
-        // expected formats (tolerant):
-        // 2025-10-08 09:50 | Patch v2.7.7 ausgelöst. | ok
-        // 2025-10-08 09:51 | Werkstatt v1.7 Auto-Deploy ausgelöst. | ok
-        const m = ln.match(/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2})\s*\|\s*(.+?)\s*\|\s*(ok|err|warn)$/i);
-        if(m) rows.push({ t:m[1], msg:m[2], st:m[3].toLowerCase() });
-        else  rows.push({ t:"–", msg:ln, st:"warn" });
-      }
-      return rows;
+    rows.sort((a,b)=> (b.updated_ts||0)-(a.updated_ts||0));
+    for (const r of rows){
+      const repo = r.repo_path ? `<a href="https://github.com/${r.repo_path}" target="_blank" rel="noopener">Repo</a>` : "—";
+      const live = r.live_url ? `<a href="${r.live_url}" target="_blank" rel="noopener">Öffnen</a>` : "—";
+      const hist = r.history_url ? `<a href="${r.history_url}" target="_blank" rel="noopener">History</a>` : "—";
+      const act = [live, repo, hist].join(" · ");
+      const ver = r.version ? `<span class="pill">v${r.version}</span>` : "—";
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><div><strong>${r.name||"Unbenannt"}</strong><div class="mono muted">${linkify(r.path||"")}</div></div></td>
+        <td>${ver}</td>
+        <td>${fmt(r.updated_ts)}</td>
+        <td>${statusBadge(r.updated_ts, r.error)}</td>
+        <td>${act}</td>`;
+      tb.appendChild(row);
     }
+  }
 
-    async function loadHistory(){
-      const tbody = $("#hist tbody");
-      tbody.innerHTML = `<tr><td colspan="3" class="s-muted">Lade …</td></tr>`;
-      try{
-        const r = await fetch(LOG_URL, { cache:"no-store" });
-        if(!r.ok){ throw new Error(r.status+" "+r.statusText); }
-        const txt = await r.text();
-        const rows = parseLog(txt);
-        if(!rows.length){ tbody.innerHTML = `<tr><td colspan="3" class="s-muted">Keine Einträge</td></tr>`; return; }
-        tbody.innerHTML = rows.reverse().slice(0,15).map(x=>{
-          const cls = x.st==="ok"?"s-ok":(x.st==="err"?"s-err":"s-warn");
-          return `<tr><td class="mono">${x.t}</td><td>${x.msg}</td><td class="${cls}">${x.st.toUpperCase()}</td></tr>`;
-        }).join("");
-      }catch(e){
-        tbody.innerHTML = `<tr><td colspan="3" class="s-err">Log konnte nicht geladen werden (${e.message})</td></tr>`;
-      }
-    }
-    $("#histRefresh").addEventListener("click", loadHistory);
-    $("#histAuto").addEventListener("click", ()=>{
-      auto = !auto;
-      $("#histAuto").textContent = "Auto-Refresh: " + (auto?"an":"aus");
-      if(auto){ loadHistory(); autoTimer = setInterval(loadHistory, 8000); }
-      else{ clearInterval(autoTimer); }
-    });
-    // first load
-    loadHistory();
-
-    // Session-Sync (optional, DSGVO-safe: tab-lokal)
+  async function load(){
+    $("#btnRefresh").disabled = true;
+    log("📥 Lade Index: " + SRC);
     try{
-      sessionStorage.setItem("FSA_WERKSTATT_PING","1");
-    }catch{}
-  </script>
+      const res = await fetch(SRC, {cache:"no-store"});
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      const json = await res.json();
+      if (!Array.isArray(json)) throw new Error("Unerwartetes Format");
+      window.__DATA = json.map(x=>{
+        // Harmonisierung (robust gegen verschiedene Writer-Versionen)
+        return {
+          name: x.name || x.title || x.path?.split("/").pop(),
+          path: x.path || x.file || "",
+          version: (x.version||"").toString().replace(/^v/i,""),
+          updated_ts: x.updated_ts || (x.updated ? Date.parse(x.updated) : 0),
+          live_url: x.live_url || x.url || "",
+          repo_path: x.repo_path || "",
+          history_url: x.history_url || ""
+        };
+      });
+      log("✅ Index geladen ("+window.__DATA.length+" Einträge).");
+      render(window.__DATA);
+    }catch(e){
+      log("❌ Konnte Index nicht laden: "+e.message);
+      render([]);
+    }finally{
+      $("#btnRefresh").disabled = false;
+    }
+  }
+
+  // Auto-Start
+  load();
+})();
+</script>
 </body>
 </html>
