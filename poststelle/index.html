@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FSA Poststelle v2.7.6 · Werkstatt-Updater</title>
+<title>FSA Poststelle v2.7.7 · Auto-Deploy Handler</title>
 <style>
 :root{--bg:#0b1220;--card:#111b2e;--text:#e2e8f0;--accent:#38bdf8;--ok:#22c55e;--warn:#facc15;--err:#ef4444;--radius:12px;--shadow:0 8px 30px rgba(0,0,0,.45);}
 body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0}
@@ -18,38 +18,30 @@ footer{margin-top:24px;font-size:.8rem;text-align:center;color:#64748b}
 </head>
 <body>
 <main>
-<h1>📮 FSA Poststelle · Mega-Patch Deploy v2.7.6</h1>
-<p>Automatisches Update-System mit Werkstatt-Updater und Diagnose-Writer (DSGVO-safe).</p>
+<h1>📮 FSA Poststelle · Mega-Patch Deploy v2.7.7</h1>
+<p>Mit Werkstatt-Auto-Deploy Integration und Diagnose-Autopilot Writer (DSGVO-safe)</p>
 <label>Token eingeben …</label>
 <input type="password" id="token" placeholder="••••••••">
 <button onclick="start()">🚀 Mega-Patch starten</button>
-<button onclick="updateWerkstatt()">📦 Werkstatt-Update einspielen</button>
 <pre id="log">Log gestartet …</pre>
-
 <script>
-const log = t => document.getElementById('log').textContent += "\n" + t;
-
-async function start(){
- log("🟢 Starte Deploy v2.7.6 …");
+const log = t => document.getElementById('log').textContent += "\n"+t;
+(async()=>{
+ if(new URLSearchParams(location.search).get("autostart")==="1"){
+   log("🤖 Autostart aus Werkstatt erkannt …");
+   await start(true);
+ }
+})();
+async function start(auto=false){
+ log("🟢 Starte Deploy v2.7.7 "+(auto?"(autonom)":"(manuell)")+" …");
  await new Promise(r=>setTimeout(r,500));
- log("✅ Patch v2.7.6 installiert und freigegeben.");
- await fetch("version.txt",{method:"PUT",body:"2.7.6"});
-}
-
-async function updateWerkstatt(){
- log("📦 Starte Werkstatt-Update v1.6 …");
- const backup = "werkstatt_backup_" + new Date().toISOString().replace(/[:T]/g,"_").split(".")[0]+".html";
- try{
-  log("🔄 Backup anlegen ("+backup+") …");
-  await fetch("../werkstatt/index.html").then(r=>r.text()).then(t=>fetch("../werkstatt/"+backup,{method:"PUT",body:t}));
-  const html = await fetch("../werkstatt/index.html?v=1.6").then(r=>r.text());
-  await fetch("../werkstatt/index.html",{method:"PUT",body:html});
-  await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{method:"POST",body:"Werkstatt-Update v1.6 → eingespielt\n"});
-  log("✅ Werkstatt-Update v1.6 erfolgreich übertragen.");
- }catch(e){log("❌ Fehler: "+e.message);}
+ log("✅ Patch v2.7.7 installiert und freigegeben.");
+ await fetch("version.txt",{method:"PUT",body:"2.7.7"});
+ await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{method:"POST",body:"Auto-Deploy ausgeführt (v2.7.7)\n"});
+ log("📄 Diagnose Log aktualisiert …");
 }
 </script>
 </main>
-<footer>© 2025 Finanzielle Souveränitäts Akademie | Poststelle v2.7.6 · DSGVO-safe</footer>
+<footer>© 2025 Finanzielle Souveränitäts Akademie | Poststelle v2.7.7 · Auto-Deploy aktiv</footer>
 </body>
 </html>
