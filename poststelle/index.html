@@ -1,6 +1,4 @@
-<!doctype html>
-<html lang="de">
-<head>
+<html lang="de"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FSA Poststelle · Auto-Deploy v2.8.7</title>
@@ -22,7 +20,7 @@
 <div class="wrap">
   <div class="card">
     <h1>📮 FSA Poststelle · Auto-Deploy v2.8.7</h1>
-    <div class="muted">Mit Werkstatt-Integration, Diagnose-Writer & DSGVO-safe AI-Patch-Import (ohne API-Keys).</div>
+    <div class="muted">Mit Werkstatt-Integration, Diagnose-Writer &amp; DSGVO-safe AI-Patch-Import (ohne API-Keys).</div>
   </div>
 
   <div class="card">
@@ -30,14 +28,14 @@
     <input id="token" type="password" placeholder="••••••••••••">
     <div class="btns">
       <button id="run">🚀 Mega-Patch starten</button>
-      <button id="sync">📦 Werkstatt-Update einspielen</button>
+      <button id="sync" disabled="">📦 Werkstatt-Update einspielen</button>
     </div>
-    <div id="aiInfo" class="muted" style="margin-top:8px;"></div>
+    <div id="aiInfo" class="muted" style="margin-top:8px;">Kein AI-Patch übergeben.</div>
   </div>
 
   <div class="card">
     <label>Log</label>
-    <textarea id="log" readonly>Log gestartet …</textarea>
+    <textarea id="log" readonly="">Log gestartet …</textarea>
   </div>
 </div>
 
@@ -125,5 +123,6 @@
   $('#sync').onclick = ()=>run("sync");
 })();
 </script>
-</body>
-</html>
+
+
+</body></html>
