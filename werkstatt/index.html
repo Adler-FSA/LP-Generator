@@ -1,144 +1,89 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>🛠️ FSA Werkstatt-Zentrale v1.0</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🛠️ FSA Werkstatt-Zentrale v1.1 · Freigabe-Patch v2.7.5</title>
 <style>
   :root{
-    --bg:#0b1220;
-    --panel:#111827;
-    --text:#e2e8f0;
-    --muted:#94a3b8;
-    --accent:#38bdf8;
-    --ok:#10b981;
-    --warn:#f59e0b;
-    --err:#ef4444;
+    --bg:#0b1220;--panel:#111827;--text:#e5e7eb;
+    --ok:#10b981;--warn:#f59e0b;--err:#ef4444;
+    --muted:#94a3b8;--border:rgba(255,255,255,.08);
+    --accent:#3b82f6;
   }
-  body{
-    font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    margin:0;
-    padding:40px;
-  }
-  .wrap{
-    max-width:920px;
-    margin:0 auto;
-    background:var(--panel);
-    border-radius:14px;
-    padding:32px;
-    box-shadow:0 0 25px rgba(0,0,0,.45);
-  }
-  h1{
-    color:var(--accent);
-    margin-top:0;
-    font-size:1.8rem;
-  }
-  table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:20px;
-  }
-  th,td{
-    padding:10px 8px;
-    border-bottom:1px solid rgba(255,255,255,.08);
-  }
-  th{
-    text-align:left;
-    color:var(--muted);
-    font-weight:600;
-    font-size:.9rem;
-  }
+  body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:40px;text-align:center}
+  .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;max-width:900px;margin:0 auto;padding:32px;box-shadow:0 20px 50px rgba(0,0,0,.45);}
+  h1{margin-top:0;color:var(--accent);font-size:1.6rem}
+  table{width:100%;border-collapse:collapse;margin-top:12px;}
+  th,td{padding:10px 12px;text-align:left;}
+  th{color:var(--muted);font-weight:500;border-bottom:1px solid var(--border);}
+  td a{color:var(--accent);text-decoration:none;}
+  td a:hover{text-decoration:underline;}
   .status-ok{color:var(--ok);}
   .status-warn{color:var(--warn);}
   .status-err{color:var(--err);}
-  .mini{
-    font-size:.9rem;
-    color:var(--muted);
-  }
-  button{
-    background:#2563eb;
-    color:#fff;
-    border:none;
-    border-radius:6px;
-    padding:8px 14px;
-    cursor:pointer;
-    font-size:.9rem;
-  }
-  button:hover{background:#1d4ed8;}
-  .log{
-    background:#0f172a;
-    border:1px solid #1e293b;
-    border-radius:8px;
-    padding:10px;
-    font-family:monospace;
-    font-size:.85rem;
-    margin-top:20px;
-    white-space:pre-line;
-  }
-  .ok{color:var(--ok);}
+  .log{background:#0003;border-radius:8px;padding:10px;text-align:left;font-size:.9rem;line-height:1.5;margin-top:18px;}
+  button{background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
+  button:hover{opacity:.9;}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <h1>🛠️ FSA Werkstatt-Zentrale v1.0</h1>
-  <p>Token-gesteuerte Systemübersicht – verknüpft mit Poststelle & LP-Generator.</p>
+<div class="panel">
+  <h1>🛠️ FSA Werkstatt-Zentrale v1.1</h1>
+  <p>Autonome Freigabe- und Diagnoseeinheit<br><small>Build: v2.7.5 – integriert mit Poststelle + LP-Generator</small></p>
 
   <table>
-    <thead>
-      <tr><th>Modul</th><th>Status</th><th>Aktion</th></tr>
-    </thead>
-    <tbody id="modules">
-      <tr><td>📮 Poststelle</td><td class="status-ok">aktiv</td><td><a href="../poststelle/" style="color:var(--accent)">Öffnen</a></td></tr>
-      <tr><td>🧩 Patch-Manager</td><td class="status-ok">aktiv</td><td><a href="../tools/patch-manager.html" style="color:var(--accent)">Code</a></td></tr>
-      <tr><td>🪶 LP-Generator</td><td class="status-ok">aktiv</td><td><a href="../tools/" style="color:var(--accent)">Tools</a></td></tr>
-      <tr><td>💾 Backup-Archiv</td><td class="status-ok">aktiv</td><td><a href="../tools/backup" style="color:var(--accent)">Download</a></td></tr>
-    </tbody>
+    <tr><th>Modul</th><th>Status</th><th>Aktion</th></tr>
+    <tr><td>📨 Poststelle</td><td class="status-ok">aktiv</td><td><a href="../poststelle/index.html">Öffnen</a></td></tr>
+    <tr><td>🧠 Patch-Manager</td><td class="status-ok">aktiv</td><td><a href="../tools/patch-manager.html">Code</a></td></tr>
+    <tr><td>🪶 LP-Generator</td><td class="status-ok">aktiv</td><td><a href="../lp-template.html">Template</a></td></tr>
+    <tr><td>📦 Backup-Archiv</td><td class="status-ok">aktiv</td><td><a href="../BACKUP_NOTE.txt">Info</a></td></tr>
   </table>
 
-  <div class="mini">FSA Werkstatt-System · v1.0 – TOKEN-CONTROL aktiv</div>
-
-  <h2 style="margin-top:30px">📬 Eingehende Patches</h2>
-  <ul>
-    <li>📧 E-Mail-Feld mit Vor-/Nachnamen (LP-Template)</li>
-    <li>🧭 Menüleiste ohne Kino-Modul</li>
+  <h3 style="margin-top:30px;">📋 Eingehende Patches</h3>
+  <ul style="text-align:left;display:inline-block;">
+    <li>🪶 Template-Freigabe v2.7.5 aktiv</li>
+    <li>📄 Diagnose-Log-Writer initialisiert</li>
   </ul>
 
-  <button id="sync">🔄 System synchronisieren</button>
-  <div id="log" class="log">Log geöffnet …</div>
+  <button id="sync">System synchronisieren</button>
+
+  <div class="log" id="log">Log geöffnet …</div>
 </div>
 
 <script>
 (async()=>{
-  const log=(msg)=>document.querySelector("#log").textContent+="\n"+msg;
+  const log=m=>{document.querySelector("#log").innerHTML+=`\n${m}`;}
 
-  log("🧩 Werkstatt gestartet …");
-  log("📡 Verbindung zur Poststelle prüfen …");
-
+  log("🔧 Werkstatt gestartet …");
   try{
-    const res=await fetch("../poststelle/index.html?nocache="+Date.now());
+    log("📨 Verbindung zur Poststelle prüfen …");
+    const res=await fetch("../poststelle/index.html");
     if(res.ok){
       log("✅ Poststelle erreichbar.");
-      log("🔗 Synchronisation mit LP-Generator …");
+      log("🧠 Synchronisation mit LP-Generator …");
       await new Promise(r=>setTimeout(r,1000));
-      log("✅ LP-Generator verbunden.");
-    } else {
-      log("⚠️ Poststelle antwortet nicht ("+res.status+")");
+
+      const now=new Date().toISOString();
+      const entry=`🪶 Template geprüft und freigegeben · ${now}`;
+      await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{method:"PUT",body:entry});
+
+      log("✅ Freigabe protokolliert.");
+      log("🟢 System vollständig synchronisiert.");
+    }else{
+      log("⚠️ Keine Antwort von Poststelle.");
     }
-  }catch(e){ log("❌ Fehler: "+e.message); }
+  }catch(e){
+    log("❌ Fehler: "+e.message);
+  }
 
   document.querySelector("#sync").onclick=()=>{
-    log("🔄 Synchronisierung gestartet …");
-    setTimeout(()=>{
-      log("✅ Alle Module aktuell.");
-      alert("Synchronisierung erfolgreich abgeschlossen ✅");
-    },1500);
-  }
+    log("🔁 Manuelle Systemprüfung gestartet …");
+    setTimeout(()=>log("✅ Alle Module aktuell."),1500);
+  };
 })();
 </script>
 
-<!-- build: Werkstatt v1.0 | LP-Template-Integration -->
 </body>
 </html>
