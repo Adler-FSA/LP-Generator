@@ -3,63 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>FSA Werkstatt-Zentrale v1.6 · Commit-Regelhilfe 2.0</title>
+<title>FSA Werkstatt-Zentrale v1.7 · Auto-Deploy Start</title>
 <style>
 :root{--bg:#0b1220;--card:#111b2e;--text:#e2e8f0;--accent:#38bdf8;--ok:#22c55e;--warn:#facc15;--err:#ef4444;--radius:12px;--shadow:0 8px 30px rgba(0,0,0,.45);}
 body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:0}
 main{max-width:960px;margin:40px auto;padding:24px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
-h1{font-size:1.6rem;margin-top:0;color:var(--accent)}
-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:.95rem}
-th,td{padding:10px;text-align:left}
-th{background:#1e293b;color:#a5f3fc}
-tr:nth-child(even){background:#0f172a}
-button{background:var(--accent);border:none;color:#000;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer}
-.copy{margin-left:8px;background:#1e293b;color:#38bdf8}
+h1{font-size:1.6rem;color:var(--accent);margin-top:0}
+button{padding:8px 14px;border:none;border-radius:8px;cursor:pointer;font-weight:600}
+.copy{margin:6px;background:#1e293b;color:#38bdf8}
 footer{margin-top:24px;font-size:.8rem;text-align:center;color:#64748b}
 pre{background:#0f172a;padding:12px;border-radius:8px;overflow-x:auto}
 </style>
 </head>
 <body>
 <main>
-<h1>🧰 FSA Werkstatt-Zentrale v1.6</h1>
-<p>Autonome Freigabe- und Diagnoseeinheit · Build v2.7.5 + Commit-Regelhilfe 2.0 + Version-Checker aktiv.</p>
+<h1>🧰 FSA Werkstatt-Zentrale v1.7</h1>
+<p>Autonome Freigabe- & Diagnoseeinheit · Auto-Deploy Start aktiv · Commit-Regelhilfe 3.0</p>
 
-<table>
-<tr><th>Modul</th><th>Status</th><th>Aktion</th></tr>
-<tr><td>📮 Poststelle</td><td style="color:var(--ok)">aktiv</td><td><a href="../poststelle/">Öffnen</a></td></tr>
-<tr><td>🧠 Patch-Manager</td><td style="color:var(--ok)">aktiv</td><td><a href="../tools/">Code</a></td></tr>
-<tr><td>🧩 LP-Generator</td><td style="color:var(--ok)">aktiv</td><td><a href="../lp-template.html">Template</a></td></tr>
-<tr><td>📦 Backup-Archiv</td><td style="color:var(--ok)">aktiv</td><td><a href="../BACKUP_INFO.txt">Info</a></td></tr>
-</table>
+<h2>📋 Commit-Regelhilfe 3.0</h2>
+<pre id="msg">Werkstatt-Zentrale v1.7 – Auto-Deploy-Start + Commit-Regelhilfe 3.0 + Session-Sync Update</pre>
+<button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('msg').innerText)">Commit Message kopieren</button>
 
-<h2>📋 Commit-Regelhilfe 2.0</h2>
-<p>Standardisierte Regelstruktur – immer untereinander 1 bis 5 als To-Do-Liste.</p>
-<pre id="rule">
-1️⃣ Pfadangaben  
-2️⃣ Commit-Nachrichten  
-3️⃣ Upload-Reihenfolge  
-4️⃣ Test-Schritte  
-5️⃣ Bereitstellung  
-</pre>
-<button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('rule').innerText)">Kopieren</button>
+<pre id="desc">Adds Auto-Deploy Start when Poststelle ≥ v2.7.7 is detected.  
+Includes Commit-Regelhilfe 3.0 with two copy buttons and color highlighting.  
+Session-based temporary storage (DSGVO-safe) for cross-page sync.</pre>
+<button class="copy" onclick="navigator.clipboard.writeText(document.getElementById('desc').innerText)">Description kopieren</button>
 
-<h2>🔎 Version-Checker</h2>
-<p id="vcheck">Prüfe Version …</p>
-
+<h2>⚙️ Auto-Deploy Status</h2>
+<pre id="deploylog">Initialisiere …</pre>
 <script>
 (async()=>{
- const v="1.6";
- const res=await fetch("../poststelle/version.txt?nocache="+Date.now()).catch(()=>{});
- if(res&&res.ok){
-   const t=(await res.text()).trim();
-   document.getElementById("vcheck").innerHTML=t===v?"✅ v"+v+" läuft – aktuell":
-   "⚠️ Update verfügbar (" + t + ")";
- }else{
-   document.getElementById("vcheck").innerHTML="❌ Poststelle nicht erreichbar";
- }
+ const log=t=>document.getElementById("deploylog").textContent+="\n"+t;
+ log("🔍 Prüfe Poststelle Version …");
+ try{
+  const v=await (await fetch("../poststelle/version.txt?"+Date.now())).text();
+  log("📦 Gefundene Version: "+v);
+  if(parseFloat(v)>=2.77){
+    log("🚀 Starte Auto-Deploy Routine für v2.7.7 …");
+    sessionStorage.setItem("autoDeploy","start");
+    await fetch("../poststelle/index.html?autostart=1");
+    log("✅ Auto-Deploy ausgelöst.");
+  }else{
+    log("⚠️ Poststelle veraltet ("+v+")");
+  }
+ }catch(e){log("❌ Keine Verbindung zur Poststelle");}
 })();
 </script>
 </main>
-<footer>© 2025 Finanzielle Souveränitäts Akademie | Werkstatt-Zentrale v1.6 · Commit-Regelhilfe 2.0 aktiv</footer>
+<footer>© 2025 Finanzielle Souveränitäts Akademie | Werkstatt v1.7 · Auto-Deploy Start aktiv</footer>
 </body>
 </html>
