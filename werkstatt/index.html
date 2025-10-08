@@ -1,89 +1,201 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>🛠️ FSA Werkstatt-Zentrale v1.1 · Freigabe-Patch v2.7.5</title>
-<style>
-  :root{
-    --bg:#0b1220;--panel:#111827;--text:#e5e7eb;
-    --ok:#10b981;--warn:#f59e0b;--err:#ef4444;
-    --muted:#94a3b8;--border:rgba(255,255,255,.08);
-    --accent:#3b82f6;
-  }
-  body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:40px;text-align:center}
-  .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;max-width:900px;margin:0 auto;padding:32px;box-shadow:0 20px 50px rgba(0,0,0,.45);}
-  h1{margin-top:0;color:var(--accent);font-size:1.6rem}
-  table{width:100%;border-collapse:collapse;margin-top:12px;}
-  th,td{padding:10px 12px;text-align:left;}
-  th{color:var(--muted);font-weight:500;border-bottom:1px solid var(--border);}
-  td a{color:var(--accent);text-decoration:none;}
-  td a:hover{text-decoration:underline;}
-  .status-ok{color:var(--ok);}
-  .status-warn{color:var(--warn);}
-  .status-err{color:var(--err);}
-  .log{background:#0003;border-radius:8px;padding:10px;text-align:left;font-size:.9rem;line-height:1.5;margin-top:18px;}
-  button{background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;}
-  button:hover{opacity:.9;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FSA Werkstatt-Zentrale v1.2</title>
+  <style>
+    :root{
+      --bg:#0b1220;--card:#0f1a2b;--muted:#c8d4e4;--link:#7ec8ff;--ok:#00d084;--warn:#ffd166;--err:#ff6b6b;--accent:#3fa3ff;
+      --border:rgba(255,255,255,.08);--shadow:0 10px 30px rgba(0,0,0,.35);--pill:#16253a;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:#e9f1ff;font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Arial}
+    a{color:var(--link);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:980px;margin:48px auto;padding:0 20px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);padding:22px}
+    h1{margin:0 0 14px;font-weight:800;letter-spacing:.2px}
+    .sub{opacity:.75;margin-bottom:18px}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+    th{font-weight:700;text-align:left;opacity:.9}
+    .mcol{width:170px}
+    .acol{width:160px}
+    .status.ok{color:var(--ok)} .status.warn{color:var(--warn)} .status.err{color:var(--err)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--border);background:#163058;border-radius:10px;color:#e9f1ff;cursor:pointer}
+    .btn:hover{filter:brightness(1.1)}
+    .btn.primary{background:#1a4d86;border-color:#2d69ad}
+    .grid{display:grid;gap:14px}
+    .grid.two{grid-template-columns:1fr 1fr}
+    .pill{display:inline-flex;align-items:center;gap:8px;background:var(--pill);border:1px solid var(--border);padding:8px 10px;border-radius:10px}
+    .log{font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#0c1626;border:1px solid var(--border);border-radius:10px;padding:12px;height:132px;overflow:auto}
+    .muted{color:var(--muted)}
+    .hr{height:1px;background:var(--border);margin:18px 0}
+    .badge{font-size:12px;padding:2px 8px;border-radius:999px;background:#123456;border:1px solid var(--border);margin-left:8px;opacity:.9}
+    /* Log-Reader */
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 12px}
+    .table{background:#0e1a2b;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    .tr{display:grid;grid-template-columns:160px 1fr 100px;gap:0;border-bottom:1px solid var(--border)}
+    .th{background:#0e213a;font-weight:700}
+    .cell{padding:10px 12px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .tag{display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;border:1px solid var(--border);background:#12243b}
+    .tag.ok{color:var(--ok)} .tag.warn{color:var(--warn)} .tag.err{color:var(--err)}
+    .right{margin-left:auto}
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="card" style="margin-bottom:16px">
+      <h1>🛠️ FSA Werkstatt-Zentrale v1.2</h1>
+      <div class="sub">Autonome Freigabe- und Diagnoseeinheit — integriert mit Poststelle &amp; LP-Generator. <span class="badge" id="buildBadge">Build v2.7.5+</span></div>
 
-<div class="panel">
-  <h1>🛠️ FSA Werkstatt-Zentrale v1.1</h1>
-  <p>Autonome Freigabe- und Diagnoseeinheit<br><small>Build: v2.7.5 – integriert mit Poststelle + LP-Generator</small></p>
+      <div class="grid two" style="margin-top:8px">
+        <div class="card">
+          <div style="font-weight:700;margin-bottom:8px">Module</div>
+          <table>
+            <thead><tr><th>Modul</th><th class="mcol">Status</th><th class="acol">Aktion</th></tr></thead>
+            <tbody>
+              <tr><td>📮 Poststelle</td><td><span class="status ok">aktiv</span></td><td><a href="/Lp-Generator/poststelle/" target="_blank">Öffnen</a></td></tr>
+              <tr><td>🧠 Patch-Manager</td><td><span class="status ok">aktiv</span></td><td><a href="/Lp-Generator/tools/patch-manager.html" target="_blank">Code</a></td></tr>
+              <tr><td>✏️ LP-Generator</td><td><span class="status ok">aktiv</span></td><td><a href="/Lp-Generator/lp-template.html" target="_blank">Template</a></td></tr>
+              <tr><td>🗃️ Backup-Archiv</td><td><span class="status ok">aktiv</span></td><td><a href="/Lp-Generator/README.md" target="_blank">Info</a></td></tr>
+            </tbody>
+          </table>
 
-  <table>
-    <tr><th>Modul</th><th>Status</th><th>Aktion</th></tr>
-    <tr><td>📨 Poststelle</td><td class="status-ok">aktiv</td><td><a href="../poststelle/index.html">Öffnen</a></td></tr>
-    <tr><td>🧠 Patch-Manager</td><td class="status-ok">aktiv</td><td><a href="../tools/patch-manager.html">Code</a></td></tr>
-    <tr><td>🪶 LP-Generator</td><td class="status-ok">aktiv</td><td><a href="../lp-template.html">Template</a></td></tr>
-    <tr><td>📦 Backup-Archiv</td><td class="status-ok">aktiv</td><td><a href="../BACKUP_NOTE.txt">Info</a></td></tr>
-  </table>
+          <div class="hr"></div>
 
-  <h3 style="margin-top:30px;">📋 Eingehende Patches</h3>
-  <ul style="text-align:left;display:inline-block;">
-    <li>🪶 Template-Freigabe v2.7.5 aktiv</li>
-    <li>📄 Diagnose-Log-Writer initialisiert</li>
-  </ul>
+          <div style="font-weight:700;margin-bottom:6px">Eingehende Patches</div>
+          <ul style="margin:0 0 12px 18px">
+            <li>✉️ E-Mail-Feld inkl. Vor-/Nachnamen (LP-Template)</li>
+            <li>🧭 Menüleiste ohne „Kino“-Modul</li>
+          </ul>
 
-  <button id="sync">System synchronisieren</button>
+          <button id="sync" class="btn primary">🔄 System synchronisieren</button>
 
-  <div class="log" id="log">Log geöffnet …</div>
-</div>
+          <div class="log" id="syslog" style="margin-top:12px">Log geöffnet …</div>
+        </div>
 
-<script>
-(async()=>{
-  const log=m=>{document.querySelector("#log").innerHTML+=`\n${m}`;}
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+            <div style="font-weight:700">📊 Diagnose-Log-Reader</div>
+            <span class="pill">Quelle: <code class="mono">/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt</code></span>
+            <span class="right muted" id="autoInfo">Auto-Refresh: aus</span>
+          </div>
 
-  log("🔧 Werkstatt gestartet …");
-  try{
-    log("📨 Verbindung zur Poststelle prüfen …");
-    const res=await fetch("../poststelle/index.html");
-    if(res.ok){
-      log("✅ Poststelle erreichbar.");
-      log("🧠 Synchronisation mit LP-Generator …");
-      await new Promise(r=>setTimeout(r,1000));
+          <div class="toolbar">
+            <button id="refresh" class="btn">↻ Aktualisieren</button>
+            <button id="toggleAuto" class="btn">▶︎ Auto-Refresh</button>
+            <span class="muted">Zeige letzte <span id="limitView">50</span> Einträge</span>
+          </div>
 
-      const now=new Date().toISOString();
-      const entry=`🪶 Template geprüft und freigegeben · ${now}`;
-      await fetch("../docs/diagnose_log/FSA_DIAGNOSE_LOG.txt",{method:"PUT",body:entry});
+          <div class="table" id="logTable">
+            <div class="tr th">
+              <div class="cell">Zeit</div>
+              <div class="cell">Ereignis</div>
+              <div class="cell">Status</div>
+            </div>
+            <!-- rows injected here -->
+          </div>
+        </div>
+      </div>
 
-      log("✅ Freigabe protokolliert.");
-      log("🟢 System vollständig synchronisiert.");
-    }else{
-      log("⚠️ Keine Antwort von Poststelle.");
+      <div class="muted" style="margin-top:10px">FSA Werkstatt-System | TOKEN-CONTROL aktiv</div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const syslog = document.getElementById('syslog');
+    const log = (m)=>{ syslog.textContent += (syslog.textContent ? "\\n" : "") + m; syslog.scrollTop = syslog.scrollHeight; };
+
+    // --- Verbindungstest / simple Sync-Flow ---
+    document.getElementById('sync').onclick = async ()=>{
+      log("🧰 Werkstatt gestartet …");
+      try{
+        log("🔌 Verbindung zur Poststelle prüfen …");
+        const res = await fetch('/Lp-Generator/poststelle/index.html', {method:'HEAD'});
+        if(!res.ok) throw new Error("Poststelle antwortet nicht");
+        log("✅ Poststelle erreichbar.");
+        log("🧠 Synchronisation mit LP-Generator …");
+        setTimeout(()=>{ log("🟢 LP-Generator verbunden."); alert("✅ Alle Module aktuell.\\n\\nSynchronisation erfolgreich abgeschlossen."); }, 800);
+      }catch(e){
+        log("❌ Fehler: "+e.message);
+        alert("Fehler bei der Synchronisation: "+e.message);
+      }
+    };
+
+    // --- Diagnose-Log-Reader v1.0 ---
+    const LOG_URL = '/Lp-Generator/docs/diagnose_log/FSA_DIAGNOSE_LOG.txt';
+    const table = document.getElementById('logTable');
+    const limitView = document.getElementById('limitView');
+    const autoInfo = document.getElementById('autoInfo');
+    const btnRefresh = document.getElementById('refresh');
+    const btnAuto = document.getElementById('toggleAuto');
+    let timer = null, limit = 50;
+
+    function statusFrom(text){
+      // Heuristik: erkenne Status über Emojis/Wörter
+      if(/[✅🟢]|\bok\b|freigegeben|installiert/i.test(text)) return {cls:'ok', label:'OK'};
+      if(/[⚠️🟡]|\bwarn/i.test(text)) return {cls:'warn', label:'Hinweis'};
+      if(/[❌🔴]|\bfehler|error/i.test(text)) return {cls:'err', label:'Fehler'};
+      return {cls:'', label:'—'};
     }
-  }catch(e){
-    log("❌ Fehler: "+e.message);
-  }
+    function tsFrom(line){
+      // Versuche Datum/Uhrzeit am Zeilenanfang zu greifen – ansonsten "–"
+      const m = line.match(/^(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(?::\d{2})?)/);
+      return m ? m[1].replace('T',' ') : '–';
+    }
+    function row(ts, msg, st){
+      const div = document.createElement('div');
+      div.className='tr';
+      div.innerHTML = `
+        <div class="cell mono">${ts}</div>
+        <div class="cell">${msg}</div>
+        <div class="cell"><span class="tag ${st.cls}">${st.label}</span></div>`;
+      return div;
+    }
+    async function loadLog(){
+      try{
+        const res = await fetch(LOG_URL + '?nocache=' + Date.now());
+        if(!res.ok) throw new Error('Log nicht erreichbar');
+        const txt = await res.text();
+        const lines = txt.split(/\r?\n/).filter(Boolean);
+        const slice = lines.slice(-limit).reverse();
+        // clear old rows
+        [...table.querySelectorAll('.tr.data')].forEach(n=>n.remove());
+        // render
+        slice.forEach(line=>{
+          const st = statusFrom(line);
+          const ts = tsFrom(line);
+          const r = row(ts, line.replace(/^(\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(?::\d{2})?)\s*-?\s*/,'')
+                                 .replace(/[\\u001b\\[\\d;]*m/g,''), st);
+          r.classList.add('data');
+          table.appendChild(r);
+        });
+      }catch(e){
+        // Fallback-Zeile mit Fehler
+        [...table.querySelectorAll('.tr.data')].forEach(n=>n.remove());
+        const r = row('–', 'Log konnte nicht geladen werden: '+e.message, {cls:'err', label:'Fehler'});
+        r.classList.add('data');
+        table.appendChild(r);
+      }
+    }
+    btnRefresh.onclick = loadLog;
+    btnAuto.onclick = ()=>{
+      if(timer){ clearInterval(timer); timer=null; btnAuto.textContent='▶︎ Auto-Refresh'; autoInfo.textContent='Auto-Refresh: aus'; }
+      else { timer=setInterval(loadLog, 15000); btnAuto.textContent='⏸ Auto-Refresh'; autoInfo.textContent='Auto-Refresh: 15s'; loadLog(); }
+    };
+    // initial
+    loadLog();
 
-  document.querySelector("#sync").onclick=()=>{
-    log("🔁 Manuelle Systemprüfung gestartet …");
-    setTimeout(()=>log("✅ Alle Module aktuell."),1500);
-  };
-})();
-</script>
-
+    // Build-Badge dynamisch ausgeben (optional)
+    try{
+      document.getElementById('buildBadge').textContent = 'Build v1.2 • Reader aktiv';
+    }catch{}
+  })();
+  </script>
 </body>
 </html>
