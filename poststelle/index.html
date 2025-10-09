@@ -1,76 +1,116 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📬 FSA Poststelle v2.9.0 – Signal & Auto-Update</title>
-<style>
-  body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:#0f172a;color:#e2e8f0;text-align:center;padding:40px;}
-  h1{color:#38bdf8;margin-bottom:8px;}
-  p{color:#94a3b8;margin:4px 0 20px 0;}
-  button{background:#38bdf8;color:#0f172a;border:none;padding:14px 28px;font-size:1.1rem;border-radius:8px;cursor:pointer;margin-top:20px;}
-  button:hover{background:#0ea5e9;}
-  pre{background:#1e293b;color:#93c5fd;padding:16px;border-radius:8px;max-width:800px;margin:30px auto;text-align:left;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📬 FSA Poststelle – GitHub Integration</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      text-align: center;
+      padding: 30px;
+    }
+    h1 { color: #38bdf8; }
+    input, button {
+      font-size: 1rem;
+      padding: 10px;
+      margin: 8px;
+      border-radius: 6px;
+    }
+    input {
+      width: 300px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #e2e8f0;
+    }
+    button {
+      cursor: pointer;
+      background: #38bdf8;
+      color: #0f172a;
+      border: none;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 1.1rem;
+    }
+  </style>
 </head>
 <body>
+  <h1>📬 FSA Poststelle · GitHub Push System</h1>
 
-<h1>📬 FSA-Poststelle v2.9.0 – Signal-System aktiv</h1>
-<p>Erkennt eigene Updates, zeigt Live-Status und erstellt bei Bedarf das ZIP-Archiv automatisch.</p>
+  <!-- Token Eingabe -->
+  <div>
+    <input type="password" id="tokenInput" placeholder="🔐 GitHub Token eingeben" />
+    <button onclick="saveToken()">💾 Speichern</button>
+  </div>
 
-<button id="startDeploy">🚀 ZIP-Paket erstellen</button>
+  <!-- Test-Commit -->
+  <div>
+    <button onclick="testCommit()">🔄 Test-Commit ausführen</button>
+  </div>
 
-<pre id="log">Bereit zum Starten…</pre>
+  <div id="status">Bereit zum Starten…</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script>
-const logBox = document.getElementById("log");
-function log(msg){logBox.textContent += "\\n" + msg;}
+  <script>
+    // Token speichern / laden
+    function saveToken() {
+      const token = document.getElementById('tokenInput').value.trim();
+      if (token) {
+        localStorage.setItem('github_token', token);
+        document.getElementById('status').textContent = '✅ Token gespeichert';
+      }
+    }
 
-function createSignal(msg,color="#1e293b"){
-  const box = document.createElement("div");
-  box.style.position="fixed";
-  box.style.bottom="20px";
-  box.style.right="20px";
-  box.style.padding="12px 18px";
-  box.style.borderRadius="12px";
-  box.style.fontFamily="system-ui";
-  box.style.color="#f8fafc";
-  box.style.background=color;
-  box.style.boxShadow="0 0 14px rgba(0,0,0,.5)";
-  box.style.transition="opacity .4s";
-  box.textContent = msg;
-  document.body.appendChild(box);
-  setTimeout(()=>box.remove(),10000);
-}
+    function getToken() {
+      return localStorage.getItem('github_token') || '';
+    }
 
-async function createZIP(){
-  createSignal("🟡 Poststelle arbeitet...","#1d4ed8");
-  log("📦 Starte White-Label-ZIP-Erstellung…");
+    // Test-Commit Funktion
+    async function testCommit() {
+      const token = getToken();
+      const statusEl = document.getElementById('status');
+      if (!token) {
+        statusEl.textContent = '❌ Kein Token hinterlegt';
+        return;
+      }
 
-  const zip = new JSZip();
-  zip.file("manifest.html","<h2>FSA Manifest</h2><p>Vision, Mission und dezentrale Grundsätze.</p>");
-  zip.file("vision.html","<h2>Vision & Mission</h2><p>Selbstheilendes Bildungssystem für finanzielle Souveränität.</p>");
-  zip.file("offline-fallback.md","# Offline-Resilienz aktiviert");
-  zip.file("readme.md","# FSA White-Label Paket v2.9.0");
+      // Zielrepo — du kannst das hier dynamisch machen
+      const owner = 'Adler-FSA';
+      const repo = 'FSA-Core';
+      const path = 'log/test-commit.txt';
+      const content = btoa(`Test Commit ausgeführt: ${new Date().toISOString()}`);
+      const message = `🚀 Test-Commit via Poststelle (${new Date().toLocaleString()})`;
 
-  const blob = await zip.generateAsync({type:"blob"});
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "FSA-WhiteLabel-InfoPack_v2.9.0.zip";
-  link.click();
+      try {
+        // Bestehende Datei checken
+        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+          headers: { Authorization: `token ${token}` }
+        });
+        const fileData = res.ok ? await res.json() : null;
+        const sha = fileData ? fileData.sha : undefined;
 
-  log("✅ ZIP-Archiv erfolgreich erstellt!");
-  createSignal("🟢 Update abgeschlossen!","#065f46");
-}
+        // Datei erstellen / aktualisieren
+        const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+          method: 'PUT',
+          headers: {
+            Authorization: `token ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message, content, sha })
+        });
 
-// Simuliertes Auto-Update-Signal
-setTimeout(()=>createSignal("🟠 Poststelle erhält Update...","#92400e"),2000);
-setTimeout(()=>createSignal("🟡 Poststelle arbeitet...","#1d4ed8"),4000);
-setTimeout(()=>createSignal("🟢 Update abgeschlossen!","#065f46"),8000);
-
-document.getElementById("startDeploy").addEventListener("click",createZIP);
-</script>
-
+        if (commitRes.ok) {
+          statusEl.textContent = '✅ Test-Commit erfolgreich auf GitHub übertragen';
+        } else {
+          const err = await commitRes.json();
+          statusEl.textContent = `❌ Fehler: ${err.message}`;
+        }
+      } catch (e) {
+        statusEl.textContent = `❌ Netzwerk-/Tokenfehler: ${e.message}`;
+      }
+    }
+  </script>
 </body>
 </html>
