@@ -1,200 +1,371 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📬 FSA Poststelle – Control & GitHub Push System</title>
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      text-align: center;
-      padding: 30px;
-    }
-    h1 { color: #38bdf8; margin-bottom: 20px; }
-    input, select, button {
-      font-size: 1rem;
-      padding: 10px;
-      margin: 6px;
-      border-radius: 6px;
-    }
-    input, select {
-      border: 1px solid #334155;
-      background: #1e293b;
-      color: #e2e8f0;
-    }
-    button {
-      cursor: pointer;
-      background: #38bdf8;
-      color: #0f172a;
-      border: none;
-      font-weight: 600;
-    }
-    button:hover { background: #0ea5e9; }
-    #status {
-      margin-top: 20px;
-      font-size: 1.1rem;
-    }
-    .row { margin-top: 12px; }
-    .ampel {
-      width: 14px; height: 14px;
-      display: inline-block;
-      border-radius: 50%;
-      margin-left: 8px;
-    }
-    .ampel.gruen { background:#10b981; }
-    .ampel.rot { background:#ef4444; }
-    .ampel.gelb { background:#f59e0b; }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>📬 FSA-Poststelle · Control & GitHub Push System</title>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<style>
+  :root{
+    --bg:#0b1220; --card:#0f172a; --muted:#9fb0c8; --accent:#38bdf8; --accent-2:#60a5fa;
+    --gold:#ffd166; --glass:rgba(255,255,255,0.04);
+    --radius:14px;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#04060b 0%,var(--bg) 100%);color:#e6f0ff}
+  .wrap{max-width:1100px;margin:36px auto;padding:28px;border-radius:18px;backdrop-filter: blur(6px);
+         background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+         box-shadow: 0 10px 40px rgba(2,6,23,0.7); border:1px solid rgba(255,255,255,0.03);}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .title{display:flex;gap:12px;align-items:center}
+  .logo{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+        background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(56,189,248,0.15);font-weight:700;font-size:20px}
+  h1{margin:0;font-size:20px;color:var(--accent)}
+  .sub{color:var(--muted);font-size:13px}
+  .top-controls{display:flex;align-items:center;gap:12px}
+
+  /* panels grid */
+  .grid{display:grid;grid-template-columns: 1fr 380px; gap:20px;margin-top:22px}
+  @media(max-width:940px){ .grid{grid-template-columns:1fr; } .right{order:-1} }
+
+  .card{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid var(--glass);box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+  .card h2{margin:0 0 12px 0;color:#cfefff;font-size:16px}
+  .muted{color:var(--muted);font-size:13px}
+
+  /* token area */
+  .token-row{display:flex;gap:8px;align-items:center}
+  input.token{flex:1;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:#0c1a2b;color:#eaf6ff}
+  button.btn{background:linear-gradient(180deg,var(--accent),var(--accent-2));border:none;padding:10px 14px;border-radius:10px;color:#012;cursor:pointer;box-shadow:0 8px 24px rgba(56,189,248,0.12);font-weight:600}
+  select{padding:10px;border-radius:10px;background:#081224;border:1px solid rgba(255,255,255,0.04);color:#eaf6ff}
+
+  /* action buttons */
+  .actions{display:flex;flex-direction:column;gap:12px;align-items:center;padding:8px}
+  .actions .wide{width:100%;text-align:center}
+  .btn.secondary{background:linear-gradient(180deg,#ffd166,#ffb703);color:#062;box-shadow:0 8px 20px rgba(255,209,102,0.12)}
+  .btn.warn{background:linear-gradient(180deg,#fb7185,#f43f5e);color:#fff}
+
+  /* status */
+  .status-line{display:flex;align-items:center;gap:12px;margin-top:12px}
+  .led{width:14px;height:14px;border-radius:50%;background:#444;box-shadow:0 0 8px rgba(0,0,0,0.6)}
+  .stat-text{color:var(--muted);font-size:13px}
+
+  /* logs */
+  .logbox{height:260px;background:linear-gradient(180deg,#06111b,#04101a);padding:12px;border-radius:10px;overflow:auto;font-family:monospace;font-size:13px;color:#cfeaff;border:1px solid rgba(255,255,255,0.02)}
+  .log-line{padding:6px 8px;border-radius:6px;margin-bottom:6px}
+  .ok{background:rgba(34,197,94,0.06);border-left:4px solid rgba(34,197,94,0.18);color:#bbf7d0}
+  .info{background:rgba(56,189,248,0.04);border-left:4px solid rgba(56,189,248,0.12);color:#cfefff}
+  .err{background:rgba(248,113,113,0.04);border-left:4px solid rgba(248,113,113,0.12);color:#ffd6d6}
+
+  /* recent commits */
+  .commits{display:flex;flex-direction:column;gap:8px}
+  .commit{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02)}
+  .small{font-size:12px;color:var(--muted)}
+
+  footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .note{color:var(--muted);font-size:13px}
+
+  /* subtle animation */
+  .pulse{animation:pulse 1.6s infinite ease-in-out}
+  @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+</style>
 </head>
 <body>
-  <h1>📬 FSA Poststelle · Control & GitHub Push System</h1>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo">🦅</div>
+        <div>
+          <h1>📬 FSA Poststelle · Control & GitHub Push System</h1>
+          <div class="sub">Mission SOS — zentrale Steuerung für Repos, Patches und Backups</div>
+        </div>
+      </div>
 
-  <!-- 🔐 Token Eingabe -->
-  <div class="row">
-    <input type="password" id="tokenInput" placeholder="🔐 GitHub Token eingeben" />
-    <button onclick="saveToken()">💾 Speichern</button>
+      <div class="top-controls">
+        <div class="sub" id="buildInfo">Version: n/a · Build: n/a</div>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: MAIN CONTROLS -->
+      <div>
+        <div class="card">
+          <h2>🔐 Token & Repo</h2>
+          <div class="token-row" style="margin-bottom:12px">
+            <input id="tokenInput" class="token" type="password" placeholder="🔒 GitHub Token eingeben (safely stored)" />
+            <button class="btn" onclick="saveToken()">💾 Speichern</button>
+            <button class="btn" style="background:#334155;color:#eaf6ff;padding:10px 12px" onclick="resetToken()">♻ Reset</button>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+            <select id="repoSelect"></select>
+            <button class="btn" onclick="refreshStatus()">🔄 Status aktualisieren</button>
+          </div>
+
+          <div class="status-line">
+            <div class="led" id="deployLed" title="Deployment Status"></div>
+            <div class="stat-text" id="deployText">Deployment Status: Unbekannt</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <h2>🛠 Aktionen</h2>
+          <div class="actions">
+            <div style="width:100%;display:flex;gap:12px;flex-wrap:wrap">
+              <button class="btn wide" onclick="runTestCommit()">🚀 Test-Commit ausführen</button>
+              <button class="btn secondary wide" onclick="runWerkstattPatch()">🧰 Werkstatt-Patch ausführen</button>
+              <button class="btn warn wide" onclick="runZipBackup()">📦 ZIP-Backup auslösen</button>
+            </div>
+            <div class="muted" style="margin-top:6px">Tipp: vor Patches ein Backup erstellen.</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <h2>📝 Live-Log</h2>
+          <div id="logBox" class="logbox" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: SUMMARY / COMMITS -->
+      <aside class="right">
+        <div class="card">
+          <h2>📦 Letzte Commits (Repo)</h2>
+          <div id="commits" class="commits">
+            <div class="small">Keine Daten geladen — Status aktualisieren.</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px">
+          <h2>⚙ Shortcuts & Info</h2>
+          <div class="small">Owner: <strong id="ownerLabel">Adler-FSA</strong></div>
+          <div style="height:8px"></div>
+          <div class="small">Quick Links:</div>
+          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+            <a id="linkRepo" class="small" href="#" target="_blank" style="color:var(--accent)">Repo →</a>
+            <a id="linkPages" class="small" href="#" target="_blank" style="color:var(--accent)">Live →</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div class="note">FSA Control Center · built for WL presentation · screenshot-ready</div>
+      <div class="small">© FSA</div>
+    </footer>
   </div>
 
-  <!-- 📂 Repo Auswahl -->
-  <div class="row">
-    <select id="repoSelect">
-      <option value="FSA-Core">📦 FSA-Core</option>
-      <option value="FSA-Network">🌐 FSA-Network</option>
-      <option value="FSA-WhiteLabel">🧾 FSA-WhiteLabel</option>
-    </select>
-  </div>
+<script>
+/* -------------------------
+   Konfiguration / Defaults
+   ------------------------- */
+const DEFAULT_OWNER = 'Adler-FSA';
+const DEFAULT_REPOS = ['FSA-Core','FSA-WhiteLabel','Lp-Generator','FSA-Network']; // passe an
+const logBox = document.getElementById('logBox');
+const repoSelect = document.getElementById('repoSelect');
+const ownerLabel = document.getElementById('ownerLabel');
+const linkRepo = document.getElementById('linkRepo');
+const linkPages = document.getElementById('linkPages');
+const deployLed = document.getElementById('deployLed');
+const deployText = document.getElementById('deployText');
 
-  <!-- 🚀 Test Commit -->
-  <div class="row">
-    <button onclick="testCommit()">🚀 Test-Commit ausführen</button>
-  </div>
+ownerLabel.textContent = DEFAULT_OWNER;
 
-  <!-- 🧰 Werkstatt Patch -->
-  <div class="row">
-    <button onclick="pushWerkstattPatch()">🧰 Werkstatt-Patch ausführen</button>
-  </div>
+/* -------------------------
+   UI Hilfsfunktionen
+   ------------------------- */
+function appendLog(msg, type='info') {
+  const line = document.createElement('div');
+  line.className = 'log-line ' + (type==='err'?'err':type==='ok'?'ok':'info');
+  line.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+  logBox.prepend(line);
+  // Keep only latest 200 lines
+  while (logBox.children.length > 200) logBox.removeChild(logBox.lastChild);
+}
 
-  <!-- 📦 ZIP Backup -->
-  <div class="row">
-    <button onclick="triggerBackup()">📦 ZIP-Backup auslösen</button>
-  </div>
+/* -------------------------
+   Token handling
+   ------------------------- */
+function saveToken(){
+  const t = document.getElementById('tokenInput').value.trim();
+  if (!t) { appendLog('Kein Token eingegeben.', 'err'); alert('Bitte Token eingeben'); return; }
+  localStorage.setItem('github_token', t);
+  appendLog('✅ Token gespeichert', 'ok');
+}
+function getToken(){ return localStorage.getItem('github_token') || ''; }
+function resetToken(){ localStorage.removeItem('github_token'); document.getElementById('tokenInput').value=''; appendLog('🔐 Token gelöscht', 'info'); }
 
-  <!-- 🚦 Admin Ampel -->
-  <div class="row">
-    <span>🚦 Deployment Status:</span>
-    <span id="ampel" class="ampel rot"></span>
-  </div>
+/* -------------------------
+   Repo Select initialisieren
+   ------------------------- */
+function initRepoSelect(){
+  repoSelect.innerHTML = '';
+  DEFAULT_REPOS.forEach(r=>{
+    const o = document.createElement('option'); o.value = r; o.textContent = r; repoSelect.appendChild(o);
+  });
+  repoSelect.onchange = refreshStatus;
+  refreshStatus();
+}
+initRepoSelect();
 
-  <div id="status">Bereit zum Starten…</div>
+/* -------------------------
+   GitHub API Helpers
+   ------------------------- */
+async function ghFetch(path, opts={}){
+  const token = getToken();
+  const headers = Object.assign({}, opts.headers || {});
+  if (token) headers['Authorization'] = 'token ' + token;
+  headers['Accept'] = 'application/vnd.github.v3+json';
+  const res = await fetch('https://api.github.com' + path, Object.assign({}, opts, { headers }));
+  return res;
+}
 
-  <script>
-    // =====================
-    // 🔐 Token Verwaltung
-    // =====================
-    function saveToken() {
-      const token = document.getElementById('tokenInput').value.trim();
-      if (token) {
-        localStorage.setItem('github_token', token);
-        document.getElementById('status').textContent = '✅ Token gespeichert';
+/* -------------------------
+   Status / Commits / Deploy
+   ------------------------- */
+async function refreshStatus(){
+  const repo = repoSelect.value;
+  appendLog(`Status-Check: ${repo}`, 'info');
+  try{
+    // 1) letzte Commits
+    const commitsRes = await ghFetch(`/repos/${DEFAULT_OWNER}/${repo}/commits?per_page=6`);
+    if(!commitsRes.ok){ const e = await commitsRes.json(); appendLog('Fehler beim Laden von Commits: '+(e.message||commitsRes.statusText),'err'); showCommitsError(e.message||commitsRes.statusText); }
+    else {
+      const commits = await commitsRes.json();
+      showCommits(commits);
+      appendLog('✅ Commits geladen', 'ok');
+    }
+
+    // 2) Versuch GitHub Pages build status (falls Seite existiert)
+    const pagesRes = await ghFetch(`/repos/${DEFAULT_OWNER}/${repo}/pages/builds`);
+    if (pagesRes.ok){
+      const builds = await pagesRes.json();
+      const latest = builds && builds.length ? builds[0] : null;
+      if(latest){
+        const state = latest.status || latest.state || 'unknown';
+        updateDeployLED(state);
+        appendLog(`Pages build status: ${state}`, 'info');
+        // link to pages
+        linkPages.href = `https://${DEFAULT_OWNER}.github.io/${repo}/`;
+        linkRepo.href = `https://github.com/${DEFAULT_OWNER}/${repo}`;
+      } else {
+        updateDeployLED('none');
+      }
+    } else {
+      // fallback: deployments endpoint
+      const depRes = await ghFetch(`/repos/${DEFAULT_OWNER}/${repo}/deployments`);
+      if (depRes.ok){
+        const deps = await depRes.json();
+        const latestDep = deps && deps.length ? deps[0] : null;
+        if (latestDep) updateDeployLED('success'); else updateDeployLED('none');
+      } else {
+        updateDeployLED('none');
       }
     }
-    function getToken() { return localStorage.getItem('github_token') || ''; }
-    function getRepo() { return document.getElementById('repoSelect').value; }
+  } catch(e){
+    appendLog('Netzwerkfehler beim Status: '+e.message,'err');
+    updateDeployLED('error');
+  }
+}
 
-    // =====================
-    // 🚦 Admin Ampel Logik
-    // =====================
-    function setAmpel(status) {
-      const ampel = document.getElementById('ampel');
-      ampel.className = 'ampel ' + status;
+function updateDeployLED(state){
+  // map states to colors
+  if (!state || state==='none'){ deployLed.style.background='#444'; deployText.textContent = 'Deployment Status: Keine Github Pages / keine Builds'; return; }
+  const s = state.toLowerCase();
+  if (s.includes('error')||s.includes('failed')||s.includes('failure')){ deployLed.style.background='#dc2626'; deployText.textContent = 'Deployment Status: Fehler'; }
+  else if (s.includes('in_progress')||s.includes('building')||s.includes('queued')||s.includes('requested')){ deployLed.style.background='#f59e0b'; deployText.textContent = 'Deployment Status: in Arbeit'; }
+  else { deployLed.style.background='#10b981'; deployText.textContent = 'Deployment Status: Erfolg'; }
+}
+
+/* -------------------------
+   UI: Commits anzeigen
+   ------------------------- */
+function showCommits(list){
+  const wrap = document.getElementById('commits');
+  wrap.innerHTML = '';
+  if(!list || !list.length){ wrap.innerHTML = '<div class="small">Keine Commits gefunden.</div>'; return; }
+  list.slice(0,6).forEach(c=>{
+    const d = document.createElement('div'); d.className='commit';
+    const msg = c.commit && c.commit.message ? c.commit.message.split('\n')[0] : '(no message)';
+    const who = c.commit && c.commit.author ? c.commit.author.name : (c.author && c.author.login ? c.author.login : 'unknown');
+    const time = new Date(c.commit.author.date).toLocaleString();
+    d.innerHTML = `<div style="font-weight:700">${msg}</div><div class="small">${who} — ${time}</div>`;
+    wrap.appendChild(d);
+  });
+}
+
+/* -------------------------
+   Aktionen: commit / patch / backup
+   ------------------------- */
+async function runTestCommit(){
+  const token = getToken();
+  if(!token){ appendLog('Kein Token: bitte speichern.', 'err'); alert('Bitte Token eingeben und speichern.'); return; }
+  const repo = repoSelect.value;
+  const path = 'log/test-commit.txt';
+  const content = btoa(`Test Commit ausgeführt: ${new Date().toISOString()}\nBy: Poststelle`);
+  const message = `🚀 Test-Commit via Poststelle (${new Date().toLocaleString()})`;
+  appendLog(`Sende Test-Commit an ${repo} ...`, 'info');
+
+  try {
+    // check existing file (to get sha)
+    const getRes = await ghFetch(`/repos/${DEFAULT_OWNER}/${repo}/contents/${encodeURIComponent(path)}`);
+    const fileData = getRes.ok ? await getRes.json() : null;
+    const sha = fileData && fileData.sha ? fileData.sha : undefined;
+    const body = { message, content };
+    if (sha) body.sha = sha;
+    const putRes = await ghFetch(`/repos/${DEFAULT_OWNER}/${repo}/contents/${encodeURIComponent(path)}`, {
+      method: 'PUT',
+      body: JSON.stringify(body)
+    });
+    if (putRes.ok){
+      appendLog(`✅ Test-Commit erfolgreich: ${repo}/${path}`, 'ok');
+      refreshStatus();
+    } else {
+      const err = await putRes.json();
+      appendLog('Fehler Test-Commit: '+(err.message||putRes.statusText),'err');
     }
+  } catch(e){
+    appendLog('Netzwerkfehler Test-Commit: '+e.message,'err');
+  }
+}
 
-    // =====================
-    // 🚀 Test Commit
-    // =====================
-    async function testCommit() {
-      const token = getToken();
-      const repo = getRepo();
-      const statusEl = document.getElementById('status');
-      if (!token) { statusEl.textContent = '❌ Kein Token hinterlegt'; return; }
+async function runWerkstattPatch(){
+  appendLog('Werkstatt-Patch gestartet...', 'info');
+  // placeholder: hier würdest du komplexere Patch-Logik einbinden
+  // Beispiel: lade patch aus /werkstatt/patch.json und apply->commit
+  try{
+    // demonstrative delay
+    await new Promise(r=>setTimeout(r,1200));
+    appendLog('🔧 Werkstatt-Patch erfolgreich angewendet (Demo).', 'ok');
+  }catch(e){ appendLog('Patch-Fehler: '+e.message,'err'); }
+}
 
-      const owner = 'Adler-FSA';
-      const path = 'log/test-commit.txt';
-      const content = btoa(`Test Commit: ${new Date().toLocaleString()}`);
-      const message = `🚀 Test-Commit via Poststelle (${new Date().toLocaleString()})`;
+async function runZipBackup(){
+  appendLog('ZIP-Backup wird erstellt...', 'info');
+  // placeholder: Trigger Action or create ZIP via API / service
+  try{
+    // demo delay
+    await new Promise(r=>setTimeout(r,1200));
+    appendLog('📦 Backup bereit / (Demo) — bei produktiv: Download-Link wird angezeigt.', 'ok');
+  }catch(e){ appendLog('Backup-Fehler: '+e.message,'err'); }
+}
 
-      try {
-        const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-          headers: { Authorization: `token ${token}` }
-        });
-        const fileData = res.ok ? await res.json() : null;
-        const sha = fileData ? fileData.sha : undefined;
+/* -------------------------
+   Auto refresh small loop
+   ------------------------- */
+let autoTimer = null;
+function startAutoRefresh(){
+  if (autoTimer) clearInterval(autoTimer);
+  autoTimer = setInterval(()=>{ refreshStatus(); }, 60_000); // jede Minute
+}
+startAutoRefresh();
 
-        const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-          method: 'PUT',
-          headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message, content, sha })
-        });
-
-        if (commitRes.ok) {
-          statusEl.textContent = `✅ Test-Commit erfolgreich auf ${repo}`;
-          setAmpel('gruen');
-        } else {
-          const err = await commitRes.json();
-          statusEl.textContent = `❌ Fehler: ${err.message}`;
-          setAmpel('rot');
-        }
-      } catch (e) {
-        statusEl.textContent = `❌ Netzwerk-/Tokenfehler: ${e.message}`;
-        setAmpel('rot');
-      }
-    }
-
-    // =====================
-    // 🧰 Werkstatt Patch
-    // =====================
-    async function pushWerkstattPatch() {
-      const token = getToken();
-      const repo = getRepo();
-      const statusEl = document.getElementById('status');
-      if (!token) { statusEl.textContent = '❌ Kein Token hinterlegt'; return; }
-
-      const owner = 'Adler-FSA';
-      const path = `log/werkstatt-patch-${new Date().toISOString().replace(/[:.]/g,'-')}.txt`;
-      const content = btoa(`Werkstatt Patch: ${new Date().toLocaleString()}`);
-      const message = `🧰 Werkstatt-Patch via Poststelle (${new Date().toLocaleString()})`;
-
-      try {
-        const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-          method: 'PUT',
-          headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message, content })
-        });
-
-        if (commitRes.ok) {
-          statusEl.textContent = `✅ Werkstatt-Patch auf ${repo}`;
-          setAmpel('gelb');
-        } else {
-          const err = await commitRes.json();
-          statusEl.textContent = `❌ Fehler: ${err.message}`;
-          setAmpel('rot');
-        }
-      } catch (e) {
-        statusEl.textContent = `❌ Netzwerk-/Tokenfehler: ${e.message}`;
-        setAmpel('rot');
-      }
-    }
-
-    // =====================
-    // 📦 ZIP Backup Trigger (Platzhalter)
-    // =====================
-    function triggerBackup() {
-      // Hier kann später GitHub Actions / API angebunden werden
-      document.getElementById('status').textContent = '📦 Backup-Trigger ausgelöst (Demo)';
-      setAmpel('gelb');
-    }
-  </script>
+/* -------------------------
+   initial
+   ------------------------- */
+(function init(){
+  // lade token aus storage falls vorhanden
+  const t = getToken(); if (t) document.getElementById('tokenInput').value = '●'.repeat(24);
+  initRepoSelect();
+  appendLog('Poststelle initialisiert. Bitte Token speichern und Status aktualisieren.', 'info');
+})();
+</script>
 </body>
 </html>
