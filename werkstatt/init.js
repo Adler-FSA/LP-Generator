@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("✅ Werkstatt init gestartet");
-  document.getElementById("header").innerHTML = "<h1>🛠️ Werkstatt aktiv</h1>";
-  document.getElementById("actions").innerHTML = "<button onclick='alert(\"Funktion läuft\")'>Test-Button</button>";
-  document.getElementById("modules").innerHTML = "<p>📦 Module geladen</p>";
-  document.getElementById("log").innerHTML = "<p>📝 Log-Ausgabe sichtbar</p>";
-  document.getElementById("help").innerHTML = "<p>ℹ️ Hilfe-Slot aktiv</p>";
+  console.log("🧠 Werkstatt Init gestartet");
+
+  // Platzhalter für Debug-Anzeige
+  document.getElementById("slot-header").innerHTML = "<h2>🛠️ Werkstatt aktiv</h2>";
+  document.getElementById("slot-actions").innerHTML = "✅ Actions bereit";
+  document.getElementById("slot-modules").innerHTML = "🧰 Module warten…";
+  document.getElementById("slot-log").innerHTML = "📜 Log aktiv";
+  document.getElementById("slot-help").innerHTML = "❔ Hilfe verfügbar";
 });
