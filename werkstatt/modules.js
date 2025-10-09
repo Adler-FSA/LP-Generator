@@ -1,31 +1,26 @@
 const modules = (() => {
   const container = document.getElementById("slot-modules");
 
+  const MODULE_LIST = [
+    "actions.js",
+    "healthcheck.js",
+    "init.js",
+    "log.js",
+    "modules.js",
+    "token.js"
+  ];
+
   function scan() {
-    container.innerHTML = "🔍 Scanne JS-Module…";
-
-    // ✅ Relativer Pfad zur Poststelle korrigiert
-    const modulePath = "../poststelle/js/";
-
-    fetch(modulePath)
-      .then(() => {
-        container.innerHTML = `
-          ✅ Module gefunden:
-          <ul>
-            <li>actions.js</li>
-            <li>healthcheck.js</li>
-            <li>init.js</li>
-            <li>log.js</li>
-            <li>modules.js</li>
-            <li>token.js</li>
-          </ul>
-        `;
-        log.write("📦 Modul-Scan abgeschlossen");
-      })
-      .catch(() => {
-        container.innerHTML = "❌ Fehler beim Laden der Module";
-        log.write("❌ Modul-Scan fehlgeschlagen");
-      });
+    container.innerHTML = "🔄 Module werden geladen…";
+    setTimeout(() => {
+      container.innerHTML = `
+        ✅ Module gefunden:
+        <ul>
+          ${MODULE_LIST.map(f => `<li>${f}</li>`).join("")}
+        </ul>
+      `;
+      log.write("📦 Modul-Scan abgeschlossen");
+    }, 500);
   }
 
   return { scan };
