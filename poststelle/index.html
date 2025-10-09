@@ -1,88 +1,85 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>📬 FSA Poststelle – Stabilkern v3.6.0</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>📬 FSA Poststelle – Control & GitHub Push System</title>
   <style>
     :root{
       --bg:#0b1220; --panel:#111b2e; --line:#1f2b44;
       --text:#e6f2ff; --muted:#9db4d6;
-      --ok:#1ecb6c; --warn:#ffcb5c; --err:#ff5c5c; --info:#3fa9f5;
+      --ok:#1ecb6c; --warn:#ffcb5c; --err:#ff5c5c;
       --card-shadow:0 8px 30px rgba(0,0,0,.35); --radius:12px;
     }
-    html,body{height:100%}
+    html,body{height:100%;}
     body{
-      margin:0; background:linear-gradient(180deg,#0b1220 0%,#09101d 100%);
-      color:var(--text); font:14px/1.45 system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;
-      text-align:center; padding:24px;
+      margin:0;
+      background:linear-gradient(180deg,#0b1220 0%,#09101d 100%);
+      color:var(--text);
+      font:14px/1.45 system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      display:flex;justify-content:center;padding:24px;
     }
-    h1{color:#38bdf8;margin-bottom:8px}
-    .muted{color:var(--muted)}
+    .container{
+      max-width:1200px;width:100%;display:grid;
+      grid-template-columns:2fr 1fr;grid-gap:20px;
+    }
+    h1{color:#38bdf8;margin-bottom:8px;text-align:center;}
+    h2,h3{margin:0 0 8px;color:#e6f2ff}
     .panel{
-      background:var(--panel); max-width:800px; margin:18px auto;
-      padding:18px; border-radius:var(--radius); box-shadow:var(--card-shadow);
-      text-align:left;
+      background:var(--panel);
+      padding:18px;border-radius:var(--radius);
+      box-shadow:var(--card-shadow);
+      margin-bottom:20px;
     }
-    .log{
-      background:#0f1a2e;border:1px dashed #22365d;color:#9db4d6;
-      padding:12px;border-radius:10px;white-space:pre-wrap;
-      max-width:800px;margin:20px auto;text-align:left;
-      font-family:ui-monospace,Consolas,monospace;
-    }
-    footer{color:#93a8cc;font-size:12px;text-align:center;margin:18px 0 28px}
+    .muted{color:var(--muted)}
     .status-led{font-weight:700}
     .ok{color:var(--ok)}.warn{color:var(--warn)}.err{color:var(--err)}
+    .log{
+      background:#0f1a2e;border:1px dashed #22365d;
+      color:#9db4d6;padding:12px;border-radius:10px;
+      white-space:pre-wrap;font-family:ui-monospace,Consolas;
+      height:220px;overflow:auto;
+    }
+    footer{text-align:center;color:#93a8cc;font-size:12px;margin-top:10px;}
+    button{
+      border:none;padding:10px;border-radius:8px;cursor:pointer;
+      font-weight:600;transition:.2s;min-width:160px;
+    }
+    button:hover{opacity:.9;transform:translateY(-1px);}
   </style>
 </head>
 <body>
-  <h1>📬 FSA Poststelle – Stabilkern v3.6.0</h1>
-  <p>Status: <span id="status-led" class="status-led warn">⏳ Starte…</span></p>
+  <div style="width:100%;">
+    <h1>📬 FSA Poststelle – Control & GitHub Push System</h1>
+    <div class="container">
+      <div>
+        <!-- Token + Repo -->
+        <div id="slot-token" class="panel"></div>
 
-  <!-- 🧩 Slots -->
-  <div id="slot-token" class="panel">
-    <!-- Tokenbereich wird hier dynamisch eingehängt -->
+        <!-- Aktionen -->
+        <div id="slot-patch" class="panel"></div>
+
+        <!-- Log -->
+        <div class="panel">
+          <h2>📜 Live-Log</h2>
+          <div id="log" class="log">Poststelle initialisiert …</div>
+        </div>
+      </div>
+
+      <!-- rechte Sidebar -->
+      <div>
+        <div id="slot-modules" class="panel"></div>
+      </div>
+    </div>
+    <footer>© 2025 FSA · Poststelle v3.6.0 · Slot-Architektur</footer>
   </div>
 
-  <div id="slot-patch" class="panel">
-    <!-- Patch/Posteingang wird hier dynamisch eingehängt -->
-  </div>
-
-  <div id="slot-modules" class="panel" style="display:none">
-    <!-- Zusatzmodule (z.B. AI-Handshake) -->
-  </div>
-
-  <!-- 🪵 Log -->
-  <div id="log" class="log">📬 Poststelle initialisiert…</div>
-
-  <footer>© 2025 FSA – Stabilkern v3.6.0 · Slot-Architektur</footer>
-
-<script>
-const log=(m)=>{
-  const el=document.getElementById("log");
-  el.textContent+=`\n${new Date().toLocaleTimeString()} ${m}`;
-};
-
-// 🟢 Auto Healthcheck alle 30 Sekunden
-const led=document.getElementById("status-led");
-function setStatus(status){
-  led.className=`status-led ${status}`;
-  led.textContent=
-    status==="ok" ? "🟢 OK" :
-    status==="warn" ? "⚠️ Warnung" : "🔴 Fehler";
-}
-
-function autoHealthCheck(){
-  // Hier später echter Check auf Posteingang / AI / Repo
-  setStatus("ok");
-  log("✅ Auto-Healthcheck durchgeführt");
-}
-
-setInterval(autoHealthCheck,30000);
-autoHealthCheck(); // beim Start
-
-// 🧱 Platzhalter Slots — Werkstatt darf nur hier einhängen!
-log("📦 Slots bereit: #slot-token, #slot-patch, #slot-modules, #log");
-</script>
+  <!-- Modular Scripts -->
+  <script src="./js/log.js"></script>
+  <script src="./js/healthcheck.js"></script>
+  <script src="./js/token.js"></script>
+  <script src="./js/actions.js"></script>
+  <script src="./js/modules.js"></script>
+  <script src="./js/init.js"></script>
 </body>
 </html>
