@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📬 FSA Poststelle – GitHub Integration</title>
+  <title>📬 FSA Poststelle – Control & GitHub Push System</title>
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -12,16 +12,14 @@
       text-align: center;
       padding: 30px;
     }
-    h1 { color: #38bdf8; }
-
-    input, button {
+    h1 { color: #38bdf8; margin-bottom: 20px; }
+    input, select, button {
       font-size: 1rem;
       padding: 10px;
-      margin: 8px;
+      margin: 6px;
       border-radius: 6px;
     }
-    input {
-      width: 300px;
+    input, select {
       border: 1px solid #334155;
       background: #1e293b;
       color: #e2e8f0;
@@ -33,31 +31,68 @@
       border: none;
       font-weight: 600;
     }
+    button:hover { background: #0ea5e9; }
     #status {
       margin-top: 20px;
       font-size: 1.1rem;
     }
+    .row { margin-top: 12px; }
+    .ampel {
+      width: 14px; height: 14px;
+      display: inline-block;
+      border-radius: 50%;
+      margin-left: 8px;
+    }
+    .ampel.gruen { background:#10b981; }
+    .ampel.rot { background:#ef4444; }
+    .ampel.gelb { background:#f59e0b; }
   </style>
 </head>
 <body>
-  <h1>📬 FSA Poststelle · GitHub Push System</h1>
+  <h1>📬 FSA Poststelle · Control & GitHub Push System</h1>
 
-  <!-- Token Eingabe -->
-  <div>
+  <!-- 🔐 Token Eingabe -->
+  <div class="row">
     <input type="password" id="tokenInput" placeholder="🔐 GitHub Token eingeben" />
     <button onclick="saveToken()">💾 Speichern</button>
   </div>
 
-  <!-- Test-Commit -->
-  <div>
+  <!-- 📂 Repo Auswahl -->
+  <div class="row">
+    <select id="repoSelect">
+      <option value="FSA-Core">📦 FSA-Core</option>
+      <option value="FSA-Network">🌐 FSA-Network</option>
+      <option value="FSA-WhiteLabel">🧾 FSA-WhiteLabel</option>
+    </select>
+  </div>
+
+  <!-- 🚀 Test Commit -->
+  <div class="row">
     <button onclick="testCommit()">🚀 Test-Commit ausführen</button>
   </div>
 
-  <!-- Status -->
+  <!-- 🧰 Werkstatt Patch -->
+  <div class="row">
+    <button onclick="pushWerkstattPatch()">🧰 Werkstatt-Patch ausführen</button>
+  </div>
+
+  <!-- 📦 ZIP Backup -->
+  <div class="row">
+    <button onclick="triggerBackup()">📦 ZIP-Backup auslösen</button>
+  </div>
+
+  <!-- 🚦 Admin Ampel -->
+  <div class="row">
+    <span>🚦 Deployment Status:</span>
+    <span id="ampel" class="ampel rot"></span>
+  </div>
+
   <div id="status">Bereit zum Starten…</div>
 
   <script>
-    // Token speichern / laden
+    // =====================
+    // 🔐 Token Verwaltung
+    // =====================
     function saveToken() {
       const token = document.getElementById('tokenInput').value.trim();
       if (token) {
@@ -65,24 +100,29 @@
         document.getElementById('status').textContent = '✅ Token gespeichert';
       }
     }
+    function getToken() { return localStorage.getItem('github_token') || ''; }
+    function getRepo() { return document.getElementById('repoSelect').value; }
 
-    function getToken() {
-      return localStorage.getItem('github_token') || '';
+    // =====================
+    // 🚦 Admin Ampel Logik
+    // =====================
+    function setAmpel(status) {
+      const ampel = document.getElementById('ampel');
+      ampel.className = 'ampel ' + status;
     }
 
-    // Test-Commit Funktion
+    // =====================
+    // 🚀 Test Commit
+    // =====================
     async function testCommit() {
       const token = getToken();
+      const repo = getRepo();
       const statusEl = document.getElementById('status');
-      if (!token) {
-        statusEl.textContent = '❌ Kein Token hinterlegt';
-        return;
-      }
+      if (!token) { statusEl.textContent = '❌ Kein Token hinterlegt'; return; }
 
       const owner = 'Adler-FSA';
-      const repo = 'FSA-Core'; // 🧠 kann später dynamisch werden
       const path = 'log/test-commit.txt';
-      const content = btoa(`Test Commit ausgeführt: ${new Date().toISOString()}`);
+      const content = btoa(`Test Commit: ${new Date().toLocaleString()}`);
       const message = `🚀 Test-Commit via Poststelle (${new Date().toLocaleString()})`;
 
       try {
@@ -94,22 +134,66 @@
 
         const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
           method: 'PUT',
-          headers: {
-            Authorization: `token ${token}`,
-            'Content-Type': 'application/json'
-          },
+          headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ message, content, sha })
         });
 
         if (commitRes.ok) {
-          statusEl.textContent = '✅ Test-Commit erfolgreich auf GitHub übertragen';
+          statusEl.textContent = `✅ Test-Commit erfolgreich auf ${repo}`;
+          setAmpel('gruen');
         } else {
           const err = await commitRes.json();
           statusEl.textContent = `❌ Fehler: ${err.message}`;
+          setAmpel('rot');
         }
       } catch (e) {
         statusEl.textContent = `❌ Netzwerk-/Tokenfehler: ${e.message}`;
+        setAmpel('rot');
       }
+    }
+
+    // =====================
+    // 🧰 Werkstatt Patch
+    // =====================
+    async function pushWerkstattPatch() {
+      const token = getToken();
+      const repo = getRepo();
+      const statusEl = document.getElementById('status');
+      if (!token) { statusEl.textContent = '❌ Kein Token hinterlegt'; return; }
+
+      const owner = 'Adler-FSA';
+      const path = `log/werkstatt-patch-${new Date().toISOString().replace(/[:.]/g,'-')}.txt`;
+      const content = btoa(`Werkstatt Patch: ${new Date().toLocaleString()}`);
+      const message = `🧰 Werkstatt-Patch via Poststelle (${new Date().toLocaleString()})`;
+
+      try {
+        const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+          method: 'PUT',
+          headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message, content })
+        });
+
+        if (commitRes.ok) {
+          statusEl.textContent = `✅ Werkstatt-Patch auf ${repo}`;
+          setAmpel('gelb');
+        } else {
+          const err = await commitRes.json();
+          statusEl.textContent = `❌ Fehler: ${err.message}`;
+          setAmpel('rot');
+        }
+      } catch (e) {
+        statusEl.textContent = `❌ Netzwerk-/Tokenfehler: ${e.message}`;
+        setAmpel('rot');
+      }
+    }
+
+    // =====================
+    // 📦 ZIP Backup Trigger (Platzhalter)
+    // =====================
+    function triggerBackup() {
+      // Hier kann später GitHub Actions / API angebunden werden
+      document.getElementById('status').textContent = '📦 Backup-Trigger ausgelöst (Demo)';
+      setAmpel('gelb');
     }
   </script>
 </body>
