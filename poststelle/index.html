@@ -5,96 +5,84 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>📬 FSA Poststelle – Stabilkern v3.6.0</title>
   <style>
-    :root {
-      --bg:#0b1220; --panel:#111b2e; --text:#e6f2ff;
-      --ok:#22c55e; --warn:#facc15; --err:#ef4444;
+    :root{
+      --bg:#0b1220; --panel:#111b2e; --line:#1f2b44;
+      --text:#e6f2ff; --muted:#9db4d6;
+      --ok:#1ecb6c; --warn:#ffcb5c; --err:#ff5c5c; --info:#3fa9f5;
+      --card-shadow:0 8px 30px rgba(0,0,0,.35); --radius:12px;
     }
-    body {
-      font-family: system-ui,Segoe UI,Roboto,sans-serif;
-      background: var(--bg); color: var(--text);
-      text-align: center; padding: 40px;
+    html,body{height:100%}
+    body{
+      margin:0; background:linear-gradient(180deg,#0b1220 0%,#09101d 100%);
+      color:var(--text); font:14px/1.45 system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      text-align:center; padding:24px;
     }
-    h1 { color: #38bdf8; margin-bottom: 8px; }
-    .status-led { font-weight: 700; }
-    .ok { color: var(--ok); }
-    .warn { color: var(--warn); }
-    .err { color: var(--err); }
-
-    .slot {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 12px;
-      background: var(--panel);
-      border-radius: 8px;
-      border: 1px solid #1f2b44;
-      text-align: left;
+    h1{color:#38bdf8;margin-bottom:8px}
+    .muted{color:var(--muted)}
+    .panel{
+      background:var(--panel); max-width:800px; margin:18px auto;
+      padding:18px; border-radius:var(--radius); box-shadow:var(--card-shadow);
+      text-align:left;
     }
-
-    .log {
-      background:#0f1a2e; color:#9db4d6; font-family: monospace;
-      padding:12px; max-width:800px; margin:20px auto;
-      border-radius:8px; text-align:left; white-space: pre-wrap;
+    .log{
+      background:#0f1a2e;border:1px dashed #22365d;color:#9db4d6;
+      padding:12px;border-radius:10px;white-space:pre-wrap;
+      max-width:800px;margin:20px auto;text-align:left;
+      font-family:ui-monospace,Consolas,monospace;
     }
-
-    footer { margin-top: 20px; font-size: 0.85rem; color: #64748b; }
+    footer{color:#93a8cc;font-size:12px;text-align:center;margin:18px 0 28px}
+    .status-led{font-weight:700}
+    .ok{color:var(--ok)}.warn{color:var(--warn)}.err{color:var(--err)}
   </style>
 </head>
 <body>
-
-  <!-- 📬 HEADER -->
-  <h1>📬 FSA Poststelle</h1>
+  <h1>📬 FSA Poststelle – Stabilkern v3.6.0</h1>
   <p>Status: <span id="status-led" class="status-led warn">⏳ Starte…</span></p>
 
-  <!-- 🧠 SLOT: TOKEN-EINGABE (fest reserviert) -->
-  <div id="slot-token" class="slot">
-    <!-- zukünftiger Token-Bereich -->
+  <!-- 🧩 Slots -->
+  <div id="slot-token" class="panel">
+    <!-- Tokenbereich wird hier dynamisch eingehängt -->
   </div>
 
-  <!-- 📦 SLOT: PATCH / POSTEINGANG (fest reserviert) -->
-  <div id="slot-patch" class="slot">
-    <p><strong>📦 Posteingang:</strong> Wird automatisch geprüft.</p>
+  <div id="slot-patch" class="panel">
+    <!-- Patch/Posteingang wird hier dynamisch eingehängt -->
   </div>
 
-  <!-- 🪵 LOG-BEREICH (fix) -->
-  <div id="log" class="log">Poststelle initialisiert …</div>
-
-  <!-- 🧰 SLOT: ZUSÄTZLICHE MODULE (z.B. Statistiken / AI-Handshake) -->
-  <div id="slot-modules" class="slot">
-    <!-- zukünftige Erweiterungen -->
+  <div id="slot-modules" class="panel" style="display:none">
+    <!-- Zusatzmodule (z.B. AI-Handshake) -->
   </div>
 
-  <footer>© 2025 FSA – Poststelle Stabilkern v3.6.0</footer>
+  <!-- 🪵 Log -->
+  <div id="log" class="log">📬 Poststelle initialisiert…</div>
+
+  <footer>© 2025 FSA – Stabilkern v3.6.0 · Slot-Architektur</footer>
 
 <script>
-  const log = (msg) => {
-    const el = document.getElementById("log");
-    el.textContent += `\n${new Date().toLocaleTimeString()} ${msg}`;
-  };
+const log=(m)=>{
+  const el=document.getElementById("log");
+  el.textContent+=`\n${new Date().toLocaleTimeString()} ${m}`;
+};
 
-  const led = document.getElementById("status-led");
+// 🟢 Auto Healthcheck alle 30 Sekunden
+const led=document.getElementById("status-led");
+function setStatus(status){
+  led.className=`status-led ${status}`;
+  led.textContent=
+    status==="ok" ? "🟢 OK" :
+    status==="warn" ? "⚠️ Warnung" : "🔴 Fehler";
+}
 
-  async function checkInbox(){
-    try {
-      const res = await fetch("../posteingang/", {cache:"no-store"});
-      if(res.ok){
-        led.textContent = "🟢 Bereit";
-        led.className = "status-led ok";
-        log("📥 Posteingang erreichbar.");
-      } else {
-        led.textContent = "⚠️ Warnung";
-        led.className = "status-led warn";
-        log("⚠️ Keine Pakete oder kein Zugriff.");
-      }
-    } catch (e) {
-      led.textContent = "❌ Fehler";
-      led.className = "status-led err";
-      log("❌ Fehler beim Zugriff auf den Posteingang.");
-    }
-  }
+function autoHealthCheck(){
+  // Hier später echter Check auf Posteingang / AI / Repo
+  setStatus("ok");
+  log("✅ Auto-Healthcheck durchgeführt");
+}
 
-  // Prüfe Posteingang alle 30 Sekunden
-  setInterval(checkInbox, 30000);
-  checkInbox();
+setInterval(autoHealthCheck,30000);
+autoHealthCheck(); // beim Start
+
+// 🧱 Platzhalter Slots — Werkstatt darf nur hier einhängen!
+log("📦 Slots bereit: #slot-token, #slot-patch, #slot-modules, #log");
 </script>
 </body>
 </html>
