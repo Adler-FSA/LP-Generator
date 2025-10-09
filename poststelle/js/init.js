@@ -12,6 +12,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Token prüfen (Debug-Info)
+  if (typeof token === "undefined" || !token) {
+    console.warn("⚠️ Kein Token gesetzt — Build-Status kann nicht abgerufen werden.");
+    fsaLog("⚠️ Kein Token aktiv — bitte unter Token & Repo speichern.", "warn");
+  } else {
+    console.log("🔐 Token aktiv:", token ? "✅ vorhanden" : "❌ fehlt");
+  }
+
   // Token / Healthcheck / Module starten
   if (typeof initToken === "function") initToken();
   if (typeof healthCheck === "function") healthCheck();
@@ -31,7 +39,7 @@ async function checkActionStatus() {
   try {
     const res = await fetch(apiURL, {
       headers: typeof token !== "undefined" && token
-        ? { "Authorization": `token ${token}` }
+        ? { "Authorization": `Bearer ${token}` }   // ✅ FIX
         : {}
     });
 
