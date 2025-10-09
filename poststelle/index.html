@@ -13,6 +13,7 @@
       padding: 30px;
     }
     h1 { color: #38bdf8; }
+
     input, button {
       font-size: 1rem;
       padding: 10px;
@@ -30,6 +31,7 @@
       background: #38bdf8;
       color: #0f172a;
       border: none;
+      font-weight: 600;
     }
     #status {
       margin-top: 20px;
@@ -48,9 +50,10 @@
 
   <!-- Test-Commit -->
   <div>
-    <button onclick="testCommit()">🔄 Test-Commit ausführen</button>
+    <button onclick="testCommit()">🚀 Test-Commit ausführen</button>
   </div>
 
+  <!-- Status -->
   <div id="status">Bereit zum Starten…</div>
 
   <script>
@@ -76,22 +79,19 @@
         return;
       }
 
-      // Zielrepo — du kannst das hier dynamisch machen
       const owner = 'Adler-FSA';
-      const repo = 'FSA-Core';
+      const repo = 'FSA-Core'; // 🧠 kann später dynamisch werden
       const path = 'log/test-commit.txt';
       const content = btoa(`Test Commit ausgeführt: ${new Date().toISOString()}`);
       const message = `🚀 Test-Commit via Poststelle (${new Date().toLocaleString()})`;
 
       try {
-        // Bestehende Datei checken
         const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
           headers: { Authorization: `token ${token}` }
         });
         const fileData = res.ok ? await res.json() : null;
         const sha = fileData ? fileData.sha : undefined;
 
-        // Datei erstellen / aktualisieren
         const commitRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
           method: 'PUT',
           headers: {
