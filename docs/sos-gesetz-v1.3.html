@@ -174,5 +174,74 @@
       document.body.style.backgroundPosition = `center calc(50% + ${y}px)`;
     }, { passive: true });
   </script>
+<!-- 🎧 Musiksteuerung - S-O-S Intro Musik -->
+<style>
+  .music-button {
+    position: fixed;
+    bottom: 20px;        /* Dezent unten links */
+    left: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    color: gold;
+    padding: 10px 16px;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 15px gold;
+    transition: background 0.3s, transform 0.2s;
+    z-index: 999;
+  }
+
+  .music-button:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.05);
+  }
+
+  .music-button.attention {
+    animation: pulseAttention 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulseAttention {
+    0%, 100% { box-shadow: 0 0 15px gold; }
+    50% { box-shadow: 0 0 35px gold; }
+  }
+</style>
+
+<!-- Musik Button -->
+<div id="music-control" class="music-button">🔊 Musik</div>
+
+<!-- Musik Datei -->
+<audio id="background-music" autoplay loop>
+  <source src="./media/intro-theme.mp3" type="audio/mpeg">
+  Dein Browser unterstützt kein Audio.
+</audio>
+
+<script>
+  const audio = document.getElementById('background-music');
+  const musicBtn = document.getElementById('music-control');
+
+  let musicOn = true;
+
+  // Musik automatisch starten — oder Button aktivieren wenn blockiert
+  window.addEventListener('load', () => {
+    audio.play().catch(() => {
+      musicBtn.classList.add('attention');
+      musicBtn.textContent = "▶️ Musik starten";
+      musicOn = false;
+    });
+  });
+
+  // Button klickbar machen (an/aus)
+  musicBtn.addEventListener('click', () => {
+    if (musicOn) {
+      audio.pause();
+      musicBtn.textContent = "🔇 Musik aus";
+    } else {
+      audio.play();
+      musicBtn.textContent = "🔊 Musik an";
+      musicBtn.classList.remove('attention');
+    }
+    musicOn = !musicOn;
+  });
+</script>
 </body>
 </html>
