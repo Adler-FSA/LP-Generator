@@ -1,10 +1,10 @@
 // =========================
-// 📬 INIT – Poststelle Control Center
+// 📬 INIT – Poststelle Control Center (Public Repo Version)
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
   fsaLog("📬 Poststelle Control-Center geladen (modular)");
 
-  // Slots prüfen
+  // Slots prüfen (Debug-Hilfe)
   const slots = ["slot-token", "slot-patch", "slot-modules", "log", "build-status"];
   slots.forEach(id => {
     if (!document.getElementById(id)) {
@@ -12,37 +12,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Token prüfen (Debug-Info)
-  if (typeof token === "undefined" || !token) {
-    console.warn("⚠️ Kein Token gesetzt — Build-Status kann nicht abgerufen werden.");
-    fsaLog("⚠️ Kein Token aktiv — bitte unter Token & Repo speichern.", "warn");
-  } else {
-    console.log("🔐 Token aktiv:", token ? "✅ vorhanden" : "❌ fehlt");
-  }
-
-  // Token / Healthcheck / Module starten
+  // Basis-Initialisierung
   if (typeof initToken === "function") initToken();
   if (typeof healthCheck === "function") healthCheck();
   if (typeof initModules === "function") initModules();
 
-  // 🟢 Live Build Status sofort abrufen
+  // 🟢 Build-Status sofort beim Start abrufen
   checkActionStatus();
 });
 
 // =========================
-// 🛰️ GitHub Actions Build Status Live Check
+// 🛰️ GitHub Actions Build Status Live Check (ohne Token)
 // =========================
 async function checkActionStatus() {
   const statusBox = document.getElementById("build-status");
   const apiURL = `https://api.github.com/repos/Adler-FSA/Lp-Generator/actions/runs?per_page=1`;
 
   try {
-    const res = await fetch(apiURL, {
-      headers: typeof token !== "undefined" && token
-        ? { "Authorization": `Bearer ${token}` }   // ✅ FIX
-        : {}
-    });
-
+    const res = await fetch(apiURL); // ⚡ Kein Token nötig bei Public Repo
     if (!res.ok) {
       fsaLog(`❌ Build-Status konnte nicht abgerufen werden: ${res.status}`, "err");
       if (statusBox) {
@@ -87,7 +74,7 @@ async function checkActionStatus() {
       fsaLog(`❌ GitHub Actions: Build fehlgeschlagen (${time})`, "err");
     }
   } catch (err) {
-    fsaLog(`❌ Fehler: ${err.message}`, "err");
+    fsaLog(`❌ Netzwerkfehler: ${err.message}`, "err");
     if (statusBox) {
       statusBox.textContent = "❌ Netzwerkfehler beim Statusabruf";
       statusBox.style.color = "#ff5c5c";
