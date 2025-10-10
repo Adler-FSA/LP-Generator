@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>S-O-S Gesetz v1.2 · FSA – HTML-TPS Richtlinie</title>
+<meta name="description" content="S-O-S Gesetz v1.2 · HTML-TPS Erstellungsrichtlinie der FSA. Präambel: Der Schlüsselmoment. Ethik, Compliance, Werkstatt-/Poststelle-Logik, LP-Generator 3-Ebenen, White-Label, MLC, DSGVO, Fallback, Versionierung.">
+<style>
+  :root{
+    --bg:#0b1220;--panel:#111b2e;--line:#1f2b44;--text:#e6f2ff;
+    --muted:#a9bedc;--link:#93c5fd;--accent:#38bdf8;--ok:#10b981;--warn:#f59e0b;--err:#ef4444;
+    --radius:14px;--shadow:0 10px 35px rgba(0,0,0,.35);
+  }
+  html,body{height:100%}
+  body{
+    margin:0;background:linear-gradient(180deg,#0b1220 0%,#09101d 100%);color:var(--text);
+    font:15px/1.6 system-ui,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  }
+  a{color:var(--link);text-decoration:none}
+  a:hover{color:var(--accent)}
+  .wrap{max-width:1100px;margin:28px auto;padding:0 18px}
+  .topbar{
+    position:sticky;top:0;z-index:4;
+    background:#0d1628cc;backdrop-filter:blur(8px);
+    border-bottom:1px solid #14213a;padding:10px 0;
+  }
+  .topbar .row{display:flex;gap:10px;align-items:center;justify-content:space-between}
+  .pill{
+    display:inline-flex;gap:8px;align-items:center;font-weight:700;
+    border:1px solid #203256;border-radius:999px;padding:8px 12px;background:#0f1a2e;box-shadow:var(--shadow)
+  }
+  .btn{display:inline-flex;gap:8px;align-items:center;border:1px solid #203256;border-radius:9px;
+       padding:8px 10px;background:#0f1a2e;cursor:pointer}
+  .btn:hover{border-color:#2a4570}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:16px 0}
+  .title{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  h1{margin:0;font-size:26px;letter-spacing:.2px;color:#c8e6ff}
+  .meta{color:var(--muted);font-size:13px}
+  .grid{display:grid;grid-template-columns:320px 1fr;gap:18px}
+  @media (max-width:980px){.grid{grid-template-columns:1fr}}
+  .toc{position:sticky;top:68px;max-height:calc(100vh - 120px);overflow:auto}
+  .toc h3{margin:0 0 8px}
+  .toc a{display:block;padding:6px 8px;border-radius:8px}
+  .toc a:hover{background:#0f1a2e}
+  .search{display:flex;gap:8px;margin-top:10px}
+  .search input{flex:1;border:1px solid #203256;background:#0f1a2e;color:var(--text);border-radius:9px;padding:8px}
+  .badge{display:inline-flex;gap:8px;align-items:center;border:1px solid #203256;border-radius:20px;padding:4px 10px;font-size:12px}
+  .ok{color:#9cf0c8;border-color:#1b6a50;background:rgba(16,185,129,.12)}
+  .warn{color:#ffd891;border-color:#6d4a16;background:rgba(245,158,11,.12)}
+  .err{color:#ffb4b4;border-color:#6a2626;background:rgba(239,68,68,.12)}
+  .sec{margin-bottom:14px}
+  .sec h2{font-size:20px;margin:0 0 6px}
+  .fold{background:#0f1a2e;border:1px dashed #21365d;border-radius:12px;padding:12px}
+  .fold summary{cursor:pointer;font-weight:700}
+  .olist, .ulist{padding-left:18px}
+  .olist li{margin:6px 0}
+  .foot{color:#9db4d6;text-align:center;margin:22px 0 34px;font-size:12px}
+  .anchor{opacity:.5;margin-left:8px}
+  .anchor:hover{opacity:1}
+  .callout{border-left:4px solid var(--accent);padding:10px 12px;background:#102039;border-radius:8px}
+  code{background:#0e1a30;border:1px solid #1e2f51;border-radius:6px;padding:2px 6px}
+  .hl{background:linear-gradient(90deg,rgba(56,189,248,.18),rgba(56,189,248,0));border-radius:6px;padding:0 4px}
+</style>
+</head>
+<body>
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="wrap row">
+      <div class="pill">📜 S-O-S Gesetz <span class="meta">v1.2 • HTML-TPS Richtlinie</span></div>
+      <div class="row" style="gap:8px">
+        <a class="btn" href="../poststelle/" target="_blank">📬 Zur Poststelle</a>
+        <a class="btn" href="../werkstatt/" target="_blank">🛠️ Zur Werkstatt</a>
+        <a class="btn" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️ Nach oben</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <!-- Header -->
+    <div class="panel">
+      <div class="title">
+        <h1>FSA · S-O-S Gesetz v1.2 — HTML-TPS Erstellungsrichtlinie</h1>
+        <div class="badge ok">DSGVO · No Local Storage · Compliance-Layer aktiv</div>
+      </div>
+      <div class="meta">Stand: <span id="dt"></span> · Gültig für: Poststelle, Werkstatt, LP-Generator, LP-Templates, White-Label</div>
+      <div class="callout" style="margin-top:10px">
+        <strong>Präambel – Der Schlüsselmoment 🗝️</strong><br>
+        S-O-S ist ein sicherer Raum. Jede Interaktion beginnt mit einem universellen Ritual: <span class="hl">Schlüssel nehmen (Token) → Tür öffnen (Validierung) → Raum betreten (Werkstatt)</span>.
+        Dieser <em>Schlüsselmoment</em> ist unveränderbar (Core C1) und schafft Vertrauen, Kontrolle und Vertrautheit — weltweit, kultur- und sprachunabhängig.
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid">
+      <!-- TOC -->
+      <aside class="panel toc">
+        <h3>Inhalt</h3>
+        <div class="search">
+          <input id="q" type="search" placeholder="In Gesetz suchen … (Titel & Inhalt)">
+          <button class="btn" onclick="doSearch()">Suchen</button>
+        </div>
+        <div id="toc"></div>
+      </aside>
+
+      <!-- Content -->
+      <main>
+
+        <!-- §0 Präambel -->
+        <section id="sec-praambel" class="panel sec">
+          <h2>Präambel – Der Schlüsselmoment 🗝️ <a class="anchor" href="#sec-praambel">#</a></h2>
+          <details class="fold" open>
+            <summary>Kernaussage</summary>
+            <div class="ulist">
+              <li>Poststelle = Schlüsselübergabe (Token), Werkstatt = geschützter Raum.</li>
+              <li>Ritual: 🟥 Schlüssel einsetzen → 🟡 Tür dreht → 🟢 Raum öffnet sich.</li>
+              <li>Emotionales Fundament: Vertrautheit, Sicherheit, Selbstbestimmung.</li>
+              <li>Unveränderbar in allen Instanzen, Teil der Compliance-Prüfung.</li>
+            </div>
+          </details>
+        </section>
+
+        <!-- §1 Zweck & Geltung -->
+        <section id="sec-1" class="panel sec">
+          <h2>§1 Zweck & Geltungsbereich <a class="anchor" href="#sec-1">#</a></h2>
+          <details class="fold" open>
+            <summary>Was regelt dieses Gesetz?</summary>
+            <ol class="olist">
+              <li>Definiert die verbindlichen Regeln für Erstellung, Betrieb und Änderung aller FSA-HTML-Seiten nach dem <strong>HTML-TPS</strong> (Transformer-Page-System).</li>
+              <li>Gilt für: Poststelle, Werkstatt, LP-Generator, LP-Templates, MLC, White-Label-Instanzen.</li>
+              <li>Sichert DSGVO-Konformität (No Local Storage), Nachvollziehbarkeit, Sicherheit und Erweiterbarkeit.</li>
+            </ol>
+          </details>
+        </section>
+
+        <!-- §2 Begriffe -->
+        <section id="sec-2" class="panel sec">
+          <h2>§2 Begriffsdefinitionen <a class="anchor" href="#sec-2">#</a></h2>
+          <details class="fold">
+            <summary>Wesentliche Begriffe</summary>
+            <ul class="ulist">
+              <li><strong>TPS</strong>: Seiten sind in *Blöcke* aufgeteilt, jeder Block bezieht Logik/Content aus einer zugehörigen <code>.js</code>.</li>
+              <li><strong>Slot-Architektur</strong>: Feste Slots (z. B. <code>#slot-token</code>, <code>#slot-actions</code>), die von JS befüllt werden.</li>
+              <li><strong>Fallback</strong>: letzte, komplette HTML-Vollversion ohne externe JS als Notmodus.</li>
+              <li><strong>White-Label</strong>: rechtlich & technisch definierte, eigenständige Instanz mit identischen Kernregeln.</li>
+              <li><strong>Unikats-URL</strong>: eindeutige, nachvollziehbare ID-URL je LP inkl. 3-Ebenen-Logik.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §3 Ethik & Compliance -->
+        <section id="sec-3" class="panel sec">
+          <h2>§3 Ethik & Compliance <a class="anchor" href="#sec-3">#</a></h2>
+          <details class="fold" open>
+            <summary>Unverhandelbare Grundsätze</summary>
+            <ul class="ulist">
+              <li><strong>DSGVO & Datenminimierung</strong>: keine Local-Storage-Pflicht; nur notwendige Reads; explizite Einwilligungen.</li>
+              <li><strong>No-Abuse</strong>: Inhalte durchlaufen KI-Vorprüfung + menschliche Eskalation bei Verstößen.</li>
+              <li><strong>Unveränderbare Kerne</strong>: Schlüsselmoment, Layout-Fundament, Compliance-Layer, MLC-Schutz.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §4 TPS Block/Slot -->
+        <section id="sec-4" class="panel sec">
+          <h2>§4 TPS – Blöcke, Slots & JS-Zugehörigkeit <a class="anchor" href="#sec-4">#</a></h2>
+          <details class="fold" open>
+            <summary>Struktur & Pflege</summary>
+            <ol class="olist">
+              <li>Jede Seite wird in <strong>Blöcke</strong> zerlegt; pro Block existiert eine eindeutige <code>.js</code> (Namensschema s. Anhang).</li>
+              <li>Die Werkstatt ändert <em>nur</em> Block-JS; das HTML-Grundlayout bleibt unverändert.</li>
+              <li>Eindeutige Zuordnung: Block ↔ JS ↔ Seite (Registry).</li>
+            </ol>
+          </details>
+        </section>
+
+        <!-- §5 Layout-Invarianten -->
+        <section id="sec-5" class="panel sec">
+          <h2>§5 Layout- & Template-Invarianten <a class="anchor" href="#sec-5">#</a></h2>
+          <details class="fold">
+            <summary>Was nie verändert wird</summary>
+            <ul class="ulist">
+              <li>Grid, Grundfarben, Spacing, Kernslots, Schlüsselmoment-UI.</li>
+              <li>MLC-Panel (geschützt), Compliance-Fußzeile, Status-Zeile.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §6 Mehrsprachigkeit -->
+        <section id="sec-6" class="panel sec">
+          <h2>§6 Sprachen (DE/EN/150+) <a class="anchor" href="#sec-6">#</a></h2>
+          <details class="fold">
+            <summary>Sprachschichten</summary>
+            <ul class="ulist">
+              <li>DE & EN stets verfügbar, weitere Sprachen optional.</li>
+              <li>Texte als Ressourcen; Umschaltung ohne Layout-Brüche.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §7 Versionierung -->
+        <section id="sec-7" class="panel sec">
+          <h2>§7 Versionierung & Registry <a class="anchor" href="#sec-7">#</a></h2>
+          <details class="fold">
+            <summary>Nachvollziehbarkeit</summary>
+            <ul class="ulist">
+              <li>SemVer (z. B. v3.9.0), Commit-Konventionen, Änderungslog pro Seite.</li>
+              <li>Update-Index <code>/docs/update_index.json</code> listet Seite/Block/Version.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §8 Fallback -->
+        <section id="sec-8" class="panel sec">
+          <h2>§8 Fallback-HTML <a class="anchor" href="#sec-8">#</a></h2>
+          <details class="fold">
+            <summary>Notmodus</summary>
+            <ul class="ulist">
+              <li>Letzte Vollversion ohne externe JS, 1-Klick von Werkstatt reaktivierbar.</li>
+              <li>Kein Zwang zu Local Storage, keine Abhängigkeit von Token.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §9 Build -->
+        <section id="sec-9" class="panel sec">
+          <h2>§9 Build-Pipeline & Status <a class="anchor" href="#sec-9">#</a></h2>
+          <details class="fold">
+            <summary>GitHub Actions & Anzeige</summary>
+            <ul class="ulist">
+              <li>Automatischer Build nach Commit; Poststelle zeigt Live-Status (🟢/🟡/❌).</li>
+              <li>Kein manuelles Reload erforderlich (Auto-Refresh).</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §10 Poststelle/Werkstatt -->
+        <section id="sec-10" class="panel sec">
+          <h2>§10 Poststelle & Werkstatt <a class="anchor" href="#sec-10">#</a></h2>
+          <details class="fold" open>
+            <summary>Rollen & Übergabe</summary>
+            <ul class="ulist">
+              <li>Poststelle = Schlüssel (Token), Werkstatt = Bearbeitungsraum.</li>
+              <li>Nach erfolgreicher Validierung → automatische Weiterleitung (Tür öffnet sich).</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §11 Token -->
+        <section id="sec-11" class="panel sec">
+          <h2>§11 Token-Handhabung <a class="anchor" href="#sec-11">#</a></h2>
+          <details class="fold">
+            <summary>Sicherheit</summary>
+            <ul class="ulist">
+              <li>Token niemals erzwingen zu speichern; DSGVO-freundlich, zeitlich begrenzt.</li>
+              <li>Scopes minimal; Fehlermeldungen klar & freundlich.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §12 White-Label -->
+        <section id="sec-12" class="panel sec">
+          <h2>§12 White-Label Grenzen <a class="anchor" href="#sec-12">#</a></h2>
+          <details class="fold">
+            <summary>Kern bleibt Kern</summary>
+            <ul class="ulist">
+              <li>WL darf Inhalte pflegen, aber Kernlayout/Schlüsselmoment/MLC bleiben geschützt.</li>
+              <li>Zentrale Variablen (Owner/Repo) via Config.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §13 MLC -->
+        <section id="sec-13" class="panel sec">
+          <h2>§13 Media Launch Control (MLC) <a class="anchor" href="#sec-13">#</a></h2>
+          <details class="fold">
+            <summary>Rotator & Sicherheit</summary>
+            <ul class="ulist">
+              <li>MLC ist geschützt; Rotationslogik konfigurierbar (linear/random), aber **KI-Vorprüfung** (YT/Vimeo/Bilder/Audio) zwingend.</li>
+              <li>Verbotene Inhalte werden blockiert; Audit-Trail in der Werkstatt.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §14 LP 3-Ebenen -->
+        <section id="sec-14" class="panel sec">
+          <h2>§14 LP-Generator: 3-Ebenen-Logik & Unikats-URL <a class="anchor" href="#sec-14">#</a></h2>
+          <details class="fold" open>
+            <summary>Aufbau & IDs</summary>
+            <ul class="ulist">
+              <li>Ebene 1 (WL/Brand), Ebene 2 (Partner/Mentor), Ebene 3 (User/Interessent).</li>
+              <li>Eindeutige URL-IDs; zentrale Registry; DSGVO-konforme Erstellung.</li>
+              <li>Hintergrund: Video/Slideshow unter allen Textblöcken (Schweben-Effekt verankert).</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §15 Handoff -->
+        <section id="sec-15" class="panel sec">
+          <h2>§15 Übergabe & Ampelstatus <a class="anchor" href="#sec-15">#</a></h2>
+          <details class="fold">
+            <summary>Rot → Gelb → Grün</summary>
+            <ul class="ulist">
+              <li>Rot = Werkszustand; Gelb = Pending; Grün = Startklar/aktiv.</li>
+              <li>Status wird visuell (Ampel) und textlich geführt.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §16 Profil & Audio -->
+        <section id="sec-16" class="panel sec">
+          <h2>§16 Profilbild & Audio-Begrüßung <a class="anchor" href="#sec-16">#</a></h2>
+          <details class="fold">
+            <summary>Formate & Darstellung</summary>
+            <ul class="ulist">
+              <li>Profilbild Pflicht bei Aktivierung; Clow/Schwebe-Effekte erlaubt.</li>
+              <li>Audio: mp3/m4a/wav; max. Größe/ Dauer konfigurierbar; Musik duckt ab.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §17 Teilen -->
+        <section id="sec-17" class="panel sec">
+          <h2>§17 Social-Sharing & Schutz <a class="anchor" href="#sec-17">#</a></h2>
+          <details class="fold">
+            <summary>Buttons & Botschutz</summary>
+            <ul class="ulist">
+              <li>Schwebende, designkonforme Sharing-Buttons; Botschutz für E-Mails/Forms.</li>
+              <li>Visuell integriert (z. B. Clow-Effekte), aber barrierefrei.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §18 Cache -->
+        <section id="sec-18" class="panel sec">
+          <h2>§18 Cache-Handling & Browser <a class="anchor" href="#sec-18">#</a></h2>
+          <details class="fold">
+            <summary>Immer aktuelle Version</summary>
+            <ul class="ulist">
+              <li>Cache-Bust via Query/Hash; Erkennung veralteter Assets; sanftes Reloading.</li>
+              <li>Alle gängigen Browser bedacht (Firefox, Brave, Chrome, Safari).</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §19 Tests -->
+        <section id="sec-19" class="panel sec">
+          <h2>§19 Tests & E2E <a class="anchor" href="#sec-19">#</a></h2>
+          <details class="fold">
+            <summary>Qualitätssicherung</summary>
+            <ul class="ulist">
+              <li>End-to-End-Smoke-Tests (Build → Deploy → Sichtprüfung).</li>
+              <li>Werkstatt-„Test-Patch“ jederzeit verfügbar.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §20 Observability -->
+        <section id="sec-20" class="panel sec">
+          <h2>§20 Sichtbarkeit, Logs & Status <a class="anchor" href="#sec-20">#</a></h2>
+          <details class="fold">
+            <summary>Transparenz</summary>
+            <ul class="ulist">
+              <li>Live-Log, Build-Status-Balken, klare Fehlermeldungen, Quicklinks (Repo/Live/Actions).</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §21 Backups -->
+        <section id="sec-21" class="panel sec">
+          <h2>§21 Backup & Recovery <a class="anchor" href="#sec-21">#</a></h2>
+          <details class="fold">
+            <summary>Sicherheit</summary>
+            <ul class="ulist">
+              <li>Automatische ZIP-Backups; Fallback aktivierbar; Notfall-Prozeduren dokumentiert.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §22 Security -->
+        <section id="sec-22" class="panel sec">
+          <h2>§22 Sicherheit & Grenzen <a class="anchor" href="#sec-22">#</a></h2>
+          <details class="fold">
+            <summary>Token, CORS, Raten, Rechte</summary>
+            <ul class="ulist">
+              <li>Minimale Token-Scopes; Rate-Limits; CORS nur nötige Endpunkte; Write-Rechte streng begrenzt.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §23 KI-Moderation -->
+        <section id="sec-23" class="panel sec">
+          <h2>§23 KI-Prüfung mit Human-Override <a class="anchor" href="#sec-23">#</a></h2>
+          <details class="fold">
+            <summary>Verantwortliches Prüfen</summary>
+            <ul class="ulist">
+              <li>KI prüft Medien & Text; Workflows zur Eskalation; Audit-Trail in Werkstatt.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §24 Lernen -->
+        <section id="sec-24" class="panel sec">
+          <h2>§24 Lernkurse & Zertifizierung <a class="anchor" href="#sec-24">#</a></h2>
+          <details class="fold">
+            <summary>Qualität statt Hürde</summary>
+            <ul class="ulist">
+              <li>WL/P-M erhalten eigenes MLC; FSA Network Features als Anreiz bei Silber/Gold.</li>
+              <li>Akquise bleibt möglich; Lernen wird automatisch begleitet.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §25 Partner Panel -->
+        <section id="sec-25" class="panel sec">
+          <h2>§25 Partner-Netzwerk-Panel <a class="anchor" href="#sec-25">#</a></h2>
+          <details class="fold">
+            <summary>Strukturbaum & Status</summary>
+            <ul class="ulist">
+              <li>Hierarchische Sicht (1–20 Ebenen), LP-Status (Rot/Gelb/Grün), Name/Bild, Events.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §26 Accessibility -->
+        <section id="sec-26" class="panel sec">
+          <h2>§26 Barrierefreiheit & UX <a class="anchor" href="#sec-26">#</a></h2>
+          <details class="fold">
+            <summary>Alle Menschen, alle Geräte</summary>
+            <ul class="ulist">
+              <li>Kontraste, Tastaturbedienung, Screenreader-Labels; einfache, vertraute Muster.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §27 LP-Onboarding -->
+        <section id="sec-27" class="panel sec">
+          <h2>§27 LP-Onboarding & „Später“ <a class="anchor" href="#sec-27">#</a></h2>
+          <details class="fold" open>
+            <summary>Werkszustand & Vorschau</summary>
+            <ul class="ulist">
+              <li>„Später“ zeigt Werkszustand in Vorschau; Reload bringt Eingabe-Panel zurück.</li>
+              <li>Nach Senden: Profilbild + Name/ Vorname sichtbar; Audio optional.</li>
+              <li>Bot-Schutz für E-Mail-Felder; einfache Social-Teilen-Optionen.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §28 URLs -->
+        <section id="sec-28" class="panel sec">
+          <h2>§28 Unikats-URL & zentrale Registrierung <a class="anchor" href="#sec-28">#</a></h2>
+          <details class="fold">
+            <summary>Saubere IDs</summary>
+            <ul class="ulist">
+              <li>Eindeutige, nachvollziehbare ID-Struktur; zentrale Registrierung; DSGVO-konform.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §29 Datenminimierung -->
+        <section id="sec-29" class="panel sec">
+          <h2>§29 Datenminimierung & Einwilligung <a class="anchor" href="#sec-29">#</a></h2>
+          <details class="fold">
+            <summary>So wenig wie möglich</summary>
+            <ul class="ulist">
+              <li>Nur notwendige Daten; klare Einwilligungen; Transparenz in der Werkstatt.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §30 Fehlerbilder -->
+        <section id="sec-30" class="panel sec">
+          <h2>§30 Fehler- & Leerzustände <a class="anchor" href="#sec-30">#</a></h2>
+          <details class="fold">
+            <summary>Sanfte Führung</summary>
+            <ul class="ulist">
+              <li>Menschenfreundliche Sprache; Hinweise was zu tun ist; kein „totes Ende“.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §31 WL-Vererbung -->
+        <section id="sec-31" class="panel sec">
+          <h2>§31 White-Label-Vererbung & Config <a class="anchor" href="#sec-31">#</a></h2>
+          <details class="fold">
+            <summary>Eigene Instanz, gleiche Regeln</summary>
+            <ul class="ulist">
+              <li>Eigener Owner/Repo; Konfigurationsdateien; unveränderbare Kerne.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §32 API Grenzen -->
+        <section id="sec-32" class="panel sec">
+          <h2>§32 API-Grenzen & Datenschutz <a class="anchor" href="#sec-32">#</a></h2>
+          <details class="fold">
+            <summary>Nur so viel wie nötig</summary>
+            <ul class="ulist">
+              <li>Nur notwendige Endpunkte; keine unnötigen personenbezogenen Daten.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §33 Zukunft -->
+        <section id="sec-33" class="panel sec">
+          <h2>§33 Evolution S-O-S 1.x → 2.x <a class="anchor" href="#sec-33">#</a></h2>
+          <details class="fold">
+            <summary>Stabil & upgradefähig</summary>
+            <ul class="ulist">
+              <li>Rückwärtskompatible Upgrades; Migrationshinweise; Kern bleibt stabil.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §34 Governance -->
+        <section id="sec-34" class="panel sec">
+          <h2>§34 Governance & Changelog <a class="anchor" href="#sec-34">#</a></h2>
+          <details class="fold">
+            <summary>Wer ändert was?</summary>
+            <ul class="ulist">
+              <li>Änderungen dokumentiert; Release-Notes; Verantwortliche benannt.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §35 IP -->
+        <section id="sec-35" class="panel sec">
+          <h2>§35 Rechte, Lizenz & Schutz <a class="anchor" href="#sec-35">#</a></h2>
+          <details class="fold">
+            <summary>Geistiges Eigentum</summary>
+            <ul class="ulist">
+              <li>FSA-Core geschützt; WL-Nutzungsrechte vertraglich geregelt.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §36 Compliance-Status -->
+        <section id="sec-36" class="panel sec">
+          <h2>§36 Compliance-Status (Ampel) <a class="anchor" href="#sec-36">#</a></h2>
+          <details class="fold">
+            <summary>Definitionen</summary>
+            <ul class="ulist">
+              <li>🟢 konform • 🟡 zu prüfen • 🔴 nicht konform → Blockade bis Korrektur.</li>
+            </ul>
+          </details>
+        </section>
+
+        <!-- §37 Anhänge -->
+        <section id="sec-37" class="panel sec">
+          <h2>§37 Anhänge & Konventionen <a class="anchor" href="#sec-37">#</a></h2>
+          <details class="fold" open>
+            <summary>Namensschemata, Medien, Commits, Struktur</summary>
+            <ul class="ulist">
+              <li><strong>Dateinamen</strong>: <code>[seite]-[block]-vX.Y.Z.js</code> (z. B. <code>poststelle-actions-v3.9.0.js</code>).</li>
+              <li><strong>Medien</strong>: Bilder (jpg/png/webp), Audio (mp3/m4a/wav) – Limit/Policy per Werkstatt-Config.</li>
+              <li><strong>Commit-Konvention</strong>: <code>feat|fix|chore|docs|refactor(scope): message</code>.</li>
+              <li><strong>Struktur</strong>:
+<pre><code>/Lp-Generator
+├─ poststelle/
+├─ werkstatt/
+├─ docs/
+│  ├─ sos-gesetz-v1.2.html
+│  └─ update_index.json
+└─ lp-template.html
+</code></pre>
+              </li>
+            </ul>
+          </details>
+        </section>
+
+      </main>
+    </div>
+
+    <div class="foot">
+      © 2025 Finanzielle Souveränitäts Akademie · S-O-S Gesetz v1.2 · Präambel „Schlüsselmoment“ (Core C1) ·
+      <a href="../poststelle/" target="_blank">Poststelle</a> ·
+      <a href="../werkstatt/" target="_blank">Werkstatt</a>
+    </div>
+  </div>
+
+<script>
+  // Datum
+  document.getElementById('dt').textContent =
+    new Date().toLocaleString('de-DE', { dateStyle:'long', timeStyle:'short' });
+
+  // TOC aus H2 generieren
+  (function buildTOC(){
+    const toc = document.getElementById('toc');
+    const hs = [...document.querySelectorAll('main h2')];
+    const ul = document.createElement('div');
+    hs.forEach(h=>{
+      const id = h.parentElement.id;
+      const a = document.createElement('a');
+      a.href = '#'+id;
+      a.textContent = h.textContent.replace(/[#]\s*$/,'');
+      ul.appendChild(a);
+    });
+    toc.appendChild(ul);
+  })();
+
+  // Suche (Titel + sichtbarer Text)
+  function doSearch(){
+    const q = (document.getElementById('q').value||'').toLowerCase().trim();
+    [...document.querySelectorAll('main .panel')].forEach(p=>{
+      if(!q){ p.style.outline='none'; return; }
+      const txt = p.innerText.toLowerCase();
+      p.style.outline = txt.includes(q) ? '2px solid #38bdf8' : 'none';
+      if(txt.includes(q)){
+        p.scrollIntoView({behavior:'smooth',block:'center'});
+      }
+    });
+  }
+</script>
+</body>
+</html>
