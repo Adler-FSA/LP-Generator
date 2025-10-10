@@ -1,659 +1,479 @@
 <!doctype html>
 <html lang="de">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>S-O-S Gesetz v1.3 – „In Stein gemeißelt“</title>
-<meta name="description" content="Verbindlicher TPS-Standard für Aufbau, Compliance, Werkstatt, Poststelle, LP-Generator & White-Label. Volltext §1–§50." />
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>S-O-S Gesetz v1.3 · Fundament & Prinzipien</title>
+<meta name="color-scheme" content="dark">
 <style>
   :root{
-    --gold:#f6d25c; --gold-soft:#ffd977; --gold-deep:#caa640;
-    --ink:#e6f2ff; --muted:#9db4d6; --panel:#0f1a2e; --line:#22365d;
-    --bg-dark:#0b1220; --shadow:0 12px 40px rgba(0,0,0,.45);
-    --radius:14px;
+    --bg:#0b1220; --text:#e6e9ef; --muted:#b5c0d4;
+    --gold:#e9c46a; --gold-soft:#f2d58a; --line:#263247;
+    --panel: rgba(10,16,28,.55);
+    --accent:#7dd3fc;
   }
-
-  /* Vollflächen-Marmor */
+  html,body{height:100%}
   body{
-    margin:0; color:var(--ink); background:#111;
-    font:15px/1.55 system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
-    overflow-x:hidden;
-  }
-  body::before{
-    content:""; position:fixed; inset:0;
-    background: #111 url("../media/stein-tafel-textur.jpg") center/cover no-repeat;
-    filter: contrast(1.05) brightness(.9);
-    z-index:-2;
-  }
-  /* dezente Vignette */
-  body::after{
-    content:""; position:fixed; inset:0; pointer-events:none;
-    background: radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,.06), transparent 60%),
-                radial-gradient(900px 500px at 50% 100%, rgba(0,0,0,.45), transparent 60%);
-    z-index:-1;
+    margin:0; color:var(--text); background:#000;
+    font:16px/1.6 system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
+    /* Marmor-Hintergrund */
+    background-image: url("./media/stein-tafel-textur.jpg");
+    background-size: cover; background-attachment: fixed; background-position: center;
   }
 
-  /* Siegel (lebt) */
-  .seal{
-    position:fixed; top:18px; right:18px; width:112px; height:112px;
-    background:rgba(10,14,24,.45); border:1px solid rgba(255,255,255,.08);
-    border-radius:16px; box-shadow: var(--shadow);
-    display:flex; align-items:center; justify-content:center;
-    backdrop-filter: blur(6px);
-    z-index:8;
-  }
-  .seal img{
-    width:86px; height:86px; object-fit:contain; filter: drop-shadow(0 0 0 rgba(0,0,0,0));
-    animation: glow 3.6s ease-in-out infinite;
-  }
-  @keyframes glow{
-    0%   { filter: drop-shadow(0 0 0px rgba(246,210,92,.0)) brightness(1.0); transform: translateZ(0) }
-    50%  { filter: drop-shadow(0 0 18px rgba(246,210,92,.35)) brightness(1.04); transform: translateY(-0.5px) }
-    100% { filter: drop-shadow(0 0 0px rgba(246,210,92,.0)) brightness(1.0); transform: translateZ(0) }
-  }
-  .seal .caption{
-    position:absolute; left:12px; top:8px; font-size:12px; color:#cfe2ff; opacity:.75;
+  /* Halbtransparenter Schleier für bessere Lesbarkeit */
+  .veil{
+    position:fixed; inset:0; pointer-events:none;
+    background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.5) 30%, rgba(0,0,0,.65) 70%, rgba(0,0,0,.7) 100%);
   }
 
-  /* Musik-Button */
-  .music{
-    position:fixed; top:146px; right:18px; z-index:8;
-    background:linear-gradient(180deg, #2a344a, #1a2438);
-    color:#e9f2ff; border:1px solid #3a4c79; border-radius:12px; padding:10px 14px;
-    box-shadow: var(--shadow); cursor:pointer; user-select:none; font-weight:700;
-  }
-  .music:hover{ filter:brightness(1.06) }
-  .music::before{ content:"♪"; margin-right:8px; color:var(--gold-soft) }
-
-  /* Haupttisch (transparent -> Marmor sichtbar) */
   .wrap{
-    max-width:1000px; margin:90px auto 60px; padding:20px 22px;
-    background:rgba(9,14,22,.55); border:1px solid rgba(255,255,255,.08);
-    border-radius:18px; box-shadow: var(--shadow);
-    backdrop-filter: blur(6px);
+    max-width:1100px;margin:0 auto;padding:24px 18px 80px;
+  }
+
+  /* Header mit Siegel */
+  .hero{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; margin-top:36px; margin-bottom:22px;
+  }
+  .seal{
+    width:160px; height:160px; position:relative; margin-bottom:10px;
+    filter: drop-shadow(0 0 10px rgba(233,196,106,.45)) drop-shadow(0 0 22px rgba(233,196,106,.22));
+    animation: glow 4.5s ease-in-out infinite;
+  }
+  .seal img{ width:100%; height:100%; object-fit:contain; }
+  @keyframes glow{
+    0%{ filter: drop-shadow(0 0 8px rgba(233,196,106,.32)) drop-shadow(0 0 18px rgba(233,196,106,.16)); transform: translateY(0px); }
+    50%{ filter: drop-shadow(0 0 16px rgba(233,196,106,.55)) drop-shadow(0 0 30px rgba(233,196,106,.28)); transform: translateY(-1px); }
+    100%{ filter: drop-shadow(0 0 8px rgba(233,196,106,.32)) drop-shadow(0 0 18px rgba(233,196,106,.16)); transform: translateY(0px); }
   }
 
   h1{
-    margin:8px 12px 10px; font-size:34px; line-height:1.15; letter-spacing:.3px;
-    color:var(--gold-soft); text-shadow: 0 0 22px rgba(255,225,142,.35), 0 2px 0 #000;
-    font-weight:900;
+    margin:0 0 6px; letter-spacing:.5px;
+    font-weight:800; font-size:28px; color:var(--gold);
+    text-shadow: 0 1px 0 rgba(0,0,0,.6), 0 0 18px rgba(233,196,106,.18);
   }
-  .sub{ margin:0 14px 18px; color:#cfe1ff; opacity:.9 }
+  .subtitle{
+    margin-top:6px; color:var(--muted); font-size:14px;
+  }
 
-  /* Karten/Paragraphen */
+  /* Audio Control */
+  .audio-bar{
+    display:flex; align-items:center; gap:10px; justify-content:center;
+    margin:18px 0 6px;
+  }
+  .btn{
+    appearance:none; border:1px solid var(--line); background:rgba(20,28,42,.65);
+    color:var(--text); padding:10px 14px; border-radius:10px; cursor:pointer;
+    font-weight:700; letter-spacing:.2px;
+    transition: .15s transform, .15s background, .15s border-color, .15s color;
+  }
+  .btn:hover{ transform: translateY(-1px); border-color:#35507a; }
+  .btn.gold{ background: linear-gradient(180deg, rgba(233,196,106,.16), rgba(233,196,106,.06));
+             color:var(--gold); border-color:rgba(233,196,106,.35); }
+  .btn.next{ border-color:#2a3a58; background:rgba(18,26,42,.55) }
+  .hint{ font-size:13px; color:var(--muted); opacity:.9 }
+
+  /* Paragraphen Container transparent über Stein */
   .para{
-    background: rgba(9,16,28,.75);
-    border:1px solid rgba(255,255,255,.07);
-    border-radius:14px; margin:14px 10px; box-shadow: var(--shadow);
-    overflow:hidden;
+    background: var(--panel);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:14px; padding:16px 18px; margin:18px 0;
+    backdrop-filter: blur(2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,.35);
   }
-  .head{
-    display:flex; align-items:center; gap:12px; padding:16px 18px;
-    border-bottom:1px solid rgba(255,255,255,.05);
+  .para-head{
+    text-align:center; margin-bottom:10px;
   }
-  .mark{
-    min-width:56px; text-align:center; font-weight:900;
-    color:var(--gold); background:linear-gradient(180deg, rgba(255,235,167,.25), rgba(0,0,0,.0));
-    border:1px solid rgba(255,255,255,.06);
-    border-radius:10px; padding:8px 10px;
-    box-shadow: inset 0 0 14px rgba(255,215,100,.18), 0 0 0 2px rgba(0,0,0,.25);
-    /* eingraviert */
-    text-shadow: 0 1px 0 #000, 0 0 18px rgba(255,208,100,.22), 0 2px 1px rgba(0,0,0,.8);
+  .para-num{
+    font-weight:900; color:var(--gold); font-size:22px; letter-spacing:.6px;
+    text-shadow: 0 0 10px rgba(233,196,106,.24);
   }
-  .title{
-    font-size:20px; font-weight:800; color:#f7faff;
-    letter-spacing:.2px;
-    /* Meißel-Look */
-    background: linear-gradient(#f7f7f7, #d4d4d4);
-    -webkit-background-clip: text; background-clip: text; color:transparent;
-    text-shadow: 0 1px 0 #000, 0 2px 1px rgba(0,0,0,.75), 0 0 22px rgba(246,210,92,.18);
-    white-space:nowrap; overflow:hidden; display:inline-block;
+  .para-title{
+    margin-top:4px; font-size:19px; font-weight:800; color:var(--gold-soft);
   }
-  .full{
-    padding:16px 20px; color:#d8e7ff; background: rgba(7,12,20,.55);
+
+  /* Meißel-/Schreibmaschinen-Effekt */
+  .type{
+    display:inline-block; border-right:2px solid rgba(233,196,106,.65);
+    white-space: pre-wrap;
+    overflow: hidden;
+    animation: caret 1.1s steps(1,end) infinite;
   }
-  .full p{ margin:10px 0 }
+  @keyframes caret {
+    0%, 49% { border-color: rgba(233,196,106,.7); }
+    50%, 100% { border-color: transparent; }
+  }
+
   .more{
-    margin-left:auto; padding:8px 12px; font-weight:700; border-radius:10px;
-    background:#213053; border:1px solid #2e467b; color:#e9f2ff; cursor:pointer;
+    text-align:center; margin-top:8px;
   }
-  .more:hover{ filter:brightness(1.08) }
-
-  /* Typing-Animation für Titel */
-  .typing{
-    width:0; white-space:nowrap; border-right:2px solid var(--gold);
-    animation: type 1.25s steps(30,end) forwards, caret .8s step-end infinite;
+  .link{
+    color:var(--accent); text-decoration:none; font-weight:700; cursor:pointer;
   }
-  @keyframes type{ to{ width:100% } }
-  @keyframes caret{ 50%{ border-color:transparent } }
+  .link:hover{ text-decoration:underline }
 
-  /* Sticky Hinweis am Fuß */
+  .para-body{
+    margin-top:10px; display:none; color:#e9eef7;
+  }
+  .para-body.open{ display:block; }
+
+  .nav{
+    display:flex; gap:10px; justify-content:center; margin:16px 0 4px;
+  }
+
+  /* Abschluss */
+  .closing{
+    text-align:center; margin:20px 0 40px;
+    color:var(--muted);
+  }
+  .quote{
+    font-style:italic; color:#f1f5ff; margin:8px 0;
+  }
+  .gold-line{
+    height:2px; background:linear-gradient(90deg, transparent, rgba(233,196,106,.65), transparent);
+    margin:16px auto; width: 80%;
+  }
+  .sign{ color:#f6e8c5 }
+
+  /* Footer */
   footer{
-    margin:24px 12px 10px; text-align:center; color:#a9c3ff; opacity:.9;
-    font-size:12px;
+    text-align:center; color:#9fb0cc; font-size:12px; margin:20px 0 30px;
   }
 
-  @media (max-width: 740px){
-    .wrap{ margin:84px 10px 40px; padding:12px }
-    .seal{ width:92px; height:92px }
-    .seal img{ width:72px; height:72px }
-    .music{ top:122px }
-    .title{ font-size:18px }
+  /* Mobile */
+  @media (max-width:640px){
+    .wrap{ padding:16px 12px 70px }
+    .seal{ width:130px; height:130px }
+    h1{ font-size:22px }
+    .para{ padding:14px }
   }
 </style>
 </head>
 <body>
+<div class="veil" aria-hidden="true"></div>
 
-  <!-- 🦅 lebendiges Siegel -->
-  <aside class="seal" aria-label="S-O-S Siegel">
-    <span class="caption">S-O-S Siegel</span>
-    <img src="../media/sos-siegel-adler.png" alt="Goldenes S-O-S Adler-Siegel">
-  </aside>
+<div class="wrap">
+  <header class="hero" aria-label="S-O-S Siegel">
+    <div class="seal" role="img" aria-label="Goldenes S-O-S Siegel">
+      <img src="./media/sos-adler-gold.png" alt="S-O-S Siegel">
+    </div>
+    <h1>S-O-S – Standard-Gesetz für HTML & Werkstatt (v1.3)</h1>
+    <div class="subtitle">„Sicherheit durch Transparenz – Stärke durch Struktur – Freiheit durch Vertrauen.“</div>
 
-  <!-- 🎼 Musik -->
-  <button id="musicBtn" class="music" aria-pressed="false" title="Musik starten/stoppen">Musik</button>
-  <audio id="bgm" preload="auto" loop src="../media/intro-theme.mp3"></audio>
+    <div class="audio-bar">
+      <button id="btnAudio" class="btn gold" type="button">🎵 Musik einschalten</button>
+      <span class="hint">Autostart stumm (Browser-Schutz). Klicke, um Ton zu aktivieren.</span>
+    </div>
+    <audio id="bgAudio" preload="auto" loop muted>
+      <source src="./media/Winds_of_Change__Instrumental_Epic_Cinematic_Score.mp3" type="audio/mpeg">
+    </audio>
+  </header>
 
-  <!-- Inhalt -->
-  <main class="wrap" role="main" aria-label="S-O-S Gesetz Volltext">
-    <h1>S-O-S Gesetz v1.3 – „In Stein gemeißelt“</h1>
-    <div class="sub">Verbindlicher TPS-Standard für Aufbau, Compliance, Werkstatt, Poststelle, LP-Generator &amp; White-Label. Volltext §1–§50.</div>
+  <!-- Paragraphen werden hier eingefügt -->
+  <main id="lawRoot" aria-live="polite" aria-busy="true"></main>
 
-    <!-- §1–§50  (Volltext) -->
-    <!-- Jeder Abschnitt: .para > .head (Markierung + Titel) + .full (Volltext) -->
+  <section class="closing" aria-label="Abschluss">
+    <div class="gold-line"></div>
+    <p class="quote">„Dieses Gesetz schützt die Vision, stärkt die Struktur und schenkt Vertrauen.“</p>
+    <p class="sign">– Jörg Michael Rau, Architekt des S-O-S Betriebssystems</p>
+    <div class="gold-line"></div>
+  </section>
 
-    <section class="para" id="p1">
-      <div class="head">
-        <div class="mark">§1</div>
-        <div class="title typing" data-title="HTML-Segmentierung & Blöcke">HTML-Segmentierung &amp; Blöcke</div>
-        <button class="more" data-target="p1">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Jede HTML-Seite wird in inhaltliche <strong>Blöcke</strong> segmentiert. Jeder Block bildet eine logisch abgegrenzte Einheit (z. B. Hero, Intro, Vorteile, CTA, Footer). Dadurch sind Austausch, Review, Versionierung und Tests auf Block-Ebene möglich, ohne das Gesamtlayout zu verletzen.</p>
-        <p>Die Segmentierung ist die Grundlage des <em>Transformers-Page-Systems (TPS)</em> und stellt sicher, dass das System von Menschen ohne Programmierkenntnisse bedienbar bleibt.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p2">
-      <div class="head">
-        <div class="mark">§2</div>
-        <div class="title typing" data-title="Eindeutige Zuordnung">Eindeutige Zuordnung</div>
-        <button class="more" data-target="p2">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Jeder Block erhält eine <strong>eigene JS-Datei</strong> mit eindeutigem ID/Hash, die ausschließlich diesem Block zugeordnet ist. Die Zuordnung ist im Repo nachvollziehbar dokumentiert (Verzeichnis, Mapping, Registry).</p>
-        <p>Damit wird doppelte Logik vermieden, die Wartung vereinfacht und der Build-Prozess stabilisiert.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p3">
-      <div class="head">
-        <div class="mark">§3</div>
-        <div class="title typing" data-title="TPS Werkstatt-Prinzip">TPS Werkstatt-Prinzip</div>
-        <button class="more" data-target="p3">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Die Werkstatt tauscht Blöcke <strong>ohne Template-Bruch</strong> aus. Regeln: gleiche Slots, konsistente API (Props), identische Abstände &amp; responsive Verhalten. Nur Inhalte und lokale Darstellung dürfen variieren; System-Logik und Template-Grenzen bleiben unberührt.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p4">
-      <div class="head">
-        <div class="mark">§4</div>
-        <div class="title typing" data-title="Gesperrte Kernbereiche">Gesperrte Kernbereiche</div>
-        <button class="more" data-target="p4">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Layout, Template-Struktur, System- und Compliance-Dateien sind <strong>gesperrt</strong>. Sie dürfen nur durch die Poststelle im Rahmen eines geprüften Deploys geändert werden. Inhalte (Text/Medien) bleiben änderbar, sofern sie den Regeln dieses Gesetzes folgen.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p5">
-      <div class="head">
-        <div class="mark">§5</div>
-        <div class="title typing" data-title="Mehrsprachigkeit">Mehrsprachigkeit</div>
-        <button class="more" data-target="p5">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Jede Seite existiert in DE/EN. Optional sind bis zu 150 Sprachen über definierte Sprachpakete möglich. Texte erscheinen als Konfiguration, niemals als Code-Konstante, und sind damit auditier- und austauschbar.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p6">
-      <div class="head">
-        <div class="mark">§6</div>
-        <div class="title typing" data-title="WL-Seiten automatisch gesetzeskonform">WL-Seiten automatisch gesetzeskonform</div>
-        <button class="more" data-target="p6">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>White-Label-Seiten werden <strong>automatisch</strong> nach diesem Gesetz erzeugt. Die Poststelle gewährleistet, dass nur konforme Änderungen veröffentlicht werden. Nicht-konforme Anpassungen werden blockiert und mit konkreten Hinweisen zurückgemeldet.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p7">
-      <div class="head">
-        <div class="mark">§7</div>
-        <div class="title typing" data-title="Fallback-Versionen">Fallback-Versionen</div>
-        <button class="more" data-target="p7">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Pro Seite wird die letzte stabile <strong>Fallback-Variante</strong> als reine HTML-Version ohne externe JS gesichert. Diese ist jederzeit über die Werkstatt abrufbar und dient als Notanker bei Ausfällen oder Regressionen.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p8">
-      <div class="head">
-        <div class="mark">§8</div>
-        <div class="title typing" data-title="Compliance-Ampel">Compliance-Ampel</div>
-        <button class="more" data-target="p8">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Jede Seite zeigt im Footer eine <strong>Compliance-Ampel</strong> (rot/gelb/grün). Werte werden durch die Poststelle nach Build-Prüfung gesetzt. Gelb signalisiert Pending/Review, Grün bestätigt Konformität, Rot blockt Auslieferung.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p9">
-      <div class="head">
-        <div class="mark">§9</div>
-        <div class="title typing" data-title="Mediensteuerung via MLC">Mediensteuerung via MLC</div>
-        <button class="more" data-target="p9">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Videos, Slideshows, Laufbänder und Audio werden über das <strong>Media-Launch-Control (MLC)</strong> konfiguriert. Optionen: Reihenfolge oder Zufall, Timings, Quellen, Sichtbarkeit. Änderungen sind versionsgeführt und DSGVO-konform.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p10">
-      <div class="head">
-        <div class="mark">§10</div>
-        <div class="title typing" data-title="Automatische Werkstatt-Integration">Automatische Werkstatt-Integration</div>
-        <button class="more" data-target="p10">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Nach Deploy werden Seiten automatisch im Werkstatt-Menü registriert. Dort erscheinen alle Blöcke mit zugehörigen JS-Dateien, sodass gezielte Änderungen über die Hilfe-Funktion ausgelöst werden können.</p>
-      </div>
-    </section>
-
-    <!-- =========  §11 – §50  ========= -->
-    <section class="para" id="p11">
-      <div class="head"><div class="mark">§11</div>
-        <div class="title typing" data-title="Hilfe-Workflow (A/B-Eingabe)">Hilfe-Workflow (A/B-Eingabe)</div>
-        <button class="more" data-target="p11">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Die Hilfe nimmt stets <strong>A) Zieltext</strong> und <strong>B) bisherigen Blockcode</strong> entgegen. Daraus wird ein konformer Ersatz-Block gebaut, zur Poststelle übergeben und erst nach Token-Bestätigung deployed.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p12">
-      <div class="head"><div class="mark">§12</div>
-        <div class="title typing" data-title="Deploy-Gate über Poststelle">Deploy-Gate über Poststelle</div>
-        <button class="more" data-target="p12">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Jede Änderung wird ausschließlich über die Poststelle ausgeliefert. Der Build prüft TPS-Konformität, Compliance, Medienquellen, Barrierefreiheit und DSGVO-Aspekte. Nur erfolgreiche Läufe werden auf <em>Live</em> veröffentlicht.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p13">
-      <div class="head"><div class="mark">§13</div>
-        <div class="title typing" data-title="Diagnose, Logs, Rückmeldung">Diagnose, Logs, Rückmeldung</div>
-        <button class="more" data-target="p13">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Fehler und Abweichungen werden verständlich protokolliert. Die Rückmeldung enthält konkrete Hinweise (Datei/Block, Regelverstoß, empfohlene Korrektur) und blockiert den Deploy bis zur Behebung.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p14">
-      <div class="head"><div class="mark">§14</div>
-        <div class="title typing" data-title="No Local Storage">No Local Storage</div>
-        <button class="more" data-target="p14">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Seiten speichern keine personenbezogenen Daten im Local/Session-Storage. Pflicht-States (z. B. Consent) werden minimalistisch, transparent und widerrufbar gehalten.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p15">
-      <div class="head"><div class="mark">§15</div>
-        <div class="title typing" data-title="Cache-Bypass & Frische">Cache-Bypass & Frische</div>
-        <button class="more" data-target="p15">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Ein Frische-Mechanismus ersetzt veraltete Caches zuverlässig. Nutzer sehen stets die aktuelle Version; dennoch bleiben Fallback und Zurückrollen möglich.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p16">
-      <div class="head"><div class="mark">§16</div>
-        <div class="title typing" data-title="Barrierefreiheit & Performance">Barrierefreiheit & Performance</div>
-        <button class="more" data-target="p16">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Klare Semantik, ausreichende Kontraste, Tastatur-Nutzung, reduzierte Bewegung bei bevorzugter Einstellung. Ressourcen sind optimiert (lazy, komprimiert, responsive).</p>
-      </div>
-    </section>
-
-    <section class="para" id="p17">
-      <div class="head"><div class="mark">§17</div>
-        <div class="title typing" data-title="Browser-optimierte Testlinks">Browser-optimierte Testlinks</div>
-        <button class="more" data-target="p17">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Die Werkstatt stellt Testlinks inkl. Cache-Bypass und Device-Parametern bereit, um typische Darstellungs-Umfelder gezielt zu prüfen.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p18">
-      <div class="head"><div class="mark">§18</div>
-        <div class="title typing" data-title="Sicherheits-Prüfpfad">Sicherheits-Prüfpfad</div>
-        <button class="more" data-target="p18">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Neben der Compliance-Ampel überprüft der Build externe Skripte, iframes und Medienquellen. Unsichere Einbindungen werden unterbunden oder in sichere Proxys gekapselt.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p19">
-      <div class="head"><div class="mark">§19</div>
-        <div class="title typing" data-title="Audit-Trail & Historie">Audit-Trail & Historie</div>
-        <button class="more" data-target="p19">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Alle Eingriffe sind revisionssicher dokumentiert (Wer, Was, Wann, Warum). Rücksprünge und Vergleiche sind blockgenau möglich.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p20">
-      <div class="head"><div class="mark">§20</div>
-        <div class="title typing" data-title="Rollen & Freigaben">Rollen & Freigaben</div>
-        <button class="more" data-target="p20">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Nur geprüfte Rollen dürfen Blöcke ändern. Freigaben erfolgen über Token-Bestätigung in der Poststelle. Automatisierte Checks bleiben ununterbrochen aktiv.</p>
-      </div>
-    </section>
-
-    <!-- ======= Kapitel 21–30 ======= -->
-    <section class="para" id="p21">
-      <div class="head"><div class="mark">§21</div>
-        <div class="title typing" data-title="LP-Generator & Template-Dreiebenen">LP-Generator & Template-Dreiebenen</div>
-        <button class="more" data-target="p21">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Landingpages entstehen aus der <strong>3-Ebenen-Logik</strong>: Template-Basis (unveränderlich), Blocks (austauschbar), Inhalte (text/medial). So bleiben Marke, Struktur und Technik stabil, während Inhalte flexibel sind.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p22">
-      <div class="head"><div class="mark">§22</div>
-        <div class="title typing" data-title="Unikats-URL & ID-Registry">Unikats-URL & ID-Registry</div>
-        <button class="more" data-target="p22">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Jede LP erhält eine <strong>eindeutige URL</strong> und wird zentral registriert (DSGVO-konform). Hierüber werden Sichtbarkeit, Freigaben und Downline-Beziehungen verwaltet.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p23">
-      <div class="head"><div class="mark">§23</div>
-        <div class="title typing" data-title="Branding-Slots">Branding-Slots</div>
-        <button class="more" data-target="p23">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Brandingbereiche (Name, Foto, Kontakt, Social) sind Slots. Sie werden nur über die WL/Partner-Eingabe befüllt und prüfen Formate, Größen und Seriosität automatisch.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p24">
-      <div class="head"><div class="mark">§24</div>
-        <div class="title typing" data-title="CTA-Sicherheit (E-Mail-Schutz)">CTA-Sicherheit (E-Mail-Schutz)</div>
-        <button class="more" data-target="p24">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Call-to-Action nutzt Bot-Schutz (z. B. HMAC-Verschleierung, Honeypot, Time-Gate). E-Mails sind nie im Klartext im DOM, sondern werden erst serverseitig erzeugt.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p25">
-      <div class="head"><div class="mark">§25</div>
-        <div class="title typing" data-title="Musik, Video, Slideshow">Musik, Video, Slideshow</div>
-        <button class="more" data-target="p25">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Medien folgen der MLC-Konfiguration: Reihenfolge/Random, Lautstärke-Default, Autoplay nur nach Interaktion, barrierefreie Steuerung. Hintergrund-Video/Bild läuft hinter schwebenden Textblöcken.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p26">
-      <div class="head"><div class="mark">§26</div>
-        <div class="title typing" data-title="Onboarding & Token-Gate">Onboarding & Token-Gate</div>
-        <button class="more" data-target="p26">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Neue WL/Partner erhalten Zugang über die Poststelle. Erst nach erfolgreicher Prüfung wird Branding freigegeben und die LP auf „gelb → grün“ geschaltet.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p27">
-      <div class="head"><div class="mark">§27</div>
-        <div class="title typing" data-title="Profil-Eingabe & Vorschau">Profil-Eingabe & Vorschau</div>
-        <button class="more" data-target="p27">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Vorname, Nachname, E-Mail (optional Telefon), Profilfoto (geprüftes Format) und Begrüßungs-Audio können hinterlegt werden. „Später“ zeigt die Werks-Vorschau; nach Reload erscheint der Eingabebereich erneut. Nach „Senden“ wird das Profil-Element sichtbar (mit dezenter Glow-Animation und gut lesbarer Namenszeile).</p>
-      </div>
-    </section>
-
-    <section class="para" id="p28">
-      <div class="head"><div class="mark">§28</div>
-        <div class="title typing" data-title="Audio-Formate & Regeln">Audio-Formate & Regeln</div>
-        <button class="more" data-target="p28">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Zulässig sind MP3/OGG/WAV innerhalb definierter Maximalgrößen. Autoplay nur nach User-Aktion. Begrüßung senkt Hintergrundmusik kurzzeitig ab („ducking“), dann Rückblendung.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p29">
-      <div class="head"><div class="mark">§29</div>
-        <div class="title typing" data-title="Compliance-Wächter (Auto)">Compliance-Wächter (Auto)</div>
-        <button class="more" data-target="p29">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Vor Freigabe scannt der Wächter Texte/Medien auf Ethik/Compliance. Verdachtsfälle werden mit Begründung zurückgegeben und sind zu korrigieren.</p>
-      </div>
-    </section>
-
-    <section class="para" id="p30">
-      <div class="head"><div class="mark">§30</div>
-        <div class="title typing" data-title="Transparente Status-Logik">Transparente Status-Logik</div>
-        <button class="more" data-target="p30">Mehr lesen</button>
-      </div>
-      <div class="full" hidden>
-        <p>Rot = Werkszustand/gesperrt, Gelb = Pending/Review, Grün = aktiv. Die Poststelle zeigt den Verlauf, die Werkstatt die aktuelle Blockliste samt Testlinks.</p>
-      </div>
-    </section>
-
-    <!-- ======= 31–40 ======= -->
-    <section class="para" id="p31"><div class="head"><div class="mark">§31</div>
-      <div class="title typing" data-title="Leistungsgrenzen & Rate-Limits">Leistungsgrenzen & Rate-Limits</div>
-      <button class="more" data-target="p31">Mehr lesen</button></div>
-      <div class="full" hidden><p>Automatisierte Limits schützen Build-Ressourcen und Endnutzer-Performance. Eskalationen werden freundlich erklärt.</p></div>
-    </section>
-
-    <section class="para" id="p32"><div class="head"><div class="mark">§32</div>
-      <div class="title typing" data-title="Versionierung pro Block">Versionierung pro Block</div>
-      <button class="more" data-target="p32">Mehr lesen</button></div>
-      <div class="full" hidden><p>Jeder Block wird semantisch versioniert. Breaking-Änderungen erfordern Freigabe über die Poststelle samt Changelog.</p></div>
-    </section>
-
-    <section class="para" id="p33"><div class="head"><div class="mark">§33</div>
-      <div class="title typing" data-title="Sichere Einbettungen">Sichere Einbettungen</div>
-      <button class="more" data-target="p33">Mehr lesen</button></div>
-      <div class="full" hidden><p>Externe Inhalte laufen in restriktiven Containern (sandbox, CSP). Nur whitelists werden akzeptiert.</p></div>
-    </section>
-
-    <section class="para" id="p34"><div class="head"><div class="mark">§34</div>
-      <div class="title typing" data-title="Dokumentationspflicht">Dokumentationspflicht</div>
-      <button class="more" data-target="p34">Mehr lesen</button></div>
-      <div class="full" hidden><p>Jede Seite führt eine Kurz-Doku (Blöcke, Medien, Abhängigkeiten, Compliance-Stand). Die Poststelle pflegt diese automatisch.</p></div>
-    </section>
-
-    <section class="para" id="p35"><div class="head"><div class="mark">§35</div>
-      <div class="title typing" data-title="Recovery & Rollback-Zeit">Recovery & Rollback-Zeit</div>
-      <button class="more" data-target="p35">Mehr lesen</button></div>
-      <div class="full" hidden><p>Fallbacks sind in Sekunden aktivierbar. Der maximale Wiederherstellungs-Zeitpunkt ist definiert und kommuniziert.</p></div>
-    </section>
-
-    <section class="para" id="p36"><div class="head"><div class="mark">§36</div>
-      <div class="title typing" data-title="Qualität durch Schulung">Qualität durch Schulung</div>
-      <button class="more" data-target="p36">Mehr lesen</button></div>
-      <div class="full" hidden><p>Freigaben und erweiterte Funktionen sind an Schulungsmodule + Prüfungen geknüpft. Automatisches Coaching unterstützt.</p></div>
-    </section>
-
-    <section class="para" id="p37"><div class="head"><div class="mark">§37</div>
-      <div class="title typing" data-title="MLC-Prüfung: Ethik & Quellen">MLC-Prüfung: Ethik & Quellen</div>
-      <button class="more" data-target="p37">Mehr lesen</button></div>
-      <div class="full" hidden><p>Medien aus YouTube/Vimeo/Images werden mit Ethik-/Compliance-Filtern geprüft. Nicht-konforme Inhalte werden blockiert oder für Review markiert.</p></div>
-    </section>
-
-    <section class="para" id="p38"><div class="head"><div class="mark">§38</div>
-      <div class="title typing" data-title="Transparente Nutzerführung">Transparente Nutzerführung</div>
-      <button class="more" data-target="p38">Mehr lesen</button></div>
-      <div class="full" hidden><p>Schritte werden in vertrauten Metaphern dargestellt (Schlüssel → Tür → Werkstatt). Sicherheit entsteht durch Klarheit.</p></div>
-    </section>
-
-    <section class="para" id="p39"><div class="head"><div class="mark">§39</div>
-      <div class="title typing" data-title="Geräte- & Browser-Breite">Geräte- & Browser-Breite</div>
-      <button class="more" data-target="p39">Mehr lesen</button></div>
-      <div class="full" hidden><p>Die Darstellung bleibt auf allen gängigen Browsern verlässlich. Bei Einschränkungen werden Hinweise und Alternativen angeboten.</p></div>
-    </section>
-
-    <section class="para" id="p40"><div class="head"><div class="mark">§40</div>
-      <div class="title typing" data-title="Datensparsamkeit">Datensparsamkeit</div>
-      <button class="more" data-target="p40">Mehr lesen</button></div>
-      <div class="full" hidden><p>Nur zwingend erforderliche Daten werden verarbeitet. Es gibt klare Aufbewahrungs- und Löschfristen.</p></div>
-    </section>
-
-    <!-- ======= 41–50 ======= -->
-    <section class="para" id="p41"><div class="head"><div class="mark">§41</div>
-      <div class="title typing" data-title="Transparenz für WL/Partner">Transparenz für WL/Partner</div>
-      <button class="more" data-target="p41">Mehr lesen</button></div>
-      <div class="full" hidden><p>WL/Partner sehen stets den Status ihrer Seiten, Logs, letzte Commits und die Compliance-Ampel mit Begründung.</p></div>
-    </section>
-
-    <section class="para" id="p42"><div class="head"><div class="mark">§42</div>
-      <div class="title typing" data-title="Downline-Sicht & Events">Downline-Sicht & Events</div>
-      <button class="more" data-target="p42">Mehr lesen</button></div>
-      <div class="full" hidden><p>Strukturbaum mit LP-Status (rot/gelb/grün), Bild, Name. Event-Ankündigungen an bestätigte Kontakte DSGVO-konform.</p></div>
-    </section>
-
-    <section class="para" id="p43"><div class="head"><div class="mark">§43</div>
-      <div class="title typing" data-title="Sichere Social-Share-Integration">Sichere Social-Share-Integration</div>
-      <button class="more" data-target="p43">Mehr lesen</button></div>
-      <div class="full" hidden><p>Social-Buttons sind datenschutzfreundlich (2-Klick-Logik/Proxy). Design passt sich dem Template an (dezente Glow-Effekte).</p></div>
-    </section>
-
-    <section class="para" id="p44"><div class="head"><div class="mark">§44</div>
-      <div class="title typing" data-title="Rechtstexte & Footer">Rechtstexte & Footer</div>
-      <button class="more" data-target="p44">Mehr lesen</button></div>
-      <div class="full" hidden><p>Impressum, Datenschutz, AGB sind verlinkt, versionsgeführt und werden bei Änderungen automatisch aktualisiert.</p></div>
-    </section>
-
-    <section class="para" id="p45"><div class="head"><div class="mark">§45</div>
-      <div class="title typing" data-title="Onboarding via Persönliche URL">Onboarding via Persönliche URL</div>
-      <button class="more" data-target="p45">Mehr lesen</button></div>
-      <div class="full" hidden><p>Erstzutritt zum Basiskurs erfolgt über die persönliche LP-URL (Passwort-Vergabe im ersten Schritt). So ist die Zuordnung für den Partner transparent.</p></div>
-    </section>
-
-    <section class="para" id="p46"><div class="head"><div class="mark">§46</div>
-      <div class="title typing" data-title="Passwort-Reset & Nachweis">Passwort-Reset & Nachweis</div>
-      <button class="more" data-target="p46">Mehr lesen</button></div>
-      <div class="full" hidden><p>Password-Reset läuft über sicheren Link mit Ablaufzeit; der Partner sieht im Network-Panel die erfolgreiche Registrierung (ohne Passwort-Einsicht).</p></div>
-    </section>
-
-    <section class="para" id="p47"><div class="head"><div class="mark">§47</div>
-      <div class="title typing" data-title="Belohnung & Network-System">Belohnung & Network-System</div>
-      <button class="more" data-target="p47">Mehr lesen</button></div>
-      <div class="full" hidden><p>Nach bestandener Prüfung werden persönliche MLC-Funktionen und das FSA-Network (z. B. Krypto Silber/Gold) freigeschaltet — Anreiz statt Hürde.</p></div>
-    </section>
-
-    <section class="para" id="p48"><div class="head"><div class="mark">§48</div>
-      <div class="title typing" data-title="Ethik-Kodex & Sperrlogik">Ethik-Kodex & Sperrlogik</div>
-      <button class="more" data-target="p48">Mehr lesen</button></div>
-      <div class="full" hidden><p>Verstöße gegen Ethik/Compliance werden erklärt, revisionssicher dokumentiert und führen — wenn nötig — zu automatischer Sperrung betroffener Assets.</p></div>
-    </section>
-
-    <section class="para" id="p49"><div class="head"><div class="mark">§49</div>
-      <div class="title typing" data-title="Weiterentwicklung & Updates">Weiterentwicklung & Updates</div>
-      <button class="more" data-target="p49">Mehr lesen</button></div>
-      <div class="full" hidden><p>Erweiterungen erfolgen in nummerierten Versionen (v1.4, v1.5 …). Jede Änderung am Gesetz wird prominent ausgewiesen und rückwärtskompatibel eingeführt.</p></div>
-    </section>
-
-    <section class="para" id="p50"><div class="head"><div class="mark">§50</div>
-      <div class="title typing" data-title="Schutz des Originals">Schutz des Originals</div>
-      <button class="more" data-target="p50">Mehr lesen</button></div>
-      <div class="full" hidden>
-        <p>Dieses Gesetz ist das <strong>Grundgerüst der Wertschöpfung</strong> des gesamten FSA-Systems. Es wird unverfälscht bewahrt. Jede Arbeit beginnt mit dieser Referenz. — gezeichnet: <em>Jörg Michael Rau, Entwickler & Architekt des S-O-S Betriebs-Systems</em>.</p>
-      </div>
-    </section>
-
-    <footer>© 2025 FSA · S-O-S Gesetz v1.3 · Marmor-Hintergrund, Meißel-Effekt, lebendiges Siegel · Musik optional</footer>
-  </main>
+  <footer>© 2025 S-O-S · Finanzielle Souveränitäts Akademie · Alle Grundprinzipien sind erweiterbar, aber nicht veränderbar.</footer>
+</div>
 
 <script>
-  // Musik-Steuerung (Autoplay nach Interaktion möglich)
-  const audio = document.getElementById('bgm');
-  const btn = document.getElementById('musicBtn');
-  let musicOn = false;
-
-  async function toggleMusic(){
-    try{
-      if(!musicOn){
-        await audio.play();
-        musicOn = true; btn.setAttribute('aria-pressed','true'); btn.textContent = 'Musik stoppen';
-      }else{
-        audio.pause(); musicOn = false; btn.setAttribute('aria-pressed','false'); btn.textContent = 'Musik starten';
-      }
-    }catch(e){
-      console.warn('Audio blockiert bis Interaktion:', e.message);
-    }
+/* ===========================
+   Audio-Steuerung
+=========================== */
+const audio = document.getElementById('bgAudio');
+const btnAudio = document.getElementById('btnAudio');
+(function initAudio(){
+  try { audio.play().catch(()=>{}); } catch(e){}
+})();
+btnAudio.addEventListener('click', async ()=>{
+  if(audio.muted || audio.paused){
+    audio.muted = false;
+    try { await audio.play(); } catch(e){}
+    btnAudio.textContent = "⏸️ Musik pausieren";
+  } else {
+    audio.pause();
+    btnAudio.textContent = "▶️ Musik fortsetzen";
   }
-  btn.addEventListener('click', toggleMusic);
+});
 
-  // User-Interaktion: beim ersten Scroll/Click versuchen wir sanft zu starten
-  const tryStart = () => { if(!musicOn){ toggleMusic(); } window.removeEventListener('scroll', tryStart); window.removeEventListener('click', tryStart); };
-  window.addEventListener('scroll', tryStart, { once:true });
-  window.addEventListener('click', tryStart, { once:true });
+/* ===========================
+   Paragraphen – Daten
+   (Volltexte §1–§50)
+=========================== */
+const PARAS = [
+  {n:1, t:"Block-Architektur & Slot-Prinzip",
+   b:`Jede HTML-Seite wird in klar getrennte Blöcke gegliedert. Jeder Block besitzt eine eigene JS-Quelle (TPS – Transformers-Page-System). 
+Die Seite wird beim Build aus diesen JS-Blöcken zusammengesetzt. Dadurch bleibt Pflege, Austausch und Weiterentwicklung einzelner Abschnitte jederzeit möglich – ohne das Gesamtlayout zu verletzen.`},
+  {n:2, t:"Eindeutige Zuordnung",
+   b:`Jeder JS-Block wird eindeutig der Ziel-HTML zugeordnet (Namenskonvention + Pfadregeln). 
+Damit wird verhindert, dass Blöcke versehentlich mehrfach verwendet oder verwechselt werden.`},
+  {n:3, t:"Werkstatt-Kompatibilität",
+   b:`Die Werkstatt operiert blockweise: ersetzen, neu bauen, rückgängig machen. 
+Der Build-Prozess respektiert das Slot-Prinzip und die Layout-Schutzbereiche (siehe §4).`},
+  {n:4, t:"Gesicherte Bereiche",
+   b:`Template, grundlegendes Layout, Struktur und Systemfunktionen gelten als „gesperrt“. 
+Nur inhaltliche Bereiche (Texte, Medien, einzelne Funktionsblöcke) dürfen verändert werden. 
+So bleibt die Corporate-Identität und Systemlogik unverletzt.`},
+  {n:5, t:"Mehrsprachigkeit",
+   b:`Jede Seite existiert in Deutsch & Englisch (Option: 150+ Sprachen). 
+Übersetzungen sind technisch entkoppelt und können sicher aktualisiert werden.`},
+  {n:6, t:"White-Label-Erstellung",
+   b:`Wenn WL/Partner/Mentor neue Seiten erstellen, nutzt das System exakt diese Gesetzeslogik. 
+Neue Seiten werden automatisch korrekt registriert, eingeordnet und deployt.`},
+  {n:7, t:"Technische Kompatibilität",
+   b:`Spezielle Funktionen (LP-Logik, Audio/Video, Slideshows, Rotationen) müssen immer mit der Werkstatt-Arbeitsweise kompatibel bleiben. 
+Regel: Technik folgt der Struktur – niemals umgekehrt.`},
+  {n:8, t:"Fallback-Varianten",
+   b:`Jede Seite besitzt eine reine HTML-Fallback-Version ohne externe JS. 
+Sie wird automatisch aktualisiert, wenn eine neue stabile Vollversion entsteht.`},
+  {n:9, t:"Compliance-Ampel",
+   b:`Im Footer jeder Seite signalisiert eine Ampel (rot/gelb/grün) den Compliance-Status. 
+So wird Missbrauch verhindert und Vertrauen geschaffen.`},
+  {n:10,t:"Media Launch Control (MLC)",
+   b:`Videos, Slideshows, Laufbänder, Musik sind zentral steuerbar. 
+Die Seite meldet ihre veränderbaren Parameter an das MLC, das Änderungen konsistent und DSGVO-konform ausrollt.`},
 
-  // „Mehr lesen“ toggeln
-  document.querySelectorAll('.more').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      const id = b.dataset.target; const box = document.querySelector('#'+id+' .full');
-      const open = box.hasAttribute('hidden') ? false : true;
-      if(open){ box.setAttribute('hidden',''); b.textContent='Mehr lesen'; }
-      else { box.removeAttribute('hidden'); b.textContent='Weniger'; }
-    });
+  {n:11,t:"Änderungsprozess & KI-Hilfe",
+   b:`Änderungen erfolgen, indem bestehender Blockcode + gewünschter Inhalt zusammen an die KI übergeben werden. 
+Die KI erzeugt daraus einen konformen, neuen Block – regelgetreu und nachvollziehbar.`},
+  {n:12,t:"Geführte Hilfe",
+   b:`Die Hilfe liefert automatisch den passenden Handlungsbefehl (Prompt). 
+Laien können so sicher arbeiten, ohne technische Formulierungen zu kennen.`},
+  {n:13,t:"Token-Bestätigung",
+   b:`Jede Änderung erfordert eine Token-Freigabe. Erst danach wird der Rebuild ausgelöst. 
+Unautorisierte Änderungen sind ausgeschlossen.`},
+  {n:14,t:"Build-Statusanzeige",
+   b:`Ein sichtbarer Fortschrittsindikator zeigt den Status: ⏳ Pending → 🟢 Abgeschlossen (mit Testlink).`},
+  {n:15,t:"Testlink-Ausgabe",
+   b:`Nach erfolgreichem Build erzeugt das System automatisch einen browseroptimierten Testlink zur direkten Prüfung.`},
+  {n:16,t:"DSGVO – No Local Storage",
+   b:`Es werden keine personenbezogenen Daten im Browser gespeichert. 
+DSGVO wird strikt eingehalten.`},
+  {n:17,t:"Cache-Erkennung",
+   b:`Seiten erkennen veraltete Versionen im Cache und ersetzen sie automatisch. 
+Nutzer sehen stets die aktuelle Version.`},
+  {n:18,t:"Automatische Gesetzesprüfung",
+   b:`Vor jeder Änderung prüft die KI alle relevanten Paragraphen dieses Gesetzes. 
+Nur konforme Änderungen werden übernommen.`},
+  {n:19,t:"Autonome Nutzbarkeit",
+   b:`Das System ist so gestaltet, dass Laien ohne Programmierkenntnisse produktiv arbeiten können. 
+Abhängigkeiten von Spezialisten werden reduziert.`},
+  {n:20,t:"Globaler Standard",
+   b:`Das Gesetz definiert den Standard für alle S-O-S-Instanzen weltweit: einheitlich, skalierbar, sicher.`},
+
+  {n:21,t:"Compliance & Ethik",
+   b:`Jeder Block, jede Änderung, jede Veröffentlichung folgt Ethik & Compliance. 
+Verstöße werden automatisch erkannt und verhindert.`},
+  {n:22,t:"Ethik als Schutzschicht",
+   b:`Ethik ist Kernbestandteil des Systems – kein Anhang. 
+Sie schützt vor Manipulation und Missbrauch.`},
+  {n:23,t:"Mediale Freiheit – kontrolliert",
+   b:`WL/Partner/Mentor gestalten frei innerhalb definierter Leitplanken. 
+Alle Inhalte passieren den KI-Wächter (Ethik/Compliance), bevor sie live gehen.`},
+  {n:24,t:"Rotationslogik",
+   b:`Medien können sequentiell oder zufällig abgespielt werden. 
+Konfiguration erfolgt im MLC – Prüfschicht inklusive.`},
+  {n:25,t:"Missbrauchsschutz",
+   b:`Externe Quellen (z. B. YouTube/Vimeo) werden geprüft. 
+Nicht genehmigte Inhalte werden blockiert.`},
+  {n:26,t:"Schulung & Führung",
+   b:`Das System erklärt, leitet an und gibt Sicherheit. 
+Menschen werden befähigt, statt überfordert.`},
+  {n:27,t:"LP-Generator mit Unikats-URL",
+   b:`Jeder Partner erhält eine eigene, registrierte Unikats-URL (DSGVO-konform) und die 3-Ebenen-LP-Logik.`},
+  {n:28,t:"Übergabe & Branding",
+   b:`Standardfelder: Vorname, Nachname, E-Mail (optional Telefon), Profilbild, Audio-Begrüßung. 
+Die Seite wird lebendig und persönlich.`},
+  {n:29,t:"„Später ansehen“",
+   b:`Mit „Später ansehen“ bleibt der Werkszustand erhalten. 
+Ein Reload bringt jederzeit diesen Zustand zurück – ohne Zwang.`},
+  {n:30,t:"Animation & Sicherheit",
+   b:`Nach Eingabe erscheint das Profilbild dezent schwebend (Glow). 
+E-Mail-Adressschutz gegen Bot-Abgriff ist integriert.`},
+
+  {n:31,t:"Inhaltliche KI-Prüfung",
+   b:`Alle hochgeladenen Inhalte werden vor Ausspielung automatisiert geprüft. 
+Nur erlaubte Inhalte gelangen live.`},
+  {n:32,t:"ChatGPT-Compliance",
+   b:`Die KI blockiert Verstöße gegen Ethik/Compliance automatisch. 
+Das System überwacht sich selbst.`},
+  {n:33,t:"Lernkurse & Qualität",
+   b:`Lernfortschritt wird qualitativ gemessen. 
+Nur qualifizierte Partner erhalten Zugriff auf sensible Funktionen.`},
+  {n:34,t:"Akquise & Ausbildung",
+   b:`Onboarding erlaubt parallele Akquise und Lernen. 
+Wachstum wird nicht gebremst, sondern begleitet.`},
+  {n:35,t:"Freigaben per Lernstand",
+   b:`Freigaben werden durch Lernfortschritt gesteuert – als Qualitätsfilter, nicht als Blockade.`},
+  {n:36,t:"Belohnungssystem",
+   b:`Nach bestandenen Prüfungen (Krypto) erhalten Partner Silber/Gold-Zugang inkl. FSA-Network-Funktionen.`},
+  {n:37,t:"Network Control Zentrum",
+   b:`Baumansicht Ebenen 1–20, Status (rot/gelb/grün), Profilbilder, Namen, Ziele, Sortierung – alles zentral sichtbar.`},
+  {n:38,t:"Ereignisse & Kommunikation",
+   b:`LPs verwalten intern E-Mail-Listen (DSGVO-konform) für Events und Systemnachrichten in der Downline.`},
+  {n:39,t:"Onboarding per URL",
+   b:`Neue Partner betreten über die persönliche Unikats-URL ihres Sponsors (Einladungscode/Initialpasswort).`},
+  {n:40,t:"Passwortvergabe & 2FA",
+   b:`Beim ersten Aufruf setzt der Partner sein Passwort. Optional 2FA. 
+Einfacher Einstieg bei hoher Sicherheit.`},
+
+  {n:41,t:"Passwort-Wiederherstellung",
+   b:`Vergessene Passwörter können sicher über die verknüpfte Unikats-URL zurückgesetzt werden.`},
+  {n:42,t:"Transparente Nachverfolgung",
+   b:`Sponsoren sehen, wer sich über ihre URL angemeldet hat – datensparsam und DSGVO-konform.`},
+  {n:43,t:"Token-Schlüssel-Logik",
+   b:`Zugang zu Poststelle, Werkstatt, LP-Generator über einheitliches Token – wie ein Haustürschlüssel.`},
+  {n:44,t:"Nutzerführung durch Vertrautheit",
+   b:`Vertraute Metaphern (Schlüssel, Briefkasten, Ampel) bauen Ängste ab und führen sicher durch Prozesse.`},
+  {n:45,t:"Rückgrat des Systems",
+   b:`Das Gesetz ist das architektonische Rückgrat. 
+Jeder Build, jede Änderung, jedes Template folgt ihm.`},
+  {n:46,t:"Onboarding-Sicherheitslogik",
+   b:`Eintritt in das Schulungssystem ohne externe Passwörter: Unikats-URL öffnet das Passwortfeld – sicher und einfach.`},
+  {n:47,t:"Automatische Kontrolle bei Änderungen",
+   b:`Neue Blöcke/Code werden automatisch gegen das Gesetz geprüft – Grundprinzipien sind unverhandelbar.`},
+  {n:48,t:"Weltweite Kompatibilität",
+   b:`Multilingual, mehrschichtig, identische Sicherheits- und Strukturprinzipien in allen Sprachen.`},
+  {n:49,t:"Browser & Cache-Aktualisierung",
+   b:`Alte Versionen werden erkannt und ersetzt. Nutzer sehen immer den neuesten Stand.`},
+  {n:50,t:"Dauerhafte Prinzipien",
+   b:`Das Gesetz ist erweiterbar, aber in den Grundprinzipien unveränderlich – für Stabilität, Vertrauen, Skalierung.`},
+];
+
+/* ===========================
+   DOM-Erzeugung eines Paragraphen
+=========================== */
+function createParagraph(p) {
+  const box = document.createElement('section');
+  box.className = 'para';
+  box.setAttribute('data-para', p.n);
+
+  const head = document.createElement('div');
+  head.className = 'para-head';
+
+  const num = document.createElement('div');
+  num.className = 'para-num';
+  const numSpan = document.createElement('span');
+  numSpan.className = 'type';
+  numSpan.textContent = ""; // wird getippt
+  num.appendChild(numSpan);
+
+  const title = document.createElement('div');
+  title.className = 'para-title';
+  const titleSpan = document.createElement('span');
+  titleSpan.className = 'type';
+  titleSpan.textContent = ""; // wird getippt
+  title.appendChild(titleSpan);
+
+  head.appendChild(num);
+  head.appendChild(title);
+
+  const more = document.createElement('div');
+  more.className = 'more';
+  const link = document.createElement('a');
+  link.className = 'link';
+  link.href = 'javascript:void(0)';
+  link.textContent = "Mehr lesen";
+  more.appendChild(link);
+
+  const body = document.createElement('div');
+  body.className = 'para-body';
+  body.innerText = p.b;
+
+  const nav = document.createElement('div');
+  nav.className = 'nav';
+  const next = document.createElement('button');
+  next.className = 'btn next';
+  next.type = 'button';
+  next.textContent = 'Weiter →';
+  nav.appendChild(next);
+
+  box.appendChild(head);
+  box.appendChild(more);
+  box.appendChild(body);
+  box.appendChild(nav);
+
+  // Interaktionen
+  link.addEventListener('click', ()=>{
+    body.classList.toggle('open');
+    link.textContent = body.classList.contains('open') ? "Weniger" : "Mehr lesen";
   });
 
-  // Meißel-Ablauf: nacheinander Titel tippen, dann „Mehr lesen“ zeigen
-  const sections = Array.from(document.querySelectorAll('.para .title'));
-  let delay = 0;
-  sections.forEach((t,i)=>{
-    const text = t.dataset.title || t.textContent.trim();
-    t.textContent = '';
-    t.classList.add('typing');
-    const reveal = () => {
-      t.textContent = text;
-      t.classList.remove('typing');
+  next.addEventListener('click', ()=>{
+    const nxt = box.nextElementSibling;
+    if(nxt && nxt.classList.contains('para')){
+      startMeissel(nxt); // nächstes starten
+      nxt.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+  });
+
+  // Daten für Meißeln
+  box._numTarget = `§ ${p.n}`;
+  box._titleTarget = p.t;
+
+  return box;
+}
+
+/* ===========================
+   Meißel-/Schreibmaschinen-Effekt
+=========================== */
+function typeInto(el, text, speed=18){
+  return new Promise(resolve=>{
+    let i=0;
+    const go = ()=>{
+      if(i<=text.length){
+        el.textContent = text.slice(0,i);
+        i++;
+        setTimeout(go, speed);
+      } else resolve();
     };
-    setTimeout(reveal, delay);
-    delay += 380; // Abstand zwischen den Meißel-Schritten
+    go();
   });
-</script>
+}
 
+async function startMeissel(box){
+  if(box._started) return;
+  box._started = true;
+  const numEl = box.querySelector('.para-num .type');
+  const titleEl = box.querySelector('.para-title .type');
+  const more = box.querySelector('.more');
+  more.style.visibility = 'hidden';
+
+  await typeInto(numEl, box._numTarget, 22);
+  await new Promise(r=>setTimeout(r, 120));
+  await typeInto(titleEl, box._titleTarget, 14);
+
+  // erst danach den „Mehr lesen“-Hinweis zeigen
+  more.style.visibility = 'visible';
+}
+
+/* ===========================
+   Initialisierung
+=========================== */
+const root = document.getElementById('lawRoot');
+PARAS.forEach(p => root.appendChild(createParagraph(p)));
+
+// §1 sofort meißeln, die anderen warten
+const first = root.querySelector('.para');
+if(first) startMeissel(first);
+
+// Soft-Fokus: wenn der Nutzer scrollt und ein Paragraph ungelesen ist, meißle automatisch an
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const box = e.target;
+      startMeissel(box);
+    }
+  });
+},{threshold:.35});
+document.querySelectorAll('.para').forEach(p=>observer.observe(p));
+</script>
 </body>
 </html>
