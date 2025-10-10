@@ -1,52 +1,50 @@
 // =========================
-// 📬 INIT – Poststelle Control Center (Public Repo Version)
+// 📬 INIT – Poststelle Control Center
 // =========================
 document.addEventListener("DOMContentLoaded", () => {
-  fsaLog("📬 Poststelle Control-Center geladen (modular)");
+  try{ if (typeof fsaLog === "function") fsaLog("📬 Poststelle Control-Center geladen (modular)"); }catch(_){}
 
-  // Slots prüfen (Debug-Hilfe)
-  const slots = ["slot-token", "slot-patch", "slot-modules", "log", "build-status"];
-  slots.forEach(id => {
-    if (!document.getElementById(id)) {
-      console.warn(`⚠️ Slot '${id}' fehlt im DOM`);
-    }
-  });
+  // Slots prüfen (nur Hinweis)
+  ["slot-token","slot-patch","slot-modules","log","build-status","compliance-panel"]
+    .forEach(id => { if (!document.getElementById(id)) console.warn(`⚠️ Slot '${id}' fehlt im DOM`); });
 
-  // Basis-Initialisierung
+  // Token / Healthcheck / Module starten
   if (typeof initToken === "function") initToken();
   if (typeof healthCheck === "function") healthCheck();
   if (typeof initModules === "function") initModules();
 
-  // 🟢 Build-Status sofort beim Start abrufen
-  checkActionStatus();
+  // Compliance-Layer starten
+  if (typeof initCompliance === "function") initCompliance();
+
+  // Build-Status direkt abrufen
+  if (typeof checkActionStatus === "function") checkActionStatus();
 });
 
 // =========================
-// 🛰️ GitHub Actions Build Status Live Check (ohne Token)
+// 🛰️ GitHub Actions Build Status Live Check
 // =========================
 async function checkActionStatus() {
   const statusBox = document.getElementById("build-status");
   const apiURL = `https://api.github.com/repos/Adler-FSA/Lp-Generator/actions/runs?per_page=1`;
 
   try {
-    const res = await fetch(apiURL); // ⚡ Kein Token nötig bei Public Repo
+    const res = await fetch(apiURL, {
+      headers: (typeof token !== "undefined" && token)
+        ? { "Authorization": `Bearer ${token}` }
+        : {}
+    });
+
     if (!res.ok) {
-      fsaLog(`❌ Build-Status konnte nicht abgerufen werden: ${res.status}`, "err");
-      if (statusBox) {
-        statusBox.textContent = "❌ Fehler beim Abrufen des Build-Status";
-        statusBox.style.color = "#ff5c5c";
-      }
+      if (typeof fsaLog==="function") fsaLog(`❌ Build-Status konnte nicht abgerufen werden: ${res.status}`, "err");
+      if (statusBox) { statusBox.textContent = "❌ Fehler beim Abrufen des Build-Status"; statusBox.style.color = "var(--err)"; }
       return;
     }
 
     const data = await res.json();
-    const lastRun = data.workflow_runs[0];
+    const lastRun = data.workflow_runs?.[0];
 
     if (!lastRun) {
-      if (statusBox) {
-        statusBox.textContent = "⚠️ Keine Build-Runs gefunden";
-        statusBox.style.color = "#ffcb5c";
-      }
+      if (statusBox) { statusBox.textContent = "⚠️ Keine Build-Runs gefunden"; statusBox.style.color = "var(--warn)"; }
       return;
     }
 
@@ -55,32 +53,22 @@ async function checkActionStatus() {
     const time = new Date(lastRun.updated_at).toLocaleTimeString();
 
     if (status === "in_progress" || status === "queued") {
-      if (statusBox) {
-        statusBox.textContent = `⏳ Build läuft… (${time})`;
-        statusBox.style.color = "#ffcb5c";
-      }
-      fsaLog(`⏳ GitHub Actions: Build läuft… (${time})`);
+      if (statusBox) { statusBox.textContent = `⏳ Build läuft… (${time})`; statusBox.style.color = "var(--warn)"; }
+      if (typeof fsaLog==="function") fsaLog(`⏳ GitHub Actions: Build läuft… (${time})`);
     } else if (conclusion === "success") {
-      if (statusBox) {
-        statusBox.textContent = `🟢 Build erfolgreich (${time})`;
-        statusBox.style.color = "#1ecb6c";
-      }
-      fsaLog(`🟢 GitHub Actions: Build erfolgreich bestätigt (${time})`, "ok");
+      if (statusBox) { statusBox.textContent = `🟢 Build erfolgreich (${time})`; statusBox.style.color = "var(--ok)"; }
+      if (typeof fsaLog==="function") fsaLog(`🟢 GitHub Actions: Build erfolgreich bestätigt (${time})`, "ok");
     } else {
-      if (statusBox) {
-        statusBox.textContent = `❌ Build fehlgeschlagen (${time})`;
-        statusBox.style.color = "#ff5c5c";
-      }
-      fsaLog(`❌ GitHub Actions: Build fehlgeschlagen (${time})`, "err");
+      if (statusBox) { statusBox.textContent = `❌ Build fehlgeschlagen (${time})`; statusBox.style.color = "var(--err)"; }
+      if (typeof fsaLog==="function") fsaLog(`❌ GitHub Actions: Build fehlgeschlagen (${time})`, "err");
     }
   } catch (err) {
-    fsaLog(`❌ Netzwerkfehler: ${err.message}`, "err");
-    if (statusBox) {
-      statusBox.textContent = "❌ Netzwerkfehler beim Statusabruf";
-      statusBox.style.color = "#ff5c5c";
-    }
+    if (typeof fsaLog==="function") fsaLog(`❌ Fehler: ${err.message}`, "err");
+    if (statusBox) { statusBox.textContent = "❌ Netzwerkfehler beim Statusabruf"; statusBox.style.color = "var(--err)"; }
   }
 }
 
 // 🔁 Alle 30 Sekunden automatisch abrufen
-setInterval(checkActionStatus, 30000);
+setInterval(() => {
+  if (typeof checkActionStatus === "function") checkActionStatus();
+}, 30000);
