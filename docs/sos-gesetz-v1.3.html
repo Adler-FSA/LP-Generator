@@ -1,247 +1,229 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>S-O-S Gesetz v1.3 · FSA</title>
-  <meta name="description" content="Das S-O-S TPS-Gesetz der FSA – verbindliche Standards für Seitenaufbau, Compliance, White-Label, Werkstatt und Poststelle.">
-  <link rel="icon" href="../favicon.ico">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S-O-S Gesetz v1.3 – Stein & Musik Edition</title>
   <style>
-    html, body { height: 100%; }
-    html { scroll-behavior: smooth; }
-    body {
+    html, body {
       margin: 0;
-      color: #e6f2ff;
-      font: 15px/1.55 system-ui, Segoe UI, Roboto, Inter, Arial, sans-serif;
-      background:
-        linear-gradient(rgba(6,10,18,.60), rgba(6,10,18,.80)),
-        url("../media/stein-tafel-textur.jpg");
+      padding: 0;
+      height: 100%;
+      font-family: "Segoe UI", Roboto, sans-serif;
+      background: url("./media/stein-tafel-textur.jpg") no-repeat center center fixed;
       background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+      color: #f5f5f5;
+      overflow-x: hidden;
     }
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 18px 80px; }
-    .hero {
-      display: grid;
-      grid-template-columns: 96px 1fr;
-      gap: 16px;
+
+    .wrap {
+      max-width: 960px;
+      margin: 120px auto 80px;
+      padding: 20px;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      border-radius: 16px;
+      box-shadow: 0 0 40px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: gold;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px gold;
+    }
+
+    h2 {
+      color: gold;
+      text-shadow: 0 0 8px gold;
+      margin-top: 40px;
+    }
+
+    .gesetz-block {
+      margin-bottom: 30px;
+      padding: 16px;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+      position: relative;
+    }
+
+    .gesetz-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: flex;
       align-items: center;
-      margin: 24px 0 18px;
-      padding: 14px 18px;
-      background: rgba(17, 27, 46, .55);
-      border: 1px solid rgba(31, 43, 68, .7);
+    }
+
+    .paragraph-symbol {
+      font-size: 2rem;
+      color: gold;
+      margin-right: 10px;
+      text-shadow: 0 0 10px gold;
+      opacity: 0;
+      animation: meissel 1.5s forwards;
+    }
+
+    @keyframes meissel {
+      0% { opacity: 0; transform: scale(0.8); filter: blur(4px); }
+      60% { opacity: 1; transform: scale(1.1); filter: blur(0); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .gesetz-text {
+      display: none;
+      margin-top: 10px;
+      line-height: 1.5;
+      font-size: 1rem;
+    }
+
+    .mehr-btn {
+      background: none;
+      border: none;
+      color: gold;
+      cursor: pointer;
+      font-size: 0.95rem;
+      margin-top: 5px;
+      text-decoration: underline;
+      transition: color 0.3s;
+    }
+
+    .mehr-btn:hover {
+      color: #ffd700;
+    }
+
+    #music-control {
+      position: fixed;
+      top: 180px;
+      right: 20px;
+      background: rgba(0,0,0,0.6);
+      padding: 10px 16px;
       border-radius: 12px;
-      box-shadow: 0 10px 32px rgba(0,0,0,.35);
-      backdrop-filter: blur(3px);
+      color: gold;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 0 10px gold;
+      user-select: none;
+      transition: background 0.3s ease;
+      z-index: 1000;
+      opacity: 0;
+      animation: fadeIn 2.5s ease forwards;
+      animation-delay: 1s;
     }
-    .hero img { width: 96px; height: 96px; object-fit: contain; filter: drop-shadow(0 6px 16px rgba(0,0,0,.45)); }
-    .hero h1 { margin: 0 0 6px; font-size: 28px; color: #f3f7ff; letter-spacing: .3px; }
-    .hero .meta { margin: 0; color: #9db4d6; font-size: 13px; }
 
-    .card {
-      background: rgba(17, 27, 46, .60);
-      border: 1px solid rgba(31, 43, 68, .75);
-      border-radius: 12px;
-      box-shadow: 0 10px 28px rgba(0,0,0,.35);
-      padding: 18px 20px;
-      margin: 16px 0;
-      backdrop-filter: blur(4px);
+    #music-control:hover {
+      background: rgba(255, 215, 0, 0.3);
     }
-    h2 { margin: 0 0 12px; font-size: 22px; color: #e6f2ff; }
-    h3 { margin: 18px 0 10px; font-size: 18px; color: #d9e7ff; }
-    p  { margin: 8px 0; color: #d5e3ff; }
-    ul { margin: 8px 0 8px 22px; }
-    li { margin: 6px 0; }
 
-    .para { counter-reset: p; }
-    .para > .p { position: relative; padding-left: 44px; }
-    .para > .p + .p { margin-top: 14px; }
-    .para > .p::before {
-      counter-increment: p;
-      content: counter(p) ".";
-      position: absolute; left: 0; top: 0;
-      width: 36px; text-align: right;
-      font-weight: 700; letter-spacing: .2px;
-      color: #ffd261;
-      text-shadow: 0 2px 10px rgba(0,0,0,.35);
+    #sos-siegel-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      opacity: 0;
+      animation: fadeIn 2s ease forwards;
     }
-    footer { text-align: center; color: #93a8cc; font-size: 12px; opacity: .9; margin-top: 28px; }
 
-    .nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 14px; }
-    .nav a {
-      --line: rgba(31,43,68,.7);
-      background: rgba(15, 26, 46, .55);
-      border: 1px solid var(--line);
-      color: #cfe1ff; text-decoration: none;
-      font-size: 13px; padding: 8px 10px; border-radius: 8px;
+    #sos-siegel {
+      width: 140px;
+      height: auto;
+      filter: drop-shadow(0 0 20px gold);
+      animation: glowPulse 3s ease-in-out infinite;
+      transition: transform 0.3s ease;
     }
-    .nav a:hover { filter: brightness(1.08); }
+
+    #sos-siegel:hover {
+      transform: scale(1.1);
+    }
+
+    @keyframes glowPulse {
+      0%   { filter: drop-shadow(0 0 10px gold); }
+      50%  { filter: drop-shadow(0 0 30px gold); }
+      100% { filter: drop-shadow(0 0 10px gold); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- 🦅 SOS Adler-Siegel + Musiksystem -->
+  <div id="sos-siegel-container">
+    <img src="./media/sos-siegel-adler.png" alt="SOS Adler Siegel" id="sos-siegel">
+  </div>
+
+  <div id="music-control" onclick="toggleMusic()">🎵 Musik</div>
+  <audio id="background-music" autoplay loop>
+    <source src="./media/intro-theme.mp3" type="audio/mpeg">
+    Dein Browser unterstützt kein Audio.
+  </audio>
+
   <div class="wrap">
-    <!-- HERO -->
-    <div class="hero">
-      <img src="../media/fsa-siegel.svg" alt="FSA Siegel" onerror="this.style.display='none'">
-      <div>
-        <h1>S-O-S Gesetz v1.3</h1>
-        <p class="meta">Verbindlicher TPS-Standard für Aufbau, Compliance, Werkstatt, Poststelle, LP-Generator und White-Label.</p>
-      </div>
-    </div>
+    <h1>S-O-S Gesetz v1.3 – „In Stein gemeißelt“</h1>
 
-    <!-- NAVIGATION -->
-    <div class="card">
-      <div class="nav">
-        <a href="#k1">1–10</a><a href="#k11">11–20</a><a href="#k21">21–30</a>
-        <a href="#k31">31–40</a><a href="#k41">41–50</a>
-      </div>
-      <p class="meta">Änderungen erfolgen ausschließlich über die Poststelle mit Compliance-Prüfung.</p>
-    </div>
+    <!-- === 50 Gesetzesblöcke === -->
+    <!-- Tipp: Inhaltstexte kannst du später individuell befüllen -->
 
-    <!-- ================= KAPITEL ================= -->
-    <div class="card para" id="k1"><h2>Kapitel 1–10 · Grundstruktur & Blöcke</h2>
-      <div class="p">HTML-Seiten werden in Inhaltsblöcke segmentiert, jeder Block erhält eine eigene JS-Datei.</div>
-      <div class="p">Jede JS-Datei ist eindeutig zuordenbar über ID/Hash zur jeweiligen HTML-Seite.</div>
-      <div class="p">Werkstatt-TPS erlaubt Blockaustausch ohne Verletzung des Templates.</div>
-      <div class="p">Gesperrte Kernbereiche sind System- und Template-Dateien.</div>
-      <div class="p">Mehrsprachigkeit DE/EN + Option bis 150 Sprachen.</div>
-      <div class="p">White-Label-Seiten werden automatisch gesetzeskonform erstellt.</div>
-      <div class="p">Fallback-Versionen (reine HTML) werden bei jedem Release gesichert.</div>
-      <div class="p">Compliance-Ampel überwacht Status rot/gelb/grün in jeder Seite.</div>
-      <div class="p">Medienbereiche sind über MLC steuerbar.</div>
-      <div class="p">Seiten werden nach Deploy automatisch in die Werkstatt-Drop-Down integriert.</div>
-    </div>
-
-    <div class="card para" id="k11"><h2>Kapitel 11–20 · Compliance Layer</h2>
-      <div class="p">Vor jedem Deploy prüft Poststelle Änderungen gegen das S-O-S Gesetz.</div>
-      <div class="p">Jede Änderung erfordert Token-Authentifizierung.</div>
-      <div class="p">Schnellzugriff in der Poststelle verweist auf die aktuelle Gesetz-Version.</div>
-      <div class="p">Sicherheits- und Prüfprotokolle werden automatisch geloggt.</div>
-      <div class="p">Compliance-Status erscheint sichtbar für WL, P/M, Admin.</div>
-      <div class="p">Alle Änderungen sind nachvollziehbar über Commit-Historie.</div>
-      <div class="p">Missbrauch oder Verstoß gegen die Regeln führt zur Sperrung des Deploy-Vorgangs.</div>
-      <div class="p">Nur autorisierte Blöcke dürfen editiert oder ersetzt werden.</div>
-      <div class="p">Ethik & S-O-S Ethikkodex gelten als bindender Bestandteil des Systems.</div>
-      <div class="p">System erkennt Manipulationen oder Verstöße automatisch.</div>
-    </div>
-
-    <div class="card para" id="k21"><h2>Kapitel 21–30 · LP & Generator</h2>
-      <div class="p">LP-Templates folgen der 3-Ebenen-Logik: Hintergrund, Content-Blocks, Call-to-Action.</div>
-      <div class="p">Einzigartige LP-URL wird mit eindeutiger ID generiert und DSGVO-konform registriert.</div>
-      <div class="p">Profileingaben: Vorname, Nachname, E-Mail, optional Handy + Profilbild.</div>
-      <div class="p">Begrüßungs-Audio kann hochgeladen werden (Format: mp3, wav).</div>
-      <div class="p">„Später“-Funktion zeigt Vorschau, Reload bringt Werkszustand zurück.</div>
-      <div class="p">Nach Senden: Profilbild schwebend mit Glow-Effekt, Name eingeblendet.</div>
-      <div class="p">Bot-Schutzmechanismen schützen die E-Mail-Felder.</div>
-      <div class="p">WL, P/M Inhalte durch MLC konfigurierbar — ChatGPT überprüft auf Ethik.</div>
-      <div class="p">Ethik-Prüfung greift vor Freischaltung.</div>
-      <div class="p">Audio- und Mediafiles werden durch Systemklassifizierung geprüft.</div>
-    </div>
-
-    <div class="card para" id="k31"><h2>Kapitel 31–40 · MLC & Automatisierung</h2>
-      <div class="p">MLC (Media Launch Control) verwaltet Videos, Musik, Slideshows.</div>
-      <div class="p">WL, P/M kann Reihenfolge und Random-Play festlegen.</div>
-      <div class="p">Ethik-Kontrolle greift auch bei Media-Rotationen.</div>
-      <div class="p">Uploads laufen über S-O-S Filter, Verstöße führen zur Blockierung.</div>
-      <div class="p">Automatische Ampellogik zeigt Verarbeitungsstatus an.</div>
-      <div class="p">Werkstatt erkennt fertige Deploys durch Farbwechsel rot/gelb/grün.</div>
-      <div class="p">Einfache Symbolik für Benutzer (Vertrautheit durch Statusanzeige).</div>
-      <div class="p">Jede Änderung löst Audit-Log Eintrag aus.</div>
-      <div class="p">Alle Zustände sind durch Stationen nachvollziehbar.</div>
-      <div class="p">Schnittstellen sind für WL & P/M einfach bedienbar gehalten.</div>
-    </div>
-
-    <div class="card para" id="k41"><h2>Kapitel 41–50 · Netzwerk & Onboarding</h2>
-      <div class="p">WL & Partner erhalten eigene MLC + LP nach erfolgreicher Schulung.</div>
-      <div class="p">Lernfortschritt wird automatisch im System protokolliert.</div>
-      <div class="p">Freischaltung Branding erst nach erfolgreichem Basis-Kurs.</div>
-      <div class="p">Onboarding über personalisierte URL → Passwortfeld → Kontoerstellung.</div>
-      <div class="p">Vergessenes Passwort → automatisierte Wiederherstellung.</div>
-      <div class="p">Netzwerkstruktur wird über Control Center visualisiert.</div>
-      <div class="p">Alle LPs der Downline sind mit Bild, Name & Status sichtbar.</div>
-      <div class="p">Partner können Events direkt an ihre Downline-E-Mails ankündigen.</div>
-      <div class="p">Vertrauen wird durch visuelle Darstellung (Bild+Name) gestärkt.</div>
-      <div class="p">System liefert Belohnung (z.B. Zugang zu Network-Panel) nach Lernzertifizierung.</div>
-    </div>
-
-    <footer>© 2025 FSA · S-O-S Gesetz v1.3 · „in Stein gemeißelt“ – Text schwebt über Marmor-Hintergrund</footer>
+    <!-- §1 bis §50 -->
+    <!-- Duplizierte Struktur -->
+    <script>
+      const gesetze = [];
+      for (let i = 1; i <= 50; i++) {
+        gesetze.push(`
+          <div class="gesetz-block">
+            <div class="gesetz-title">
+              <span class="paragraph-symbol">§${i}</span> Gesetz ${i} – Platzhalter Überschrift
+            </div>
+            <button class="mehr-btn" onclick="toggleText(this)">Mehr lesen</button>
+            <div class="gesetz-text">
+              Dies ist der Platzhaltertext für den Paragraphen §${i}. Hier kannst du den echten Gesetzestext oder die Definition eintragen.
+            </div>
+          </div>
+        `);
+      }
+      document.write(gesetze.join(''));
+    </script>
   </div>
 
   <script>
-    window.addEventListener('scroll', () => {
-      const y = Math.round(window.scrollY * 0.25);
-      document.body.style.backgroundPosition = `center calc(50% + ${y}px)`;
-    }, { passive: true });
-  </script>
-<!-- 🎧 Musiksteuerung - S-O-S Intro Musik -->
-<style>
-  .music-button {
-    position: fixed;
-    bottom: 20px;        /* Dezent unten links */
-    left: 20px;
-    background: rgba(0, 0, 0, 0.6);
-    color: gold;
-    padding: 10px 16px;
-    border-radius: 50px;
-    font-size: 1rem;
-    cursor: pointer;
-    box-shadow: 0 0 15px gold;
-    transition: background 0.3s, transform 0.2s;
-    z-index: 999;
-  }
+    // === Musiksteuerung ===
+    const audio = document.getElementById('background-music');
+    const btn = document.getElementById('music-control');
+    let isPlaying = true;
 
-  .music-button:hover {
-    background: rgba(0, 0, 0, 0.8);
-    transform: scale(1.05);
-  }
-
-  .music-button.attention {
-    animation: pulseAttention 1.5s ease-in-out infinite;
-  }
-
-  @keyframes pulseAttention {
-    0%, 100% { box-shadow: 0 0 15px gold; }
-    50% { box-shadow: 0 0 35px gold; }
-  }
-</style>
-
-<!-- Musik Button -->
-<div id="music-control" class="music-button">🔊 Musik</div>
-
-<!-- Musik Datei -->
-<audio id="background-music" autoplay loop>
-  <source src="./media/intro-theme.mp3" type="audio/mpeg">
-  Dein Browser unterstützt kein Audio.
-</audio>
-
-<script>
-  const audio = document.getElementById('background-music');
-  const musicBtn = document.getElementById('music-control');
-
-  let musicOn = true;
-
-  // Musik automatisch starten — oder Button aktivieren wenn blockiert
-  window.addEventListener('load', () => {
-    audio.play().catch(() => {
-      musicBtn.classList.add('attention');
-      musicBtn.textContent = "▶️ Musik starten";
-      musicOn = false;
-    });
-  });
-
-  // Button klickbar machen (an/aus)
-  musicBtn.addEventListener('click', () => {
-    if (musicOn) {
-      audio.pause();
-      musicBtn.textContent = "🔇 Musik aus";
-    } else {
-      audio.play();
-      musicBtn.textContent = "🔊 Musik an";
-      musicBtn.classList.remove('attention');
+    function toggleMusic() {
+      if (isPlaying) {
+        audio.pause();
+        btn.textContent = '🔇 Musik aus';
+      } else {
+        audio.play();
+        btn.textContent = '🎵 Musik';
+      }
+      isPlaying = !isPlaying;
     }
-    musicOn = !musicOn;
-  });
-</script>
+
+    document.addEventListener('DOMContentLoaded', () => {
+      audio.play().catch(() => {
+        btn.textContent = '▶️ Musik starten';
+        isPlaying = false;
+      });
+    });
+
+    // === Paragraphen aufklappen ===
+    function toggleText(button) {
+      const text = button.nextElementSibling;
+      if (text.style.display === "block") {
+        text.style.display = "none";
+        button.textContent = "Mehr lesen";
+      } else {
+        text.style.display = "block";
+        button.textContent = "Weniger";
+      }
+    }
+  </script>
+
 </body>
 </html>
