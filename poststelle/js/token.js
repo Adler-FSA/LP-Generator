@@ -1,40 +1,83 @@
-(function(){
-  const el = document.getElementById("slot-token");
-  el.innerHTML = `
-    <h2>🔐 Token & Repo</h2>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-      <input id="token" type="password" placeholder="GitHub Token eingeben…" style="flex:1;min-width:200px;">
-      <button onclick="saveToken()">💾 Speichern</button>
-      <button onclick="clearToken()">🧹 Reset</button>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;">
-      <select id="repoSelect" style="flex:1;min-width:200px;">
-        <option value="Lp-Generator">Lp-Generator</option>
-        <option value="FSA-Core">FSA-Core</option>
-        <option value="FSA-WhiteLabel">FSA-WhiteLabel</option>
-      </select>
-      <button onclick="checkStatus()">🔄 Status aktualisieren</button>
-    </div>
-    <div style="margin-top:10px;">
-      <span class="muted">Deployment Status:</span>
-      <span id="deployStatus" class="status-led warn">Wird geprüft…</span>
-    </div>
-  `;
+/*
+  token.js — GitHub Token Verwaltung
+  ✅ Speichern, löschen & validieren
+  ✅ Fehlerhafte Tokens werden erkannt
+*/
 
-  window.saveToken = ()=>{
-    localStorage.setItem("fsa-token", document.getElementById("token").value);
-    fsaLog("🔐 Token gespeichert");
-  };
-  window.clearToken = ()=>{
-    localStorage.removeItem("fsa-token");
-    document.getElementById("token").value = "";
-    fsaLog("🧹 Token gelöscht");
-  };
-  window.checkStatus = ()=>{
-    const led = document.getElementById("deployStatus");
-    led.textContent = "🟢 Erfolg";
-    led.className = "status-led ok";
-    fsaLog(`✅ Status: ${document.getElementById("repoSelect").value}`);
-  };
-  document.getElementById("token").value = localStorage.getItem("fsa-token") || "";
-})();
+let token = localStorage.getItem("fsa_token") || "";
+
+function initToken(){
+  const slot = document.getElementById("slot-token");
+  if(!slot) return;
+
+  slot.innerHTML = `
+    <h2>🔐 Token & Repo</h2>
+    <input id="token-input" type="password" placeholder="GitHub Token eingeben..." value="${token}" style="width:100%;padding:8px;margin-bottom:8px;border-radius:6px;border:1px solid #1f2b44;background:#0f1a2e;color:#e6f2ff;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button onclick="saveToken()">💾 Speichern</button>
+      <button onclick="resetToken()">🧽 Reset</button>
+      <button onclick="validateToken()">🔍 Prüfen</button>
+    </div>
+    <p id="token-status" class="muted" style="margin-top:8px;">Token-Status: —</p>
+  `;
+  updateTokenStatus();
+}
+
+function saveToken(){
+  token = document.getElementById("token-input").value.trim();
+  localStorage.setItem("fsa_token", token);
+  updateTokenStatus();
+  fsaLog("🔐 Token gespeichert");
+}
+
+function resetToken(){
+  token = "";
+  localStorage.removeItem("fsa_token");
+  document.getElementById("token-input").value = "";
+  updateTokenStatus();
+  fsaLog("🔐 Token entfernt");
+}
+
+async function validateToken(){
+  if(!token){
+    fsaLog("❌ Kein Token eingegeben","err");
+    updateTokenStatus(false);
+    return;
+  }
+
+  try{
+    const res = await fetch("https://api.github.com/user",{
+      headers:{ "Authorization":`Bearer ${token}` }
+    });
+
+    if(res.ok){
+      const data = await res.json();
+      fsaLog(`✅ Token gültig (GitHub User: ${data.login})`,"ok");
+      updateTokenStatus(true);
+    }else{
+      fsaLog(`❌ Token ungültig (Status: ${res.status})`,"err");
+      updateTokenStatus(false);
+    }
+  }catch(e){
+    fsaLog(`❌ Token-Validierungsfehler: ${e.message}`,"err");
+    updateTokenStatus(false);
+  }
+}
+
+function updateTokenStatus(ok){
+  const el = document.getElementById("token-status");
+  if(!el) return;
+  if(token === ""){
+    el.textContent = "Token-Status: ❌ Kein Token";
+    el.style.color = "var(--err)";
+  }else if(ok === true){
+    el.textContent = "Token-Status: 🟢 gültig";
+    el.style.color = "var(--ok)";
+  }else if(ok === false){
+    el.textContent = "Token-Status: 🔴 ungültig";
+    el.style.color = "var(--err)";
+  }else{
+    el.textContent = "Token-Status: 🟡 gespeichert – noch nicht geprüft";
+    el.style.color = "var(--warn)";
+  }
+}
