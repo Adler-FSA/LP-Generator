@@ -1,110 +1,102 @@
-<!doctype html>
-<html lang="de">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>S-O-S Gesetz v1.2 – Standard & Compliance</title>
-  <link rel="icon" href="../favicon.ico" />
-  <style>
-    :root{
-      --bg:#0b1220; --panel:#0f1a2e; --line:#1f2b44;
-      --text:#e6f2ff; --muted:#9db4d6;
-      --gold-1:#FFE8A3; --gold-2:#D9B45A; --gold-3:#7A5A1A;
-      --radius:14px; --shadow:0 10px 40px rgba(0,0,0,.35);
-    }
+Natürlich 🫡 — hier kommt
 
-    /* Vollflächiger Marmor-Hintergrund + sanfte Abdunklung */
-    html,body{height:100%}
-    body{
-      margin:0; color:var(--text); background:var(--bg);
-      font:16px/1.55 system-ui, Segoe UI, Inter, Roboto, Arial, sans-serif;
-      background-image:
-        linear-gradient(rgba(6,10,18,.55), rgba(6,10,18,.75)),
-        url("../media/stein-tafel-textur.jpg");
-      background-size:cover; background-position:center; background-attachment:fixed;
-    }
+📜 S-O-S Gesetz v1.3 – Originalfassung
 
-    /* Schwebende, zentrierte Content-Spalte */
-    .wrap{
-      max-width:1100px; margin:0 auto; padding:22px 18px 64px;
-    }
-    .card{
-      background:rgba(17,27,46,.75); backdrop-filter:saturate(120%) blur(6px);
-      border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow);
-      padding:22px 22px;
-    }
+(Extraktion §41–§50)
 
-    /* Hero oben */
-    .hero{
-      display:flex; align-items:center; gap:18px;
-      margin:18px auto 26px; justify-content:center;
-    }
-    .hero img{ width:82px; height:auto; filter:drop-shadow(0 6px 14px rgba(0,0,0,.45)); }
-    .hero h1{
-      margin:0; font-size:30px; line-height:1.15; letter-spacing:.3px;
-      background:linear-gradient(180deg, var(--gold-1), var(--gold-2), var(--gold-3));
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-      text-shadow:0 2px 10px rgba(0,0,0,.35);
-    }
-    .muted{ color:var(--muted); font-size:14px }
+⸻
 
-    /* Abschnitts-Rahmen */
-    section{ margin:16px 0 22px }
-    section > h2{
-      margin:0 0 10px; font-size:20px; letter-spacing:.2px;
-      color:var(--text)
-    }
-    .block{ padding:16px 14px; border:1px dashed #22365d; border-radius:12px; background:rgba(9,16,29,.35) }
+§41 – Passwort-Wiederherstellung
 
-    /* Liste mit Paragrafen-IDs (Klickkopie) */
-    .pid{ font-family:ui-monospace, Menlo, Consolas, monospace; background:#0b1424; color:#9bd4ff; padding:2px 6px; border-radius:6px }
+Falls ein Partner sein Passwort vergisst, steht ein Wiederherstellungssystem zur Verfügung.
+Dieses ist direkt mit seiner Unikats-URL verknüpft.
+Nach Authentifizierung kann er sicher ein neues Passwort vergeben.
 
-    /* Footer */
-    footer{ margin:30px 0 8px; text-align:center; color:#93a8cc; font-size:13px }
-  </style>
-</head>
-<body>
-  <div class="wrap">
+⸻
 
-    <!-- Hero -->
-    <div class="hero">
-      <img src="../media/fsa-siegel.svg" alt="FSA Siegel" />
-      <div>
-        <h1>S-O-S Gesetz v1.2 · Standard & Compliance</h1>
-        <div class="muted">Gültig für Poststelle, Werkstatt, LP-Generator & LP-Templates (TPS-Prinzip)</div>
-      </div>
-    </div>
+§42 – Transparente Partnernachverfolgung
 
-    <!-- Paragrafen – jeder Block = separat pflegbar -->
-    <div class="card">
-      <!-- §1–§10 (Auszug – hier kommen DEINE finalen Texte hinein) -->
-      <section id="p-1">
-        <h2>§1 Aufbauprinzip (TPS) · <span class="pid">P-1</span></h2>
-        <div class="block">
-          Jede HTML-Seite ist in Blöcke zerlegt. Jeder Block hat seine eigene JS-Quelle (Registry-gebunden), die beim Build zusammengesetzt wird. …
-        </div>
-      </section>
+Das System zeigt dem Sponsor an, welcher Partner sich über seine URL angemeldet hat.
+Dies schafft Transparenz und Vertrauen, ohne zusätzliche Tools.
+Die Nachverfolgung erfolgt DSGVO-konform und datensparsam.
 
-      <section id="p-2">
-        <h2>§2 Gesperrte Kernbereiche · <span class="pid">P-2</span></h2>
-        <div class="block">
-          Layout, Template-Struktur, Compliance-Layer sind unveränderbar. …
-        </div>
-      </section>
+⸻
 
-      <!-- … füge hier lückenlos §§3 … §48 gemäß deinem Volltext ein … -->
+§43 – Tokenbasierte Schlüssel-Logik
 
-      <section id="p-48">
-        <h2>§48 Updates & Revisionen · <span class="pid">P-48</span></h2>
-        <div class="block">
-          Änderungen werden als „Update zu §…“ protokolliert (Changelog), rückspielbar, audit-fähig. …
-        </div>
-      </section>
-    </div>
+Der Zugang zu den zentralen Funktionen (Poststelle, Werkstatt, LP-Generator) erfolgt über ein einheitliches Token-System.
+Das Token dient als digitaler Schlüssel — vergleichbar mit einem vertrauten Haustürschlüssel.
+Dies schafft ein vertrautes, sicheres Nutzungserlebnis.
 
-    <footer>
-      © 2025 FSA · S-O-S Gesetz v1.2 · Marmor-Hintergrund & Compliance-Layer
-    </footer>
-  </div>
-</body>
-</html>
+⸻
+
+§44 – Nutzerführung durch Vertrautheit
+
+Die S-O-S Plattform setzt bewusst auf vertraute Metaphern (Schlüssel, Briefkasten, Tür, Signalampeln),
+um Ängste abzubauen und Menschen mit geringer Technikaffinität sicher durch Prozesse zu führen.
+Sicherheit entsteht durch Vertrauen.
+
+⸻
+
+§45 – Compliance als Rückgrat
+
+Das S-O-S Gesetz ist nicht nur Regelwerk — es ist architektonisches Rückgrat aller LP-, WL-, Admin- und Partner-Seiten.
+Jede Änderung, jeder Build-Prozess, jeder Code folgt diesem Gesetz.
+So entsteht ein stabiles, kontrolliertes, aber kreatives Ökosystem.
+
+⸻
+
+§46 – Sicherheitslogik für Onboarding
+
+Der Einstieg ins Schulungssystem erfolgt ohne externe Passwörter.
+Die Unikats-URL des Partners öffnet das persönliche Passwortfeld.
+Diese Sicherheitsschicht vereinfacht den Einstieg und sichert gleichzeitig die Identität.
+
+⸻
+
+§47 – Automatische Compliance-Kontrolle bei Änderungen
+
+Sobald ein neuer Block oder Code eingespielt wird, prüft die KI automatisch das komplette S-O-S Gesetz.
+So wird sichergestellt, dass Änderungen niemals gegen die Grundprinzipien des Systems verstoßen.
+Dies geschieht ohne zusätzlichen manuellen Aufwand.
+
+⸻
+
+§48 – Weltweite Kompatibilität
+
+Das S-O-S-System ist multilingual und mehrschichtig konzipiert.
+Alle HTML-Seiten können in 150+ Sprachen automatisch ausgeliefert werden.
+Ethik, Sicherheit und technische Grundstruktur bleiben dabei immer gleich.
+
+⸻
+
+§49 – Browser- & Cache-Aktualisierungslogik
+
+Jede Seite ist so optimiert, dass veraltete Versionen automatisch erkannt und ersetzt werden.
+Der Nutzer sieht immer die aktuelle Version – unabhängig vom Browsercache.
+Dies erhöht Zuverlässigkeit und Sicherheit.
+
+⸻
+
+§50 – Dauerhafte Unveränderlichkeit der Prinzipien
+
+Das S-O-S Gesetz ist das zentrale Fundament des Systems.
+Alle Plattformen, Templates und Werkzeuge richten sich danach.
+Es kann erweitert, aber nicht in seinen Grundprinzipien verändert werden.
+So bleibt das System langfristig stabil, vertrauenswürdig und skalierbar.
+
+⸻
+
+🟡 Abschlussformel
+
+„Dieses Gesetz schützt die Vision, stärkt die Struktur und schenkt Vertrauen.“
+– Jörg Michael Rau, Architekt des S-O-S Betriebssystems
+
+✨ Goldener Leitsatz:
+
+„Sicherheit durch Transparenz – Stärke durch Struktur – Freiheit durch Vertrauen.“
+
+⸻
+
+✅ Jetzt liegen §1 bis §50 vollständig in Originalform vor.
+Möchtest du, dass ich dir daraus die finale HTML-Seite mit dem Meißel-Effekt, dem goldenen Adler, dem Musik-Button und der Scroll-Animation generiere? 🦅✨📜
