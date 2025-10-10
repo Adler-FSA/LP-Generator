@@ -82,7 +82,7 @@
         </div>
       </div>
     </div>
-    <footer>© 2025 FSA · Poststelle v3.6.0 · Slot-Architektur</footer>
+    <footer>© 2025 FSA · Poststelle v3.7.0 · Slot-Architektur</footer>
   </div>
 
   <!-- Modular Scripts -->
@@ -92,17 +92,78 @@
   <script src="./js/actions.js"></script>
   <script src="./js/modules.js"></script>
   <script src="./js/init.js"></script>
-<!-- 🛰️ Service Worker aktivieren -->
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(reg => {
-        console.log('✅ Service Worker aktiv:', reg.scope);
-      })
-      .catch(err => {
-        console.error('❌ Service Worker Fehler:', err);
-      });
-  }
-</script>
+
+  <!-- 🛰️ Service Worker aktivieren -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(reg => console.log('✅ Service Worker aktiv:', reg.scope))
+        .catch(err => console.error('❌ Service Worker Fehler:', err));
+    }
+  </script>
+
+  <!-- 🛰️ Auto-Build Watcher -->
+  <script>
+    let lastBuildId = null;
+
+    async function getLatestBuild() {
+      const apiURL = `https://api.github.com/repos/Adler-FSA/Lp-Generator/actions/runs?per_page=1`;
+      try {
+        const res = await fetch(apiURL, {
+          headers: typeof token !== "undefined" && token
+            ? { "Authorization": `Bearer ${token}` }
+            : {}
+        });
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const lastRun = data.workflow_runs[0];
+        if (!lastRun) return;
+
+        const buildId = lastRun.id;
+        const status = lastRun.status;
+        const conclusion = lastRun.conclusion;
+
+        // ersten Build merken
+        if (lastBuildId === null) {
+          lastBuildId = buildId;
+          return;
+        }
+
+        // neuer Build erkannt
+        if (buildId !== lastBuildId) {
+          console.log(`📦 Neuer Build erkannt: ${buildId}`);
+          lastBuildId = buildId;
+          await waitForBuildToFinish(buildId);
+          console.log("🟢 Build abgeschlossen — Seite wird neu geladen.");
+          location.reload();
+        }
+      } catch (err) {
+        console.error("❌ Build Watcher Fehler:", err);
+      }
+    }
+
+    async function waitForBuildToFinish(buildId) {
+      const apiURL = `https://api.github.com/repos/Adler-FSA/Lp-Generator/actions/runs/${buildId}`;
+      let done = false;
+      while (!done) {
+        const res = await fetch(apiURL, {
+          headers: typeof token !== "undefined" && token
+            ? { "Authorization": `Bearer ${token}` }
+            : {}
+        });
+        const data = await res.json();
+        if (data.status === "completed") {
+          done = true;
+        } else {
+          console.log("⏳ Build läuft noch…");
+          await new Promise(r => setTimeout(r, 5000));
+        }
+      }
+    }
+
+    setInterval(getLatestBuild, 20000);
+    document.addEventListener("DOMContentLoaded", getLatestBuild);
+  </script>
 </body>
 </html>
