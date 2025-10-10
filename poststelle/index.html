@@ -29,7 +29,7 @@
       background:var(--panel);
       padding:18px;border-radius:var(--radius);
       box-shadow:var(--card-shadow);
-      margin-bottom:20px;
+      margin-bottom:20px;border:1px solid var(--line);
     }
     .muted{color:var(--muted)}
     .status-led{font-weight:700}
@@ -46,12 +46,13 @@
       font-weight:600;transition:.2s;min-width:160px;
     }
     button:hover{opacity:.9;transform:translateY(-1px);}
+    .pill{display:inline-block;padding:4px 10px;border-radius:999px;font-weight:700;border:1px solid var(--line)}
   </style>
 </head>
 <body>
 
-  <!-- 🔸 Live Status Balken -->
-  <div id="build-status" style="padding:10px; text-align:center; font-weight:bold; background:#0f1a2e; border-bottom:1px solid #1f2b44;">
+  <!-- 🔸 Live Build-Status -->
+  <div id="build-status" style="padding:10px; text-align:center; font-weight:bold; background:#0f1a2e; border:1px solid var(--line); border-radius:10px; max-width:1200px; margin:-6px auto 16px;">
     ⏳ Build-Status wird geladen …
   </div>
 
@@ -64,6 +65,15 @@
 
         <!-- Aktionen -->
         <div id="slot-patch" class="panel"></div>
+
+        <!-- 🔒 Compliance / Gesetz -->
+        <div id="compliance-panel" class="panel">
+          <h2>🛡️ S-O-S Gesetz & Compliance</h2>
+          <p class="muted">Vor jedem Deploy prüft die Poststelle, ob die Änderungen den S-O-S TPS-Regeln entsprechen.</p>
+          <p>Status: <span id="compliance-status" class="pill">Prüfung ausstehend …</span></p>
+          <div id="registry-summary" class="muted" style="margin-top:8px;">—</div>
+          <div id="registry-list" style="margin-top:12px;"></div>
+        </div>
 
         <!-- Log -->
         <div class="panel">
@@ -80,90 +90,39 @@
           <p class="muted">Erstellt automatisch die stabile Fallback-Version der Poststelle im Repo.</p>
           <button onclick="deployBackup()">📦 Deploy Backup v1.0</button>
         </div>
+
+        <!-- Schnellzugriff -->
+        <div class="panel">
+          <h3>🔗 Schnellzugriff</h3>
+          <p><a href="../docs/sos-gesetz-v1.2.html" target="_blank">📜 S-O-S Gesetz v1.2</a></p>
+          <p><a href="https://github.com/Adler-FSA/Lp-Generator/actions" target="_blank">⚙️ GitHub Actions</a></p>
+        </div>
       </div>
     </div>
-    <footer>© 2025 FSA · Poststelle v3.7.0 · Slot-Architektur</footer>
+    <footer>© 2025 FSA · Poststelle v3.7.0 · Slot-Architektur + Compliance-Layer</footer>
   </div>
 
-  <!-- Modular Scripts -->
+  <!-- Modular Scripts (bestehende) -->
   <script src="./js/log.js"></script>
   <script src="./js/healthcheck.js"></script>
   <script src="./js/token.js"></script>
   <script src="./js/actions.js"></script>
   <script src="./js/modules.js"></script>
+
+  <!-- 🧠 NEU: Registry + Compliance -->
+  <script src="./js/paragraph-registry.js"></script>
+  <script src="./js/check-law.js"></script>
+
+  <!-- Init zuletzt laden -->
   <script src="./js/init.js"></script>
 
-  <!-- 🛰️ Service Worker aktivieren -->
+  <!-- Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./service-worker.js')
         .then(reg => console.log('✅ Service Worker aktiv:', reg.scope))
         .catch(err => console.error('❌ Service Worker Fehler:', err));
     }
-  </script>
-
-  <!-- 🛰️ Auto-Build Watcher -->
-  <script>
-    let lastBuildId = null;
-
-    async function getLatestBuild() {
-      const apiURL = `https://api.github.com/repos/Adler-FSA/Lp-Generator/actions/runs?per_page=1`;
-      try {
-        const res = await fetch(apiURL, {
-          headers: typeof token !== "undefined" && token
-            ? { "Authorization": `Bearer ${token}` }
-            : {}
-        });
-        if (!res.ok) return;
-
-        const data = await res.json();
-        const lastRun = data.workflow_runs[0];
-        if (!lastRun) return;
-
-        const buildId = lastRun.id;
-        const status = lastRun.status;
-        const conclusion = lastRun.conclusion;
-
-        // ersten Build merken
-        if (lastBuildId === null) {
-          lastBuildId = buildId;
-          return;
-        }
-
-        // neuer Build erkannt
-        if (buildId !== lastBuildId) {
-          console.log(`📦 Neuer Build erkannt: ${buildId}`);
-          lastBuildId = buildId;
-          await waitForBuildToFinish(buildId);
-          console.log("🟢 Build abgeschlossen — Seite wird neu geladen.");
-          location.reload();
-        }
-      } catch (err) {
-        console.error("❌ Build Watcher Fehler:", err);
-      }
-    }
-
-    async function waitForBuildToFinish(buildId) {
-      const apiURL = `https://api.github.com/repos/Adler-FSA/Lp-Generator/actions/runs/${buildId}`;
-      let done = false;
-      while (!done) {
-        const res = await fetch(apiURL, {
-          headers: typeof token !== "undefined" && token
-            ? { "Authorization": `Bearer ${token}` }
-            : {}
-        });
-        const data = await res.json();
-        if (data.status === "completed") {
-          done = true;
-        } else {
-          console.log("⏳ Build läuft noch…");
-          await new Promise(r => setTimeout(r, 5000));
-        }
-      }
-    }
-
-    setInterval(getLatestBuild, 20000);
-    document.addEventListener("DOMContentLoaded", getLatestBuild);
   </script>
 </body>
 </html>
